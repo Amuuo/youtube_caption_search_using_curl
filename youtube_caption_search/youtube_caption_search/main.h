@@ -20,4 +20,7 @@ void  getVideoUrl(bool, char**);
 bool  userInteraction();
 void  sendRequestForCaptions(string);
 int   getMainMenuSelection();
+/******************************************/
+//size_t writefunc(char*, size_t, size_t, string*);
+
 

@@ -245,7 +245,7 @@ size_t CaptionStruct::writefunc(char* ptr, size_t size, size_t nmemb, string* s)
 /******************************************/
 void CaptionStruct::sendWebRequestForCaptions() {
 
-  string new_url{"http://video.google.com/timedtext?lang=en&v="};
+  string new_url{"http://video.google.com/timedtext?type=track&lang=en&v="};
   regex rgx("v=(.{11})");
   smatch video_id_match;
   regex_search(captionURL, video_id_match, rgx);

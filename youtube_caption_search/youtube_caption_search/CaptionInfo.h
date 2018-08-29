@@ -54,10 +54,10 @@ struct CaptionStruct{
   frequentWords*  maxMentionsVec {};
   captionTable*   captionMap     {};
   const string*   videoTitle     {};
-  string          captionText    {};
   string          line           {};
   string          captionURL     {};
   Time            time           {};
+  inline static string   captionText{};
 
 
 
@@ -77,6 +77,6 @@ struct CaptionStruct{
   void    createMostFrequentWordsVector();
   void    printTopTenMentions();
   void    sendWebRequestForCaptions();
-  size_t  writefunc(char*, size_t, size_t, string*);
+  inline static size_t  writefunc(char*, size_t, size_t, string*);
 };
 

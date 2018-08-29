@@ -55,7 +55,7 @@ int main(int argc, char** argv){
 
   Captions = new CaptionStruct;
   
-  getVideoUrl(argc!=2, argv);
+  getVideoUrl(argc==2, argv);
   Captions->sendWebRequestForCaptions();  
   Captions->cleanupCaptionDownloadFile();  
   Captions->createCaptionMap();
@@ -70,9 +70,6 @@ int main(int argc, char** argv){
  
   return 0;
 }
-
-
-
 
 
 
@@ -102,11 +99,11 @@ bool userInteraction() {
 /*****************************************/
 /*             GET VIDEO URL             */
 /*****************************************/
-void getVideoUrl(bool commandLineUrl, char** args) {
-  if (commandLineUrl)
-    Captions->captionURL = getUserInput<string>("Enter URL");    
-  else
+void getVideoUrl(bool cmdLineUrlPresent, char** args) {
+  if (cmdLineUrlPresent)
     Captions->captionURL = string{args[1]};    
+  else
+    Captions->captionURL = getUserInput<string>("Enter URL");    
 }
 
 
@@ -126,3 +123,16 @@ int getMainMenuSelection() {
   return getUserInput<int>("Selection");
 }
 
+
+
+
+/******************************************/
+/*               WRITEFUNC                */
+/******************************************/
+/*size_t writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
+  
+  Captions->captionText += string{ptr + '\0'};
+  //*s += string{ptr + '\0'};
+  //captionText += *s;
+  return size*nmemb;
+}*/
