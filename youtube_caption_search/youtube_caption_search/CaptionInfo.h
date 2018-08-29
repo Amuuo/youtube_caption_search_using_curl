@@ -28,7 +28,6 @@ struct CaptionStruct{
   ~CaptionStruct(){}
 
   
-
   /****************************************/
   /*              VARIABLES               */
   /****************************************/
@@ -41,16 +40,15 @@ struct CaptionStruct{
   Time            time;
 
 
-
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
-  static void  printCaptionsToFile();
-  static void  printCaptionsToConsole(CaptionStruct*, int);
-  string       constructTimestampedURL(Time,string);
-  void         cleanupCaptionString();
-  void         createCaptionMap(string*&);
-  void         deleteCommonWordsFromMap();
-  void         searchForWord(string);
+  static void   printCaptionsToFile();
+  static void   printCaptionsToConsole(CaptionStruct*, int);
+  string        constructTimestampedURL(Time,string);
+  void          cleanupCaptionString();
+  void          createCaptionMap(string*&);
+  void          deleteCommonWordsFromMap();
+  void          searchForWord(string);
 };
 
