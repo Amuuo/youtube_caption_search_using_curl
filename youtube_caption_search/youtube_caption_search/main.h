@@ -60,7 +60,6 @@ void    createMostFrequentWordsVector();
 int     getMainMenuSelection();
 int     askPrintOptions();
 void    printMaxMentions(int, char='\0');
-void    searchWord(string);
 bool    userInteraction();
 void    printSnapShot();
 void    sendRequestForCaptions(string);

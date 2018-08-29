@@ -129,3 +129,25 @@ string CaptionStruct::constructTimestampedURL(Time time, string userEnteredURL) 
   return userEnteredURL + "&feature=youtu.be&t=" + to_string(time.hr) + 'h'
       + to_string(time.min) + 'm' + to_string(time.sec) + 's';
 }
+
+
+
+
+void CaptionStruct::searchForWord(string searchWord) {      
+
+
+  if (captionMap->find(searchWord) != captionMap->end()) {
+    
+    printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
+           captionMap->at(searchWord).size(),           
+           "mentions): ",
+           searchWord.c_str());
+    
+    int choice = askPrintOptions();        
+    for (auto& c : captionMap->at(searchWord)) {
+      CaptionStruct::printCaptionsToConsole(c, choice);
+    }
+  } else {
+    cout << "\n\nThat word was not found...";
+  }
+}

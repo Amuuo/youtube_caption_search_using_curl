@@ -1,7 +1,6 @@
 
 #pragma once
 #include"Time.h"
-
 using namespace std;
 
 
@@ -11,24 +10,20 @@ using namespace std;
 /***********************************************************/
 struct CaptionStruct{
 
-
+  using frequentWords = vector<pair<string,set<CaptionStruct*>>>;  
   using captionTable  = map<string,set<CaptionStruct*>>;
   using captionLines  = vector<string>;
   using lineCheck     = map<string, CaptionStruct*>;
-  using frequentWords = vector<pair<string,set<CaptionStruct*>>>;  
   using capPair       = pair<string,set<CaptionStruct*>>;
 
   
-
 
   /****************************************/
   /*      CONSTRUCTOR / DESTRUCTOR        */
   /****************************************/
   CaptionStruct(){}
   CaptionStruct(const string*& s, string l, string u, Time t) : 
-    videoTitle{s}, 
-    line {l}, 
-    time {t}, 
+    videoTitle{s}, line {l}, time {t}, 
     captionURL {constructTimestampedURL(t, u)} {}
   ~CaptionStruct(){}
 
@@ -38,23 +33,24 @@ struct CaptionStruct{
   /*              VARIABLES               */
   /****************************************/
   const string*   videoTitle;
+  static string   captionText;
+  frequentWords*  maxMentionsVec{};
+  captionTable*   captionMap{};
   string          line;
   string          captionURL;
   Time            time;
-  static string   captionText;
-  captionTable*   captionMap{};
-  frequentWords*  maxMentionsVec{};
 
 
 
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
-  static void printCaptionsToFile();
-  static void printCaptionsToConsole(CaptionStruct*, int);
-  void cleanupCaptionString();
-  void createCaptionMap(string*&);
-  void deleteCommonWordsFromMap();
-  string constructTimestampedURL(Time,string);
+  static void  printCaptionsToFile();
+  static void  printCaptionsToConsole(CaptionStruct*, int);
+  string       constructTimestampedURL(Time,string);
+  void         cleanupCaptionString();
+  void         createCaptionMap(string*&);
+  void         deleteCommonWordsFromMap();
+  void         searchForWord(string);
 };
 

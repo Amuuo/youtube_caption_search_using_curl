@@ -32,8 +32,8 @@ bool userInteraction() {
   switch (getMainMenuSelection()) { 
     case 1: printMaxMentions(getUserInput<int>("Enter range")); break;      
     case 2: searchWord(getUserInput<string>("Enter word"));     break;      
-    case 3: printMaxMentions(Captions->captionMap->size(),'r');           break;
-    case 4: CaptionStruct::printCaptionsToFile();                 break;
+    case 3: printMaxMentions(Captions->captionMap->size(),'r'); break;
+    case 4: CaptionStruct::printCaptionsToFile();               break;
     case 5: exit(1);                                            break;      
     default:                                                    break;
   } 
@@ -44,24 +44,7 @@ bool userInteraction() {
 
 
 
-void searchWord(string searchWord) {      
 
-
-  if (Captions->captionMap->find(searchWord) != Captions->captionMap->end()) {
-    
-    printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
-           Captions->captionMap->at(searchWord).size(),           
-           "mentions): ",
-           searchWord.c_str());
-    
-    int choice = askPrintOptions();        
-    for (auto& c : captionMap->at(searchWord)) {
-      CaptionStruct::printCaptionsToConsole(c, choice);
-    }
-  } else {
-    cout << "\n\nThat word was not found...";
-  }
-}
 
 
 
