@@ -1,5 +1,4 @@
 
-
 #include "CaptionInfo.h"
 
 

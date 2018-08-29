@@ -1,6 +1,5 @@
 
 #pragma once
-#include"Time.h"
 #include<vector>
 #include<set>
 #include<map>
@@ -8,7 +7,9 @@
 #include<fstream>
 #include<regex>
 #include<sstream>
+#include<string>
 #include"AdamFunctions.h"
+#include"Time.h"
 using namespace std;
 
 
@@ -32,7 +33,7 @@ struct CaptionStruct{
   /*      CONSTRUCTOR / DESTRUCTOR        */
   /****************************************/
   CaptionStruct(){}
-  CaptionStruct(const string*& s, string l, string u, Time t) : 
+  CaptionStruct(const string* s, string l, string u, Time t) : 
     videoTitle{s}, line {l}, time {t}, 
     captionURL {constructTimestampedURL(t, u)} {}
   ~CaptionStruct(){}
@@ -43,7 +44,7 @@ struct CaptionStruct{
   /*              VARIABLES               */
   /****************************************/
   const string*   videoTitle;
-  static string   captionText;
+  string          captionText;
   frequentWords*  maxMentionsVec{};
   captionTable*   captionMap{};
   string          line;

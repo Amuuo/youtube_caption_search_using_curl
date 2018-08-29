@@ -1,8 +1,16 @@
+
 #pragma once
 #include<string>
-#include<iostream>
-using namespace std;
 
 
-template <typename type_>
-type_ getUserInput(string="");
+/*****************************************/
+/*       GET USER INPUT (TEMPLATE)       */
+/*****************************************/
+template<typename type_>
+type_ getUserInput(std::string prompt) {
+  printf("\n\t%s: ", prompt.c_str());
+  type_ tmp;
+  cin >> tmp;
+  return tmp;
+}
+

@@ -1,15 +1,26 @@
+
 #pragma once
-#include<iostream>
 #include<string>
 
-using namespace std;
 
+/***********************************************************/
+/*                          T I M E                        */
+/***********************************************************/
 struct Time { 
-  ~Time(){}
+  
+
+  /****************************************/
+  /*      CONSTRUCTOR / DESTRUCTOR        */
+  /****************************************/
   Time(){}
-  Time(string h, 
-       string m, 
-       string s) : hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} {}
+  Time(std::string h, std::string m, std::string s) : 
+        hr{std::stoi(h)}, min{std::stoi(m)}, sec{std::stoi(s)} {}
+  ~Time(){}
+  
+
+  /****************************************/
+  /*              VARIABLES               */
+  /****************************************/
   int hr; 
   int min; 
   int sec;     
