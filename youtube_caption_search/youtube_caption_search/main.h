@@ -33,7 +33,6 @@ CaptionStruct* Captions;
 
 
 string* getVideoUrl(bool, char**);
-void    createMostFrequentWordsVector();
 bool    userInteraction();
 void    printTopTenMentions();
 void    sendRequestForCaptions(string);

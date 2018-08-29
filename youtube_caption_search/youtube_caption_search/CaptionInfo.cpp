@@ -189,6 +189,26 @@ int CaptionStruct::displayPrintMenu() {
 
 
 
+/*****************************************/
+/*   CREATE MOST FREQUENT WORDS VECTOR   */
+/*****************************************/
+void CaptionStruct::createMostFrequentWordsVector() {
+    
+  printf("\n>> Sorting words by number of mentions..."); 
+
+  for(auto& m : *captionMap){      
+    maxMentionsVec->push_back({make_pair(m.first, m.second)});
+  }
+  sort(maxMentionsVec->begin(), 
+       maxMentionsVec->end(), 
+       [](pair<string, set<CaptionStruct*>> p1, 
+          pair<string, set<CaptionStruct*>> p2) {
+          return p1.second.size() > p2.second.size(); });
+
+}
+
+
+
 
 /*****************************************/
 /*          PRINT MAX MENTIONS           */

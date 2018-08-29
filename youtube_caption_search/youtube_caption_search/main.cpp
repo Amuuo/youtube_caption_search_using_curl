@@ -1,4 +1,43 @@
 
+
+
+/*============================================================================
+|                                                                            |
+|                     ===============================                        |
+|                         __       ___       __   ___                        |
+|                    \ / /  \ |  |  |  |  | |__) |__                         |
+|                     |  \__/ \__/  |  \__/ |__) |___                        |
+|                                                                            |
+|                      __        __  ___    __                               |
+|                     /  `  /\  |__)  |  | /  \ |\ |                         |
+|                     \__, /~~\ |     |  | \__/ | \|                         |
+|                                                                            |
+|                      __   ___       __   __                                |
+|                     /__` |__   /\  |__) /  ` |__|                          |
+|                     .__/ |___ /~~\ |  \ \__, |  |                          |
+|                                                                            |
+|                     ===============================                        |
+|                                                                            |
+|                                                                            |
+|                                                                            |
+|                Copyright (C) 2017 - 2018, Adam Williams,                   |
+|                                                                            |
+|                   <adamthewilliams@gmail.com>, et al.                      |
+|                                                                            |
+|                                                                            |                                                                            |
+|    You may opt to use, copy, modify, merge, publish, distribute and/or     |
+|    sell copies of the Software, and permit persons to whom the Software    |
+|    is furnished to do so, under the terms of the COPYING file.             |
+|                                                                            |
+|    This software is distributed on an "AS IS" basis, WITHOUT WARRANTY      |
+|    OF ANY KIND, either express or implied.                                 |
+|                                                                            |
+|                                                                            |
+=============================================================================*/
+
+                                                                           
+
+
 #include"main.h"
 
 
@@ -115,27 +154,6 @@ void sendRequestForCaptions(string url) {
 
   regex_search(Captions->captionText.cbegin(), Captions->captionText.cend(), cap_match, rgx2);
                             
-}
-
-
-
-
-/*****************************************/
-/*   CREATE MOST FREQUENT WORDS VECTOR   */
-/*****************************************/
-void createMostFrequentWordsVector() {
-  
-  
-  printf("\n>> Sorting words by number of mentions..."); 
-
-  for(auto& m : *Captions->captionMap){      
-    Captions->maxMentionsVec->push_back({make_pair(m.first, m.second)});
-  }
-  sort(Captions->maxMentionsVec->begin(), 
-       Captions->maxMentionsVec->end(), 
-       [](pair<string, set<CaptionStruct*>> p1, 
-          pair<string, set<CaptionStruct*>> p2) {
-          return p1.second.size() > p2.second.size(); });
 }
 
 

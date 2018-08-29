@@ -65,5 +65,6 @@ struct CaptionStruct{
   void    searchForWord(string);
   void    printMaxMentions(char='\0');
   int     displayPrintMenu();
+  void    createMostFrequentWordsVector();
 };
 
