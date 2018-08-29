@@ -4,6 +4,10 @@
 
 
 
+
+/*****************************************/
+/*         PRINT CAPTIONS TO FILE        */
+/*****************************************/
 void CaptionStruct::printCaptionsToFile() {
   ofstream outStream{getUserInput<string>("Save as")};               
   outStream << captionText;  
@@ -13,6 +17,9 @@ void CaptionStruct::printCaptionsToFile() {
 
 
 
+/*****************************************/
+/*       PRINT CAPTIONS TO CONSOLE       */
+/*****************************************/
 void CaptionStruct::printCaptionsToConsole(CaptionStruct* c, int choice) {
   auto printStrings = [](vector<string*> tmp) {
     for (auto& t : tmp)
@@ -26,6 +33,7 @@ void CaptionStruct::printCaptionsToConsole(CaptionStruct* c, int choice) {
     default: break;
   }
 }
+
 
 
 
@@ -60,6 +68,9 @@ void CaptionStruct::cleanupCaptionDownloadFile(){
 
 
 
+/*****************************************/
+/*           CREATE CAPTION MAP          */
+/*****************************************/
 void CaptionStruct::createCaptionMap(string*& url) {
 
   captionMap = new captionTable{};
@@ -112,6 +123,9 @@ void CaptionStruct::createCaptionMap(string*& url) {
 
 
 
+/******************************************/
+/*      DELETE COMMON WORDS FROM MAP      */
+/******************************************/
 void CaptionStruct::deleteCommonWordsFromMap() {
   
   printf("\n>> Deleting insignificant words from table...");
@@ -135,6 +149,9 @@ string CaptionStruct::constructTimestampedURL(Time time, string userEnteredURL) 
 
 
 
+/*****************************************/
+/*            SEARCH FOR WORD            */
+/*****************************************/
 void CaptionStruct::searchForWord(string searchWord) {      
 
 
@@ -154,6 +171,9 @@ void CaptionStruct::searchForWord(string searchWord) {
   }
 }
 
+
+
+
 /*****************************************/
 /*           DISPLAY PRINT MENU          */
 /*****************************************/
@@ -168,11 +188,14 @@ int CaptionStruct::displayPrintMenu() {
   return getUserInput<int>("Selection");
 }
 
+
+
+
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
 /*****************************************/
-void CaptionStruct::printMaxMentions(int range, char r) {
-  
+void CaptionStruct::printMaxMentions(char r) {
+  int range = captionMap->size();
   static const char* format = "\n\t(%d %-8s:  \"%s\"";
   int choice{displayPrintMenu()};
 

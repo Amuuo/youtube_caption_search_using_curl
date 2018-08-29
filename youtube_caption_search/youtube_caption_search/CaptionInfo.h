@@ -18,11 +18,15 @@ using namespace std;
 /***********************************************************/
 struct CaptionStruct{
 
+
   using frequentWords = vector<pair<string,set<CaptionStruct*>>>;  
   using captionTable  = map<string,set<CaptionStruct*>>;
   using captionLines  = vector<string>;
   using lineCheck     = map<string, CaptionStruct*>;
   using capPair       = pair<string,set<CaptionStruct*>>;
+  
+  
+
   
   /****************************************/
   /*      CONSTRUCTOR / DESTRUCTOR        */
@@ -32,6 +36,7 @@ struct CaptionStruct{
     videoTitle{s}, line {l}, time {t}, 
     captionURL {constructTimestampedURL(t, u)} {}
   ~CaptionStruct(){}
+
 
   
   /****************************************/
@@ -46,17 +51,18 @@ struct CaptionStruct{
   Time            time;
 
 
+
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
-  static void   printCaptionsToFile();
-  static void   printCaptionsToConsole(CaptionStruct*, int);
-  string        constructTimestampedURL(Time,string);
-  void          cleanupCaptionDownloadFile();
-  void          createCaptionMap(string*&);
-  void          deleteCommonWordsFromMap();
-  void          searchForWord(string);
-  int           displayPrintMenu();
-  void          printMaxMentions(int, char);
+  string  constructTimestampedURL(Time,string);
+  void    printCaptionsToFile();
+  void    printCaptionsToConsole(CaptionStruct*, int);
+  void    cleanupCaptionDownloadFile();
+  void    createCaptionMap(string*&);
+  void    deleteCommonWordsFromMap();
+  void    searchForWord(string);
+  void    printMaxMentions(char='\0');
+  int     displayPrintMenu();
 };
 

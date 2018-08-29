@@ -26,21 +26,23 @@ int main(int argc, char** argv){
 
 
 
+
 /*****************************************/
 /*            USER INTERACTION           */
 /*****************************************/
 bool userInteraction() {
   printTopTenMentions();
   switch (getMainMenuSelection()) { 
-    case 1: printMaxMentions(getUserInput<int>("Enter range"));          break;      
-    case 2: Captions->searchForWord(getUserInput<string>("Enter word")); break;      
-    case 3: printMaxMentions(Captions->captionMap->size(),'r');          break;
-    case 4: CaptionStruct::printCaptionsToFile();                        break;
-    case 5: exit(1);                                                     break;      
-    default:                                                             break;
+    case 1: Captions->printMaxMentions(getUserInput<int>("Enter range")); break;      
+    case 2: Captions->searchForWord(getUserInput<string>("Enter word"));  break;      
+    case 3: Captions->printMaxMentions('r');                              break;
+    case 4: Captions->printCaptionsToFile();                              break;
+    case 5: exit(1);                                                      break;      
+    default:                                                              break;
   } 
   return true;
 }
+
 
 
 
@@ -63,12 +65,13 @@ string* getVideoUrl(bool commandLineUrl, char** args) {
 void printTopTenMentions() {
   printf("\n\n\n\tTOP 10 MENTIONS:\n\n\t\t");
   for (int i{1}; i<=10; ++i) {
-    printf("%s(%d), ", maxMentionsVec->at(i).first.c_str(), 
-                       maxMentionsVec->at(i).second.size());
+    printf("%s(%d), ", Captions->maxMentionsVec->at(i).first.c_str(), 
+                       Captions->maxMentionsVec->at(i).second.size());
     if(i % 2 == 0) 
       printf("\n\t\t");
   }
 }
+
 
 
 
@@ -84,6 +87,7 @@ size_t writefunc(char *ptr, size_t size, size_t nmemb, string* s) {
 
 
 
+
 /*****************************************/
 /*       SEND REQUEST FOR CAPTIONS       */
 /*****************************************/
@@ -96,12 +100,9 @@ void sendRequestForCaptions(string url) {
   url = new_url + string{video_id_match[1]};
   
 
-  CURL* curl;
-  CURLcode response;
-
   string r{"start: "};
 
-  curl = curl_easy_init();
+  CURL* curl = curl_easy_init();
 
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
@@ -119,15 +120,9 @@ void sendRequestForCaptions(string url) {
 
 
 
-
-
-
-
-
-
-
-
-
+/*****************************************/
+/*   CREATE MOST FREQUENT WORDS VECTOR   */
+/*****************************************/
 void createMostFrequentWordsVector() {
   
   
@@ -146,6 +141,9 @@ void createMostFrequentWordsVector() {
 
 
 
+/******************************************/
+/*         GET MAIN MENU SELECTION        */
+/******************************************/
 int getMainMenuSelection() {
   
   printf("\n\n\t1 - Print most frequent words");

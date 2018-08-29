@@ -43,6 +43,7 @@
 #include<stdio.h>
 #include"CaptionInfo.h"
 #include"Time.h"
+#include"AdamFunctions.h"
 using namespace std;
 
 
@@ -56,10 +57,8 @@ CaptionStruct* Captions;
 
 string* getVideoUrl(bool, char**);
 void    createMostFrequentWordsVector();
-int     getMainMenuSelection();
-
-void    printMaxMentions(int, char='\0');
 bool    userInteraction();
 void    printTopTenMentions();
 void    sendRequestForCaptions(string);
+int     getMainMenuSelection();
 
