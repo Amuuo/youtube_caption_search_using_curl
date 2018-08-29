@@ -9,7 +9,7 @@ int main(int argc, char** argv){
   
   sendRequestForCaptions(*videoUrl);
   
-  Captions->cleanupCaptionString();  
+  Captions->cleanupCaptionDownloadFile();  
   Captions->createCaptionMap(videoUrl);
   Captions->deleteCommonWordsFromMap();  
   
@@ -26,29 +26,27 @@ int main(int argc, char** argv){
 
 
 
-
+/*****************************************/
+/*            USER INTERACTION           */
+/*****************************************/
 bool userInteraction() {
-  printSnapShot();
+  printTopTenMentions();
   switch (getMainMenuSelection()) { 
-    case 1: printMaxMentions(getUserInput<int>("Enter range")); break;      
-    case 2: searchWord(getUserInput<string>("Enter word"));     break;      
-    case 3: printMaxMentions(Captions->captionMap->size(),'r'); break;
-    case 4: CaptionStruct::printCaptionsToFile();               break;
-    case 5: exit(1);                                            break;      
-    default:                                                    break;
+    case 1: printMaxMentions(getUserInput<int>("Enter range"));          break;      
+    case 2: Captions->searchForWord(getUserInput<string>("Enter word")); break;      
+    case 3: printMaxMentions(Captions->captionMap->size(),'r');          break;
+    case 4: CaptionStruct::printCaptionsToFile();                        break;
+    case 5: exit(1);                                                     break;      
+    default:                                                             break;
   } 
   return true;
 }
 
 
 
-
-
-
-
-
-
-
+/*****************************************/
+/*             GET VIDEO URL             */
+/*****************************************/
 string* getVideoUrl(bool commandLineUrl, char** args) {
   if (commandLineUrl)
     return new string{getUserInput<string>("Enter URL")}; 
@@ -59,8 +57,10 @@ string* getVideoUrl(bool commandLineUrl, char** args) {
 
 
 
-
-void printSnapShot() {
+/*****************************************/
+/*         PRINT TOP TEN MENTIONS        */
+/*****************************************/
+void printTopTenMentions() {
   printf("\n\n\n\tTOP 10 MENTIONS:\n\n\t\t");
   for (int i{1}; i<=10; ++i) {
     printf("%s(%d), ", maxMentionsVec->at(i).first.c_str(), 
@@ -72,17 +72,21 @@ void printSnapShot() {
 
 
 
-
+/*****************************************/
+/*               WRITEFUNC               */
+/*****************************************/
 size_t writefunc(char *ptr, size_t size, size_t nmemb, string* s) {  
 
   *s += string{ptr + '\0'};
-  Captions.captionText += *s;
+  Captions->captionText += *s;
   return size*nmemb;
 }
 
 
 
-
+/*****************************************/
+/*       SEND REQUEST FOR CAPTIONS       */
+/*****************************************/
 void sendRequestForCaptions(string url) {
   
   string new_url{"http://video.google.com/timedtext?type=track&lang=en&v="};
@@ -108,78 +112,32 @@ void sendRequestForCaptions(string url) {
   regex rgx2("(<text.{3})*");
   smatch cap_match;
 
-  regex_search(Captions.captionText.cbegin(), Captions.captionText.cend(), cap_match, rgx2);
+  regex_search(Captions->captionText.cbegin(), Captions->captionText.cend(), cap_match, rgx2);
                             
 }
 
 
 
 
-template<typename type_>
-type_ getUserInput(string prompt) {
-  printf("\n\t%s: ", prompt.c_str());
-  type_ tmp;
-  cin >> tmp;
-  return tmp;
-}
 
 
 
 
-void printMaxMentions(int range, char r) {
-  
-  static const char* format = "\n\t(%d %-8s:  \"%s\"";
-  int choice{askPrintOptions()};
 
-  if(choice != 4) printf("\n");
-
-  if (r == 'r') {    
-    for (auto i{maxMentionsVec->rbegin()}; i!=maxMentionsVec->rend(); ++i) {      
-      printf(format, i->second.size(), "mentions)", i->first.c_str());                
-      
-      for (auto& c : i->second)
-          CaptionStruct::printCaptionsToConsole(c, choice);
-    } 
-  } else {        
-    for (int i = 0; i < range; ++i) {            
-      printf(format, maxMentionsVec->at(i).second.size(),           
-                     "mentions)",
-                     maxMentionsVec->at(i).first.c_str());                
-      
-      for (auto& c : maxMentionsVec->at(i).second)
-          CaptionStruct::printCaptionsToConsole(c, choice);          
-    }
-  }
-}
-
-
-
-
-int askPrintOptions() {
-    
-  printf("\n\n\t1 - Print URL links"       );
-  printf(  "\n\t2 - Print context and URLs");
-  printf(  "\n\t3 - Print context"         );
-  printf(  "\n\t4 - Print words only"      );
-  printf(  "\n\t5 - Export URLs to file\n" );
-  
-  return getUserInput<int>("Selection");
-}
 
 
 
 
 void createMostFrequentWordsVector() {
   
-  maxMentionsVec = new frequentWords{};
   
   printf("\n>> Sorting words by number of mentions..."); 
 
-  for(auto& m : *captionMap){      
-    maxMentionsVec->push_back({make_pair(m.first, m.second)});
+  for(auto& m : *Captions->captionMap){      
+    Captions->maxMentionsVec->push_back({make_pair(m.first, m.second)});
   }
-  sort(maxMentionsVec->begin(), 
-       maxMentionsVec->end(), 
+  sort(Captions->maxMentionsVec->begin(), 
+       Captions->maxMentionsVec->end(), 
        [](pair<string, set<CaptionStruct*>> p1, 
           pair<string, set<CaptionStruct*>> p2) {
           return p1.second.size() > p2.second.size(); });

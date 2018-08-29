@@ -52,15 +52,14 @@ using namespace std;
 CaptionStruct* Captions;
 
 
-template <typename type_>
-type_ getUserInput(string="");
+
 
 string* getVideoUrl(bool, char**);
 void    createMostFrequentWordsVector();
 int     getMainMenuSelection();
-int     askPrintOptions();
+
 void    printMaxMentions(int, char='\0');
 bool    userInteraction();
-void    printSnapShot();
+void    printTopTenMentions();
 void    sendRequestForCaptions(string);
 

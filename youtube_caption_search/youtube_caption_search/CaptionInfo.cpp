@@ -1,7 +1,7 @@
 
 
 #include "CaptionInfo.h"
-#include "main.h"
+
 
 
 void CaptionStruct::printCaptionsToFile() {
@@ -22,19 +22,21 @@ void CaptionStruct::printCaptionsToConsole(CaptionStruct* c, int choice) {
   switch (choice) {      
     case 1: printStrings({&c->captionURL});           break; //print url only
     case 2: printStrings({&c->line, &c->captionURL}); break; //print url+context
-    case 3: printStrings({&c->line});          break; //print context only
+    case 3: printStrings({&c->line});                 break; //print context only
     default: break;
   }
 }
 
 
 
-
-void CaptionStruct::cleanupCaptionString(){
+/*****************************************/
+/*          CLEANUP CAPTION TEXT         */
+/*****************************************/
+void CaptionStruct::cleanupCaptionDownloadFile(){
 
   printf("\n>> Parsing caption file...");
 
-  string* caps = Captions->captionText;
+  string* caps = &captionText;
   string insert{};
 
   regex parser1{"<[^>]*>"};
@@ -67,7 +69,7 @@ void CaptionStruct::createCaptionMap(string*& url) {
 
   printf("\n>> Generating caption hash table...");
 
-  istringstream   fileStringStream{Captions->captionText};
+  istringstream   fileStringStream{captionText};
   CaptionStruct*  tmpCap;
 
   while (fileStringStream) {
@@ -143,11 +145,55 @@ void CaptionStruct::searchForWord(string searchWord) {
            "mentions): ",
            searchWord.c_str());
     
-    int choice = askPrintOptions();        
+    int choice = displayPrintMenu();        
     for (auto& c : captionMap->at(searchWord)) {
-      CaptionStruct::printCaptionsToConsole(c, choice);
+      printCaptionsToConsole(c, choice);
     }
   } else {
     cout << "\n\nThat word was not found...";
   }
 }
+
+/*****************************************/
+/*           DISPLAY PRINT MENU          */
+/*****************************************/
+int CaptionStruct::displayPrintMenu() {
+    
+  printf("\n\n\t1 - Print URL links"       );
+  printf(  "\n\t2 - Print context and URLs");
+  printf(  "\n\t3 - Print context"         );
+  printf(  "\n\t4 - Print words only"      );
+  printf(  "\n\t5 - Export URLs to file\n" );
+  
+  return getUserInput<int>("Selection");
+}
+
+/*****************************************/
+/*          PRINT MAX MENTIONS           */
+/*****************************************/
+void CaptionStruct::printMaxMentions(int range, char r) {
+  
+  static const char* format = "\n\t(%d %-8s:  \"%s\"";
+  int choice{displayPrintMenu()};
+
+  if(choice != 4) printf("\n");
+
+  if (r == 'r') {    
+    for (auto i{maxMentionsVec->rbegin()}; i!=maxMentionsVec->rend(); ++i) {      
+      printf(format, i->second.size(), "mentions)", i->first.c_str());                
+      
+      for (auto& c : i->second)
+          CaptionStruct::printCaptionsToConsole(c, choice);
+    } 
+  } else {        
+    for (int i = 0; i < range; ++i) {            
+      printf(format, maxMentionsVec->at(i).second.size(),           
+                     "mentions)",
+                     maxMentionsVec->at(i).first.c_str());                
+      
+      for (auto& c : maxMentionsVec->at(i).second)
+          CaptionStruct::printCaptionsToConsole(c, choice);          
+    }
+  }
+}
+

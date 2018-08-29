@@ -1,6 +1,14 @@
 
 #pragma once
 #include"Time.h"
+#include<vector>
+#include<set>
+#include<map>
+#include<iostream>
+#include<fstream>
+#include<regex>
+#include<sstream>
+#include"AdamFunctions.h"
 using namespace std;
 
 
@@ -15,9 +23,7 @@ struct CaptionStruct{
   using captionLines  = vector<string>;
   using lineCheck     = map<string, CaptionStruct*>;
   using capPair       = pair<string,set<CaptionStruct*>>;
-
   
-
   /****************************************/
   /*      CONSTRUCTOR / DESTRUCTOR        */
   /****************************************/
@@ -46,9 +52,11 @@ struct CaptionStruct{
   static void   printCaptionsToFile();
   static void   printCaptionsToConsole(CaptionStruct*, int);
   string        constructTimestampedURL(Time,string);
-  void          cleanupCaptionString();
+  void          cleanupCaptionDownloadFile();
   void          createCaptionMap(string*&);
   void          deleteCommonWordsFromMap();
   void          searchForWord(string);
+  int           displayPrintMenu();
+  void          printMaxMentions(int, char);
 };
 

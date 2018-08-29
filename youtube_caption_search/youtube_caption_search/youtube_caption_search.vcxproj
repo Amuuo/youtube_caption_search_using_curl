@@ -115,11 +115,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AdamFunctions.cpp" />
     <ClCompile Include="CaptionInfo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdamFunctions.h" />
     <ClInclude Include="CaptionInfo.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Time.h" />
