@@ -70,11 +70,11 @@ void CaptionStruct::cleanupCaptionDownloadFile(){
 /*****************************************/
 /*           CREATE CAPTION MAP          */
 /*****************************************/
-void CaptionStruct::createCaptionMap(string*& url) {
+void CaptionStruct::createCaptionMap() {
 
   captionMap = new captionTable{};
-  lineCheck*  lineMap{new lineCheck};
-  string      tmpS;
+  lineCheck*   lineMap{new lineCheck};
+  string       tmpStr[2];
 
 
   printf("\n>> Generating caption hash table...");
@@ -84,39 +84,38 @@ void CaptionStruct::createCaptionMap(string*& url) {
 
   while (fileStringStream) {
     
-    getline(fileStringStream,tmpS);
+    getline(fileStringStream,tmpStr[0]);
     
-    if (isdigit(tmpS[0]) && tmpS[2] == ':') {
+    if (isdigit(tmpStr[0][0]) && tmpStr[0][2] == ':') {
       
-      string tmpS2{};
-      getline(fileStringStream, tmpS2);
-      if (tmpS == tmpS2) {
+      //string tmpS2{};
+      getline(fileStringStream, tmpStr[1]);
+      if (tmpStr[0] == tmpStr[1]) {
         continue;
       }
-      if (lineMap->find(tmpS2) == lineMap->end()) {
+      if (lineMap->find(tmpStr[2]) == lineMap->end()) {
         
         tmpCap = new CaptionStruct{videoTitle, 
-                                 tmpS2, 
-                                 *url, 
-                                 Time{tmpS.substr(0,2), 
-                                      tmpS.substr(3,2), 
-                                      tmpS.substr(6.2)}};
+                                   tmpStr[1], 
+                                   captionURL, 
+                                   Time{tmpStr[0].substr(0,2), 
+                                        tmpStr[0].substr(3,2), 
+                                        tmpStr[0].substr(6.2)}};
 
-        lineMap->insert(make_pair(tmpS2,tmpCap));
+        lineMap->insert(make_pair(tmpStr[2],tmpCap));
       }            
 
-      istringstream lineStringStream(tmpS2);
+      istringstream lineStringStream(tmpStr[2]);
       while (lineStringStream) {
-        lineStringStream >> tmpS;
-        transform(tmpS.begin(), 
-                  tmpS.end(), 
-                  tmpS.begin(), 
+        lineStringStream >> tmpStr[0];
+        transform(tmpStr[0].begin(), 
+                  tmpStr[0].end(), 
+                  tmpStr[0].begin(), 
                   ::tolower);
-        (*captionMap)[tmpS].insert(tmpCap);
+        (*captionMap)[tmpStr[0]].insert(tmpCap);
       }
     }
   }
-  delete url;
 }
 
 
@@ -189,6 +188,7 @@ int CaptionStruct::displayPrintMenu() {
 
 
 
+
 /*****************************************/
 /*   CREATE MOST FREQUENT WORDS VECTOR   */
 /*****************************************/
@@ -206,6 +206,70 @@ void CaptionStruct::createMostFrequentWordsVector() {
           return p1.second.size() > p2.second.size(); });
 
 }
+
+
+
+
+/*****************************************/
+/*         PRINT TOP TEN MENTIONS        */
+/*****************************************/
+void CaptionStruct::printTopTenMentions() {
+  printf("\n\n\n\tTOP 10 MENTIONS:\n\n\t\t");
+  for (int i{1}; i<=10; ++i) {
+    printf("%s(%d), ", maxMentionsVec->at(i).first.c_str(), 
+                       maxMentionsVec->at(i).second.size());
+    if(i % 2 == 0) 
+      printf("\n\t\t");
+  }
+}
+
+
+
+
+/******************************************/
+/*               WRITEFUNC                */
+/******************************************/
+size_t CaptionStruct::writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
+  
+  captionText += string{ptr + '\0'};
+  //*s += string{ptr + '\0'};
+  //captionText += *s;
+  return size*nmemb;
+}
+
+
+
+
+/******************************************/
+/*      SEND WEB-REQUEST FOR CAPTIONS     */
+/******************************************/
+void CaptionStruct::sendWebRequestForCaptions() {
+
+  string new_url{"http://video.google.com/timedtext?lang=en&v="};
+  regex rgx("v=(.{11})");
+  smatch video_id_match;
+  regex_search(captionURL, video_id_match, rgx);
+  captionURL = new_url + string{video_id_match[1]};
+  
+
+  string r{"start: "};
+
+  CURL* curl = curl_easy_init();
+
+  curl_easy_setopt(curl, CURLOPT_URL, captionURL.c_str());
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &r);
+  curl_easy_perform(curl);
+  curl_easy_cleanup(curl);
+
+  regex rgx2("(<text.{3})*");
+  smatch cap_match;
+
+  regex_search(captionText.cbegin(), captionText.cend(), cap_match, rgx2);
+}
+
+
+
 
 
 

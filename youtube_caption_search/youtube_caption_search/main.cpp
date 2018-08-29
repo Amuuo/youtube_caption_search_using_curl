@@ -1,5 +1,5 @@
                       
-
+#include"main.h"
 
 /*============================================================================
 ==============================================================================
@@ -42,21 +42,23 @@
 ==============================================================================
 =============================================================================*/
 
-                                                                           
 
 
-#include"main.h"
 
 
+
+
+/*****************************************/
+/*                M A I N                */
+/*****************************************/
 int main(int argc, char** argv){
 
   Captions = new CaptionStruct;
-  string* videoUrl{getVideoUrl(argc!=2, argv)};
   
-  sendRequestForCaptions(*videoUrl);
-  
+  getVideoUrl(argc!=2, argv);
+  Captions->sendWebRequestForCaptions();  
   Captions->cleanupCaptionDownloadFile();  
-  Captions->createCaptionMap(videoUrl);
+  Captions->createCaptionMap();
   Captions->deleteCommonWordsFromMap();    
   Captions->createMostFrequentWordsVector();
   
@@ -72,11 +74,17 @@ int main(int argc, char** argv){
 
 
 
+
+
+
+
+
+
 /*****************************************/
 /*            USER INTERACTION           */
 /*****************************************/
 bool userInteraction() {
-  printTopTenMentions();
+  Captions->printTopTenMentions();
   switch (getMainMenuSelection()) { 
     case 1: Captions->printMaxMentions(getUserInput<int>("Enter range")); break;      
     case 2: Captions->searchForWord(getUserInput<string>("Enter word"));  break;      
@@ -94,72 +102,11 @@ bool userInteraction() {
 /*****************************************/
 /*             GET VIDEO URL             */
 /*****************************************/
-string* getVideoUrl(bool commandLineUrl, char** args) {
+void getVideoUrl(bool commandLineUrl, char** args) {
   if (commandLineUrl)
-    return new string{getUserInput<string>("Enter URL")}; 
+    Captions->captionURL = getUserInput<string>("Enter URL");    
   else
-    return new string{args[1]};
-}
-
-
-
-
-/*****************************************/
-/*         PRINT TOP TEN MENTIONS        */
-/*****************************************/
-void printTopTenMentions() {
-  printf("\n\n\n\tTOP 10 MENTIONS:\n\n\t\t");
-  for (int i{1}; i<=10; ++i) {
-    printf("%s(%d), ", Captions->maxMentionsVec->at(i).first.c_str(), 
-                       Captions->maxMentionsVec->at(i).second.size());
-    if(i % 2 == 0) 
-      printf("\n\t\t");
-  }
-}
-
-
-
-
-/*****************************************/
-/*               WRITEFUNC               */
-/*****************************************/
-size_t writefunc(char *ptr, size_t size, size_t nmemb, string* s) {  
-
-  *s += string{ptr + '\0'};
-  Captions->captionText += *s;
-  return size*nmemb;
-}
-
-
-
-
-/*****************************************/
-/*       SEND REQUEST FOR CAPTIONS       */
-/*****************************************/
-void sendRequestForCaptions(string url) {
-  
-  string new_url{"http://video.google.com/timedtext?type=track&lang=en&v="};
-  regex rgx("v=(.{11})");
-  smatch video_id_match;
-  regex_search(url, video_id_match, rgx);
-  url = new_url + string{video_id_match[1]};
-  
-
-  string r{"start: "};
-
-  CURL* curl = curl_easy_init();
-
-  curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
-  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &r);
-  curl_easy_perform(curl);
-  curl_easy_cleanup(curl);
-
-  regex rgx2("(<text.{3})*");
-  smatch cap_match;
-
-  regex_search(Captions->captionText.cbegin(), Captions->captionText.cend(), cap_match, rgx2);
-                            
+    Captions->captionURL = string{args[1]};    
 }
 
 
@@ -178,26 +125,4 @@ int getMainMenuSelection() {
     
   return getUserInput<int>("Selection");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

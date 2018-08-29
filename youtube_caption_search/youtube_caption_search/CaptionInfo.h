@@ -1,13 +1,21 @@
 
 #pragma once
-#include<vector>
-#include<set>
-#include<map>
+#include<conio.h>
 #include<iostream>
-#include<fstream>
-#include<regex>
 #include<sstream>
+#include<fstream>
 #include<string>
+#include<vector>
+#include<map>
+#include<set>
+#include<regex>
+#include<algorithm>
+#include<functional>
+#include<cstdio>
+#include<string>
+#include<curl/curl.h>
+#include<stdlib.h>
+#include<stdio.h>
 #include"AdamFunctions.h"
 #include"Time.h"
 using namespace std;
@@ -43,13 +51,13 @@ struct CaptionStruct{
   /****************************************/
   /*              VARIABLES               */
   /****************************************/
-  const string*   videoTitle;
-  string          captionText;
-  frequentWords*  maxMentionsVec{};
-  captionTable*   captionMap{};
-  string          line;
-  string          captionURL;
-  Time            time;
+  frequentWords*  maxMentionsVec {};
+  captionTable*   captionMap     {};
+  const string*   videoTitle     {};
+  string          captionText    {};
+  string          line           {};
+  string          captionURL     {};
+  Time            time           {};
 
 
 
@@ -57,14 +65,18 @@ struct CaptionStruct{
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
   string  constructTimestampedURL(Time,string);
+  
   void    printCaptionsToFile();
   void    printCaptionsToConsole(CaptionStruct*, int);
   void    cleanupCaptionDownloadFile();
-  void    createCaptionMap(string*&);
+  void    createCaptionMap();
   void    deleteCommonWordsFromMap();
   void    searchForWord(string);
   void    printMaxMentions(char='\0');
   int     displayPrintMenu();
   void    createMostFrequentWordsVector();
+  void    printTopTenMentions();
+  void    sendWebRequestForCaptions();
+  size_t  writefunc(char*, size_t, size_t, string*);
 };
 
