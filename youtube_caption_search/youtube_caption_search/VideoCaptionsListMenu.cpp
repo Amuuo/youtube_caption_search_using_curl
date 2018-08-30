@@ -1,15 +1,13 @@
-#include "VideoCaptionsListMenu.h"
+#include"VideoCaptionsListMenu.h"
+#include"VideoCaptions.h"
 
 
-
-VideoCaptionsListMenu::VideoCaptionsListMenu() {
+VideoCaptionsListMenu::VideoCaptionsListMenu(): Menu{} {
   
-  menuOptions = {"Print most frequent words",
-                 "Search word",
-                 "Print entire table",
-                 "Print table to file",
-                 "Exit Program"};  
-
+  menuOptions.push_back(menuOptionsData{"Print most frequent words", &printMaxMentions()});
+  menuOptions.push_back(menuOptionsData{"Search word", searchForWord()});
+  menuOptions.push_back(menuOptionsData{"Print entire table", printMaxMentions()});      
+  menuOptions.push_back(menuOptionsData{"Print table to file", printCaptionsToFile()});    
 }
 
 VideoCaptionsListMenu::~VideoCaptionsListMenu() {}
@@ -20,6 +18,18 @@ void VideoCaptionsListMenu::addVideoCaptions() {
 
 void VideoCaptionsListMenu::setMenuOptions() {
 
+}
+
+function<void()> VideoCaptionsListMenu::searchForWord() const {
+  return function<void()>();
+}
+
+function<void()> VideoCaptionsListMenu::printMaxMentions() const {
+  return function<void()>();
+}
+
+function<void()> VideoCaptionsListMenu::printCaptionsToFile() {
+  return function<void()>();
 }
 
 

@@ -1,20 +1,22 @@
+
+
 #include "VideoCaptions.h"
 
 
 
-VideoCaptions::VideoCaptions() {
-}
+VideoCaptions::VideoCaptions(){}
+VideoCaptions::~VideoCaptions(){}
 
 
-VideoCaptions::~VideoCaptions() {
-}
+VideoCaptions::CaptionLine::Time::Time(string h, 
+                                       string m, 
+                                       string s): hr{stoi(h)}, 
+                                                  min{stoi(m)}, 
+                                                  sec{stoi(s)} {}
 
-VideoCaptions::CaptionLine::Time::Time(string h, string m, string s): 
-                                   hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} {}
-
-VideoCaptions::CaptionLine::CaptionLine(const string* s, string l, string u, Time t) :
-    videoTitle{s}, line {l}, time {t}, 
-    videoURL {constructTimestampedURL(t, u)} {}
+VideoCaptions::CaptionLine::CaptionLine(string l, 
+                                        Time t) : line {l}, 
+                                                  time {t} {}
 
 
 /*****************************************/
@@ -39,8 +41,8 @@ void VideoCaptions::printCaptionsToConsole(VideoCaptions* c, int choice) {
   };     
 
   switch (choice) {      
-    case 1: printStrings({&c->captionURL});           break; //print url only
-    case 2: printStrings({&c->line, &c->captionURL}); break; //print url+context
+    case 1: printStrings({&c->videoURL});           break; //print url only
+    case 2: printStrings({&c->line, &c->videoURL}); break; //print url+context
     case 3: printStrings({&c->line});                 break; //print context only
     default: break;
   }
@@ -85,7 +87,7 @@ void VideoCaptions::cleanupCaptionDownloadFile(){
 /*****************************************/
 void VideoCaptions::createCaptionMap() {
 
-  captionMap = new captionTable{};
+  captionWordsIndex = new _captionWordsIndex{};
   lineCheck*   lineMap{new lineCheck};
   string       tmpStr[2];
 
@@ -106,19 +108,17 @@ void VideoCaptions::createCaptionMap() {
       if (tmpStr[0] == tmpStr[1]) {
         continue;
       }
-      if (lineMap->find(tmpStr[2]) == lineMap->end()) {
+      if (lineMap->find(tmpStr[1]) == lineMap->end()) {
         
-        tmpCap = new VideoCaptions{videoTitle, 
-                                   tmpStr[1], 
-                                   captionURL, 
-                                   Time{tmpStr[0].substr(0,2), 
-                                        tmpStr[0].substr(3,2), 
-                                        tmpStr[0].substr(6.2)}};
+        tmpCap = new VideoCaptions{videoTitle, tmpStr[1], videoURL, 
+                                   CaptionLine::Time {tmpStr[0].substr(0,2), 
+                                                      tmpStr[0].substr(3,2), 
+                                                      tmpStr[0].substr(6.2)}};
 
-        lineMap->insert(make_pair(tmpStr[2],tmpCap));
+        lineMap->insert(make_pair(tmpStr[1],tmpCap));
       }            
 
-      istringstream lineStringStream(tmpStr[2]);
+      istringstream lineStringStream(tmpStr[1]);
       while (lineStringStream) {
         lineStringStream >> tmpStr[0];
         transform(tmpStr[0].begin(), 

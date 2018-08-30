@@ -1,12 +1,14 @@
 #pragma once
-#include "CaptionInfo.h"
+#include"VideoCaptionsList.h"
+#include<functional>
+#include<vector>
 #include<unordered_map>
 
 
 /***********************************************************/
 /*           V I D E O  C A P T I O N  L I S T             */
 /***********************************************************/
-class VideoCaptions : public videoCaptionsList {
+class VideoCaptions : public VideoCaptionsList {
 
 
 public:
@@ -22,21 +24,22 @@ public:
   /*          CAPTION STRUCTURES          */
   /****************************************/
   static struct CaptionLine {   
+    
     static struct Time {   
       Time(){}
       Time(string,string,string){}      
       int hr, min, sec;         
     };  
-    CaptionLine(const string*, string, string, Time){}
+    CaptionLine(string, Time){}
     CaptionLine(){}
 
-    vector<string> wordsInCaptionLine;
-    string         line;
-    Time           time;
+    string line;
+    Time   time;
     
   };
   
   static struct CaptionWord {
+    
     CaptionLine* captionContext;
     string       word;
     int          wordCounter;
@@ -44,8 +47,7 @@ public:
 
 
 private:
-
-    
+ 
   /****************************************/
   /*              VARIABLES               */
   /****************************************/  
@@ -56,25 +58,22 @@ private:
   using _captionLines      = vector<CaptionLine>;
 
   
-  _frequentWords*      captionWordsSortedByFrequency;
-  _captionWordsIndex   captionWordsIndex;
-  _captionLines        captionLines;
-  string               videoTitle;  
-  string               videoURL;
-  string               captionText;
+  _frequentWords*       captionWordsSortedByFrequency;
+  _captionWordsIndex*   captionWordsIndex;
+  _captionLines         captionLines;
+  string                videoTitle;  
+  string                videoURL;
+  string                captionText{};
 
   
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
   string  constructTimestampedURL(CaptionWord,string);  
-  void    printCaptionsToFile();
-  void    printCaptionsToConsole(videoCaptionsList*, int);
+  void    printCaptionsToConsole(VideoCaptions*, int);
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
   void    deleteCommonWordsFromMap();
-  void    searchForWord() const;
-  void    printMaxMentions() const;
   int     displayPrintMenu();
   void    createMostFrequentWordsVector();
   void    printTopTenMentions() const;
@@ -82,6 +81,11 @@ private:
   void    getCaptions();
   
   
+  void  printCaptionsToFile();
+  void  searchForWord();
+  void  printMaxMentions();
+  
+
   inline bool           captionsContainWord(string);
   inline static size_t  writefunc(char*, size_t, size_t, string*);
 };

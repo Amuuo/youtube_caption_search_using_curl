@@ -3,16 +3,19 @@
 
 
 
-Menu::Menu() {}
+Menu::Menu() {
+    
+}
 Menu::~Menu() {}
 
 
 
 
 void Menu::displayMenu() {
-   
-  for (auto option : *menuOptions) {
-    
+  
+  int i = 1;
+  for (auto option : menuOptions) {
+    printf("\n%d - ")
   }
     
 }

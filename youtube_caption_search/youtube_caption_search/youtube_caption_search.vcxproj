@@ -117,19 +117,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CaptionInfo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ProgramAssets.cpp" />
     <ClCompile Include="VideoCaptions.cpp" />
+    <ClCompile Include="VideoCaptionsList.cpp" />
     <ClCompile Include="VideoCaptionsListMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProgramAssets.h" />
     <ClInclude Include="userIO.h" />
-    <ClInclude Include="CaptionInfo.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="VideoCaptions.h" />
+    <ClInclude Include="VideoCaptionsList.h" />
     <ClInclude Include="VideoCaptionsListMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
