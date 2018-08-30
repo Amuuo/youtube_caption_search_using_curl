@@ -94,8 +94,8 @@ void VideoCaptions::createCaptionMap() {
   lineCheck      lineMap;
   string         lineInfo; 
   string         capLine;
-  istringstream  captionStream{captionText};
   CaptionLine    currentLine;
+  istringstream  captionStream{captionText};
 
 
   printf("\n>> Generating caption hash table...");
