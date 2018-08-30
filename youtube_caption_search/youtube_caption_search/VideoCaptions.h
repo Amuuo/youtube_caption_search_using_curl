@@ -27,6 +27,7 @@ public:
     CaptionLine(){}
 
     string _line;
+    string timedURL;
     Time   _time;
     
   };
@@ -66,14 +67,15 @@ private:
   _captionLines         captionLines;
   string                videoTitle;  
   string                videoURL;
+  string                videoID;
   string                captionText{};
 
   
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
-  string  getCaptionClipURL(CaptionWord,string);  
-  void    printCaptionsToConsole(VideoCaptions*, int);
+  string  getCaptionClipURL(CaptionLine*);  
+  void    printCaptionsToConsole(CaptionWord*, int);
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
   void    deleteCommonWordsFromMap();
@@ -88,15 +90,14 @@ private:
   inline void  setWordsToLowercase(string);
   inline bool  lineIsNotAlreadyIndexed(lineCheck&, string&);
   inline bool  lineContainsTimeInfo(string);
-  inline bool  nextLineIsACopy(istringstream&, string&, string&);
   inline void  indexWordsInCurrentLine(CaptionLine&);
+  inline bool  nextLineIsACopy(istringstream&, string&, string&);
   
   bool  wordIsIndexed(string);
   void  printCaptionsToFile();
   void  searchForWord();
   void  printMaxMentions();
   
-
   inline bool           captionsContainWord(string);
   inline static size_t  writefunc(char*, size_t, size_t, string*);
 };

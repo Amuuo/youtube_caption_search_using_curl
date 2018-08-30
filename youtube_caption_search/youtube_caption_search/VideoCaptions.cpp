@@ -38,16 +38,16 @@ void VideoCaptions::printCaptionsToFile() {
 /*****************************************/
 /*       PRINT CAPTIONS TO CONSOLE       */
 /*****************************************/
-void VideoCaptions::printCaptionsToConsole(VideoCaptions* c, int choice) {
-  auto printStrings = [](vector<string*> tmp) {
-    for (auto& t : tmp)
-    printf("\n\t>> \"%s\"", t->c_str());
+void VideoCaptions::printCaptionsToConsole(CaptionWord* capWord, int choice) {
+  auto printStrings = [](vector<CaptionLine*> lineStructVector) {
+    for (auto& capLine : lineStructVector)
+    printf("\n\t>> \"%s\"", capLine->_line.c_str());
   };     
 
   switch (choice) {      
-    case 1: printStrings({&c->videoURL});           break; //print url only
-    case 2: printStrings({&c->line, &c->videoURL}); break; //print url+context
-    case 3: printStrings({&c->line});               break; //print context only
+    case 1: printStrings({&capWord->videoURL});           break; //print url only
+    case 2: printStrings({&capWord->_line, getCaptionClipURL(*capWord,); break; //print url+context
+    case 3: printStrings({&capWord->_line});               break; //print context only
     default: break;
   }
 }
@@ -118,6 +118,91 @@ void VideoCaptions::createCaptionMap() {
 }
 
 
+/****************/
+/*  INDEX WORD  */
+/****************/
+void VideoCaptions::indexWord(string capWord, CaptionLine* capLine) {
+  
+  if (wordIsIndexed(capWord)) {
+    captionWordsIndex[capWord]->wordCounter++;
+    captionWordsIndex[capWord]->captionContext.push_back(capLine);
+  }
+  else{
+    captionWordsIndex[capWord] = new CaptionWord{capWord, capLine};
+  }  
+}
+
+
+/**********************************/
+/*  BUILD AND STORE CAPTION LINE  */
+/**********************************/
+void VideoCaptions::buildAndStoreCaptionLine(lineCheck& lineMap, 
+                                             string capLine, 
+                                             string lineInfo,
+                                             CaptionLine& lineStruct) {  
+
+  /* parse first three values of timestamp, ex: "00:00:00" */
+  lineStruct = CaptionLine{capLine, {lineInfo.substr(0,2),
+                                     lineInfo.substr(3,2),
+                                     lineInfo.substr(6,2)}}; 
+  lineMap[capLine] = lineStruct;
+  captionLines.push_back(lineStruct);
+}
+
+
+/**********************************/
+/*     SET WORDS TO LOWERCASE     */
+/**********************************/
+inline void VideoCaptions::setWordsToLowercase(string line) {
+  transform(line.begin(), line.end(), line.begin(), ::tolower);
+}
+
+
+/*********************************/
+/*  LINE IS NOT ALREADY INDEXED  */
+/*********************************/
+inline bool VideoCaptions::lineIsNotAlreadyIndexed(lineCheck& lineMap,
+                                            string& capLine){
+  return lineMap.find(capLine) == lineMap.end();      
+}
+
+
+/**********************************/
+/*    LINE CONTAINS TIME INFO     */
+/**********************************/
+inline bool VideoCaptions::lineContainsTimeInfo(string line) {
+  /* check for format, ex: "00:00:00 -> 00:00:00" */
+  return isdigit(line[0]) && line[2] == ':';
+}
+
+
+/*********************************/
+/*      NEXT LINE IS A COPY      */
+/*********************************/
+inline bool VideoCaptions::nextLineIsACopy(istringstream& sstream, 
+                                           string& prevLine,
+                                           string& line) {
+  getline(sstream, line);
+  return prevLine == line;
+}
+
+
+/***********************************/
+/*   INDEX WORDS IN CURRENT LINE   */
+/***********************************/
+inline void VideoCaptions::indexWordsInCurrentLine(CaptionLine& currentLine) {
+  
+  istringstream lineStream{currentLine._line};
+  string wordInCaptionLine;
+  while (lineStream) {
+    lineStream >> wordInCaptionLine;
+    indexWord(wordInCaptionLine, &currentLine);
+  }
+}
+
+
+
+
 
 
 /******************************************/
@@ -144,11 +229,12 @@ void VideoCaptions::deleteCommonWordsFromMap() {
 /******************************************/
 /*        CONSTRUCT TIMESTAMPED URL       */
 /******************************************/
-string VideoCaptions::getCaptionClipURL(CaptionWord word, string userEnteredURL) {
-  return userEnteredURL + "&feature=youtu.be&t="  + 
-         to_string(word.captionContext->time.hr)  + 'h' + 
-         to_string(word.captionContext->time.min) + 'm' + 
-         to_string(word.captionContext->time.sec) + 's';
+string VideoCaptions::getCaptionClipURL(CaptionLine* line) {
+  
+  return "www.youtube.com/watch&feature=youtu.be&t="  + 
+         to_string(line->_time.hr)  + 'h' + 
+         to_string(line->_time.min) + 'm' + 
+         to_string(line->_time.sec) + 's' + videoID;
 }
 
 
@@ -269,15 +355,16 @@ void VideoCaptions::sendWebRequestForCaptions() {
   string new_url{"http://video.google.com/timedtext?type=track&lang=en&v="};
   regex rgx("v=(.{11})");
   smatch video_id_match;
-  regex_search(captionURL, video_id_match, rgx);
-  captionURL = new_url + string{video_id_match[1]};
+  regex_search(videoURL, video_id_match, rgx);
+  videoID = video_id_match[1];
+  videoURL = new_url + string{video_id_match[1]};
   
 
   string r{"start: "};
 
   CURL* curl = curl_easy_init();
 
-  curl_easy_setopt(curl, CURLOPT_URL, captionURL.c_str());
+  curl_easy_setopt(curl, CURLOPT_URL, videoURL.c_str());
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, &r);
   curl_easy_perform(curl);
@@ -305,60 +392,7 @@ void VideoCaptions::getCaptions() {
   createMostFrequentWordsVector();
 }
 
-void VideoCaptions::indexWord(string capWord, CaptionLine* capLine) {
-  
-  if (wordIsIndexed(capWord)) {
-    captionWordsIndex[capWord]->wordCounter++;
-    captionWordsIndex[capWord]->captionContext.push_back(capLine);
-  }
-  else{
-    captionWordsIndex[capWord] = new CaptionWord{capWord, capLine};
-  }  
-}
 
-void VideoCaptions::buildAndStoreCaptionLine(lineCheck& lineMap, 
-                                             string capLine, 
-                                             string lineInfo,
-                                             CaptionLine& lineStruct) {  
-
-  /* parse first three values of timestamp, ex: "00:00:00" */
-  lineStruct = CaptionLine{capLine, {lineInfo.substr(0,2),
-                                     lineInfo.substr(3,2),
-                                     lineInfo.substr(6,2)}}; 
-  lineMap[capLine] = lineStruct;
-  captionLines.push_back(lineStruct);
-}
-
-inline void VideoCaptions::setWordsToLowercase(string line) {
-  transform(line.begin(), line.end(), line.begin(), ::tolower);
-}
-
-inline bool VideoCaptions::lineIsNotAlreadyIndexed(lineCheck& lineMap,
-                                            string& capLine){
-  return lineMap.find(capLine) == lineMap.end();      
-}
-
-inline bool VideoCaptions::lineContainsTimeInfo(string line) {
-  /* check for format, ex: "00:00:00 -> 00:00:00" */
-  return isdigit(line[0]) && line[2] == ':';
-}
-
-inline bool VideoCaptions::nextLineIsACopy(istringstream& sstream, 
-                                           string& prevLine,
-                                           string& line) {
-  getline(sstream, line);
-  return prevLine == line;
-}
-
-
-inline void VideoCaptions::indexWordsInCurrentLine(CaptionLine& currentLine) {
-  
-  istringstream lineStream{currentLine._line};
-  string wordInCaptionLine;
-  while (lineStream) {
-  lineStream >> wordInCaptionLine;
-  indexWord(wordInCaptionLine, &currentLine);
-}
 
 
 
