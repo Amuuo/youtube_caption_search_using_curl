@@ -12,11 +12,12 @@
 class captionMenu : public Menu {
 
 private:
-  map<int, CaptionStruct> captionMap
+  map<int, videoCaptions> captionMap
 
 public:
   captionMenu();
   ~captionMenu();
+  void addVideoCaptions();
   virtual void executeMenuSelection();
   virtual void displayMenu();
 };

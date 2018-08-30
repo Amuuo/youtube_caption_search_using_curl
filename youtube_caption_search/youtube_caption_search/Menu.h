@@ -13,10 +13,9 @@ using namespace std;
 /******************************************/
 class Menu {
 
-protected:
-  vector<string> menuOptions;
-  map<int,
-  
+protected:  
+  /* vector holds menu option strings and corresponding functions */
+  vector<pair<string,function<void()>>> menuOptions;
 
 public:
 

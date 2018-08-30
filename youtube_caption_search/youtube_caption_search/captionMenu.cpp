@@ -14,6 +14,10 @@ captionMenu::captionMenu() {
 
 captionMenu::~captionMenu() {}
 
+void captionMenu::addVideoCaptions() {
+
+}
+
 
 void captionMenu::executeMenuSelection() {
     

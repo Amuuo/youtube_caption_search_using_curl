@@ -24,14 +24,14 @@ using namespace std;
 /***********************************************************/
 /*                C A P T I O N S T R U C T                */
 /***********************************************************/
-struct CaptionStruct{
+struct videoCaptions{
 
 
-  using frequentWords = vector<pair<string,set<CaptionStruct*>>>;  
-  using captionTable  = map<string,set<CaptionStruct*>>;
+  using frequentWords = vector<pair<string,set<videoCaptions*>>>;  
+  using captionTable  = map<string,set<videoCaptions*>>;
   using captionLines  = vector<string>;
-  using lineCheck     = map<string, CaptionStruct*>;
-  using capPair       = pair<string,set<CaptionStruct*>>;
+  using lineCheck     = map<string, videoCaptions*>;
+  using capPair       = pair<string,set<videoCaptions*>>;
   
   
 
@@ -39,11 +39,11 @@ struct CaptionStruct{
   /****************************************/
   /*      CONSTRUCTOR / DESTRUCTOR        */
   /****************************************/
-  CaptionStruct(){}
-  CaptionStruct(const string* s, string l, string u, Time t) : 
+  videoCaptions(){}
+  videoCaptions(const string* s, string l, string u, Time t) : 
     videoTitle{s}, line {l}, time {t}, 
     captionURL {constructTimestampedURL(t, u)} {}
-  ~CaptionStruct(){}
+  ~videoCaptions(){}
 
 
   
@@ -66,7 +66,7 @@ struct CaptionStruct{
   string  constructTimestampedURL(Time,string);
   
   void    printCaptionsToFile();
-  void    printCaptionsToConsole(CaptionStruct*, int);
+  void    printCaptionsToConsole(videoCaptions*, int);
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
   void    deleteCommonWordsFromMap();
