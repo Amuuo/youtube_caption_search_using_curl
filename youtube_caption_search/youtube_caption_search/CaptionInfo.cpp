@@ -150,10 +150,12 @@ string CaptionStruct::constructTimestampedURL(Time time, string userEnteredURL) 
 /*****************************************/
 /*            SEARCH FOR WORD            */
 /*****************************************/
-void CaptionStruct::searchForWord(string searchWord) {      
+void CaptionStruct::searchForWord() {      
 
+  string searchWord = getUserInput<string>("Enter word");
 
-  if (captionMap->find(searchWord) != captionMap->end()) {
+  
+  if (captionsContainWord(searchWord)) {
     
     printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
            captionMap->at(searchWord).size(),           
@@ -171,10 +173,20 @@ void CaptionStruct::searchForWord(string searchWord) {
 
 
 
+/*****************************************/
+/*         CAPTION CONTAINS WORD         */
+/*****************************************/
+inline bool CaptionStruct::captionsContainWord(string searchWord) {
+  
+  return captionMap->find(searchWord) != captionMap->end();
+  
+}
 
-/*****************************************/
-/*           DISPLAY PRINT MENU          */
-/*****************************************/
+
+
+/****************************************/
+/*          DISPLAY PRINT MENU          */
+/****************************************/
 int CaptionStruct::displayPrintMenu() {
     
   printf("\n\n\t1 - Print URL links"       );
@@ -272,12 +284,29 @@ void CaptionStruct::sendWebRequestForCaptions() {
 
 
 
+/******************************************/
+/*              GET CAPTIONS              */
+/******************************************/
+void CaptionStruct::getCaptions() {
+
+  sendWebRequestForCaptions();  
+  cleanupCaptionDownloadFile();  
+  createCaptionMap();
+  deleteCommonWordsFromMap();    
+  createMostFrequentWordsVector();
+}
+
+
+
 
 
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
 /*****************************************/
 void CaptionStruct::printMaxMentions(char r) {
+
+  r = getUserInput<int>("Enter range");
+
   int range = captionMap->size();
   static const char* format = "\n\t(%d %-8s:  \"%s\"";
   int choice{displayPrintMenu()};

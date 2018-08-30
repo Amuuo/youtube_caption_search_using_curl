@@ -1,5 +1,3 @@
-                      
-#include"main.h"
 
 /*============================================================================
 ==============================================================================
@@ -42,6 +40,25 @@
 ==============================================================================
 =============================================================================*/
 
+                      
+#define __USE_MINGW_ANSI_STDIO 0
+#define _CRT_SECURE_NO_WARNINGS
+#include"usefulFunctions.h"
+#include"CaptionInfo.h"
+#include"Time.h"
+
+using namespace std;
+
+
+inline void checkForValidCommandLine(int,char**);
+void  getVideoUrl(bool, char**);
+void  sendRequestForCaptions(string);
+bool  userInteraction();
+int   getMainMenuSelection();
+
+
+CaptionStruct* Captions;
+
 
 
 
@@ -53,14 +70,12 @@
 /*****************************************/
 int main(int argc, char** argv){
 
+  checkForValidCommandLine(argc,argv);
+  
   Captions = new CaptionStruct;
   
   getVideoUrl(argc==2, argv);
-  Captions->sendWebRequestForCaptions();  
-  Captions->cleanupCaptionDownloadFile();  
-  Captions->createCaptionMap();
-  Captions->deleteCommonWordsFromMap();    
-  Captions->createMostFrequentWordsVector();
+  Captions->getCaptions();
   
   
   /**************************/
@@ -68,6 +83,7 @@ int main(int argc, char** argv){
   /**************************/
   while(userInteraction()); 
  
+  delete Captions;
   return 0;
 }
 
@@ -78,32 +94,26 @@ int main(int argc, char** argv){
 
 
 /*****************************************/
-/*            USER INTERACTION           */
+/*             GET VIDEO URL             */
 /*****************************************/
-bool userInteraction() {
-  Captions->printTopTenMentions();
-  switch (getMainMenuSelection()) { 
-    case 1: Captions->printMaxMentions(getUserInput<int>("Enter range")); break;      
-    case 2: Captions->searchForWord(getUserInput<string>("Enter word"));  break;      
-    case 3: Captions->printMaxMentions('r');                              break;
-    case 4: Captions->printCaptionsToFile();                              break;
-    case 5: exit(1);                                                      break;      
-    default:                                                              break;
-  } 
-  return true;
+void getVideoUrl(bool cmdLineUrlPresent, char** args) {
+  
+  if (cmdLineUrlPresent)
+    Captions->captionURL = string{args[1]};    
+  else
+    Captions->captionURL = getUserInput<string>("Enter URL");    
 }
 
 
 
 
 /*****************************************/
-/*             GET VIDEO URL             */
+/*            USER INTERACTION           */
 /*****************************************/
-void getVideoUrl(bool cmdLineUrlPresent, char** args) {
-  if (cmdLineUrlPresent)
-    Captions->captionURL = string{args[1]};    
-  else
-    Captions->captionURL = getUserInput<string>("Enter URL");    
+bool userInteraction() {
+  Captions->printTopTenMentions();
+
+  return true;
 }
 
 
@@ -123,16 +133,12 @@ int getMainMenuSelection() {
   return getUserInput<int>("Selection");
 }
 
+inline void checkForValidCommandLine(int argNum, char** args) {
+   
+  if (argNum > 2) {
+    printf("\n\nUsage: ./<PROGRAM> <URL>"
+           "\n       ./<PROGRAM>");
+    exit(1);
+  }
+}
 
-
-
-/******************************************/
-/*               WRITEFUNC                */
-/******************************************/
-/*size_t writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
-  
-  Captions->captionText += string{ptr + '\0'};
-  //*s += string{ptr + '\0'};
-  //captionText += *s;
-  return size*nmemb;
-}*/

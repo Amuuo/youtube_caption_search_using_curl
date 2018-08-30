@@ -118,13 +118,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CaptionInfo.cpp" />
+    <ClCompile Include="captionMenu.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AdamFunctions.h" />
+    <ClInclude Include="captionMenu.h" />
+    <ClInclude Include="usefulFunctions.h" />
     <ClInclude Include="CaptionInfo.h" />
-    <ClInclude Include="main.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Time.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

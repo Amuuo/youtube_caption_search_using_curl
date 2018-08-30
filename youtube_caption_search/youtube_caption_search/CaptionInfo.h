@@ -21,7 +21,6 @@
 using namespace std;
 
 
-
 /***********************************************************/
 /*                C A P T I O N S T R U C T                */
 /***********************************************************/
@@ -71,12 +70,18 @@ struct CaptionStruct{
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
   void    deleteCommonWordsFromMap();
-  void    searchForWord(string);
+  void    searchForWord();
   void    printMaxMentions(char='\0');
   int     displayPrintMenu();
   void    createMostFrequentWordsVector();
   void    printTopTenMentions();
   void    sendWebRequestForCaptions();
+  void    getCaptions();
+  
+  
+  inline bool           captionsContainWord(string);
   inline static size_t  writefunc(char*, size_t, size_t, string*);
+
+
 };
 
