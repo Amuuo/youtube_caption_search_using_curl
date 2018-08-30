@@ -98,10 +98,11 @@ void VideoCaptions::createCaptionMap() {
   istringstream  captionStream{captionText};
 
 
-  printf("\n>> Generating caption hash table...");
+  printf("\n>> Generating caption index...");
 
 
-  while (captionStream/*is not at the end*/) {    
+
+  while (captionStream) {    
     getline(captionStream,lineInfo);        
     if (lineContainsTimeInfo(lineInfo)) {      
       if(nextLineIsACopy(captionStream,lineInfo,capLine)) {
@@ -124,15 +125,15 @@ void VideoCaptions::createCaptionMap() {
 /******************************************/
 void VideoCaptions::deleteCommonWordsFromMap() {
   
-  printf("\n>> Deleting insignificant words from table...");
+  printf("\n>> Deleting all common words from table...");
 
   string   commonWord;
   ifstream commonWordsStream{"commonWords.txt"};
 
   while (commonWordsStream) {    
     getline(commonWordsStream, commonWord);
-    if (captionMap->find(commonWord) != captionMap->end()){
-      captionMap->erase(commonWord);
+    if (captionWordsIndex.find(commonWord) != captionWordsIndex.end()){
+      captionWordsIndex.erase(commonWord);
     }
   }
 }
@@ -165,7 +166,7 @@ inline bool VideoCaptions::captionsContainWord(string searchWord) {
 /*****************************************/
 /*            SEARCH FOR WORD            */
 /*****************************************/
-void VideoCaptions::searchForWord() const {      
+void VideoCaptions::searchForWord() {      
 
   string searchWord = getUserInput<string>("Enter word");
 
@@ -173,13 +174,14 @@ void VideoCaptions::searchForWord() const {
   if (captionsContainWord(searchWord)) {
     
     printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
-           captionMap->at(searchWord).size(),           
+           captionWordsIndex[searchWord]->wordCounter,           
            "mentions): ",
            searchWord.c_str());
     
     int choice = displayPrintMenu();        
-    for (auto& c : captionMap->at(searchWord)) {
-      printCaptionsToConsole(c, choice);
+    for (auto& c : captionWordsIndex[searchWord]->captionContext) {
+      /* FUNCTION NEEDS TO BE REWRITTEN */
+      printCaptionsToConsole(c->_line, choice);
     }
   } else {
     cout << "\n\nThat word was not found...";
