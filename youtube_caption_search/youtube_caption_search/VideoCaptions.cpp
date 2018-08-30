@@ -91,39 +91,28 @@ void VideoCaptions::cleanupCaptionDownloadFile(){
 /*****************************************/
 void VideoCaptions::createCaptionMap() {
 
-  lineCheck   lineMap;
-  string      lineInfo; 
-  string      capLine;
+  lineCheck      lineMap;
+  string         lineInfo; 
+  string         capLine;
+  istringstream  captionStream{captionText};
+  CaptionLine    currentLine;
 
 
   printf("\n>> Generating caption hash table...");
 
-  istringstream captionStream{captionText};
-  CaptionLine*  currentLine;
 
-  while (captionStream) {
-    
-    getline(captionStream,lineInfo);    
-    
-    if (lineContainsTimeInfo(lineInfo)) {
+  while (captionStream/*is not at the end*/) {    
+    getline(captionStream,lineInfo);        
+    if (lineContainsTimeInfo(lineInfo)) {      
+      if(nextLineIsACopy(captionStream,lineInfo,capLine)) {
+        continue;      
+      } else {
+        setWordsToLowercase(capLine);
+        if (lineIsNotAlreadyIndexed(lineMap,capLine)) {        
+          buildAndStoreCaptionLine(lineMap,lineInfo,capLine,currentLine);                    
+        }    
+      }
 
-      /****** check for double line ********/
-      getline(captionStream, capLine);
-      if (lineInfo == capLine) continue;
-      /*************************************/
-
-      setWordsToLowercase(capLine);
-      if (lineIsNotIndexed(lineMap, capLine)) {        
-        buildCaptionLine(lineInfo, capLine, currentLine);
-
-        (*lineMap)[capLine] = currentLine;
-      }            
-
-      istringstream lineStream{capLine};
-      string wordInCaptionLine;
-      while (lineStream) {
-        lineStream >> wordInCaptionLine;
-        indexWord(wordInCaptionLine, currentLine);
       }
     }
   }
@@ -327,20 +316,24 @@ void VideoCaptions::indexWord(string capWord, CaptionLine* capLine) {
   }  
 }
 
-void VideoCaptions::buildCaptionLine(string line, 
-                                     string lineInfo,
-                                     VideoCaptions::CaptionLine*& capLine) {  
-  
-  capLine = new CaptionLine{line, CaptionLine::Time{lineInfo.substr(0,2),
-                                                 lineInfo.substr(3,2),
-                                                 lineInfo.substr(6,2)}};        
+void VideoCaptions::buildAndStoreCaptionLine(lineCheck& lineMap, 
+                                             string capLine, 
+                                             string lineInfo,
+                                             CaptionLine& lineStruct) {  
+
+  /* parse first three values of timestamp, ex: "00:00:00" */
+  lineStruct = CaptionLine{capLine, {lineInfo.substr(0,2),
+                                     lineInfo.substr(3,2),
+                                     lineInfo.substr(6,2)}}; 
+  lineMap[capLine] = lineStruct;
+  captionLines.push_back(lineStruct);
 }
 
 inline void VideoCaptions::setWordsToLowercase(string line) {
   transform(line.begin(), line.end(), line.begin(), ::tolower);
 }
 
-inline bool VideoCaptions::lineIsNotIndexed(lineCheck& lineMap,
+inline bool VideoCaptions::lineIsNotAlreadyIndexed(lineCheck& lineMap,
                                             string& capLine){
   return lineMap.find(capLine) == lineMap.end();      
 }
@@ -348,6 +341,28 @@ inline bool VideoCaptions::lineIsNotIndexed(lineCheck& lineMap,
 inline bool VideoCaptions::lineContainsTimeInfo(string line) {
   /* check for format, ex: "00:00:00 -> 00:00:00" */
   return isdigit(line[0]) && line[2] == ':';
+}
+
+inline bool VideoCaptions::nextLineIsACopy(istringstream& sstream, 
+                                           string& prevLine,
+                                           string& line) {
+  getline(sstream, line);
+  return prevLine == line;
+}
+
+inline void VideoCaptions::storeCaptionLineStruct(lineCheck& lineMap, 
+                                                  string line,
+                                                  CaptionLine& lineStruct) {
+
+}
+
+inline void VideoCaptions::indexWordsInCurrentLine(CaptionLine& currentLine) {
+  
+  istringstream lineStream{currentLine._line};
+  string wordInCaptionLine;
+  while (lineStream) {
+  lineStream >> wordInCaptionLine;
+  indexWord(wordInCaptionLine, &currentLine);
 }
 
 

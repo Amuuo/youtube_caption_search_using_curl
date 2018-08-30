@@ -58,6 +58,7 @@ private:
   using _frequentWords     = vector<CaptionWord>; 
   using _captionWordsIndex = map<string, CaptionWord*>;
   using _captionLines      = vector<CaptionLine>;
+  using lineCheck          = map<string, CaptionLine>;
 
   
   _frequentWords*       captionWordsSortedByFrequency;
@@ -82,11 +83,14 @@ private:
   void    sendWebRequestForCaptions();
   void    getCaptions();
 
-  inline void  buildCaptionLine(string, string, VideoCaptions::CaptionLine*&);
+  inline void  buildAndStoreCaptionLine(lineCheck&,string,string,CaptionLine&);
   inline void  indexWord(string, CaptionLine*);
   inline void  setWordsToLowercase(string);
-  inline bool  lineIsNotIndexed(lineCheck&, string&);
+  inline bool  lineIsNotAlreadyIndexed(lineCheck&, string&);
   inline bool  lineContainsTimeInfo(string);
+  inline bool  nextLineIsACopy(istringstream&, string&, string&);
+  inline void  storeCaptionLineStruct(lineCheck&,string,CaptionLine&);
+  inline void  indexWordsInCurrentLine(CaptionLine&);
   
   bool  wordIsIndexed(string);
   void  printCaptionsToFile();
