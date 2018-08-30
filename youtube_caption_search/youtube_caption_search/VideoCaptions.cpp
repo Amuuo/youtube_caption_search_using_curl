@@ -110,9 +110,7 @@ void VideoCaptions::createCaptionMap() {
         setWordsToLowercase(capLine);
         if (lineIsNotAlreadyIndexed(lineMap,capLine)) {        
           buildAndStoreCaptionLine(lineMap,lineInfo,capLine,currentLine);                    
-        }    
-      }
-
+        }          
       }
     }
   }
@@ -350,11 +348,6 @@ inline bool VideoCaptions::nextLineIsACopy(istringstream& sstream,
   return prevLine == line;
 }
 
-inline void VideoCaptions::storeCaptionLineStruct(lineCheck& lineMap, 
-                                                  string line,
-                                                  CaptionLine& lineStruct) {
-
-}
 
 inline void VideoCaptions::indexWordsInCurrentLine(CaptionLine& currentLine) {
   

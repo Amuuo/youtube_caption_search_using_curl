@@ -89,7 +89,6 @@ private:
   inline bool  lineIsNotAlreadyIndexed(lineCheck&, string&);
   inline bool  lineContainsTimeInfo(string);
   inline bool  nextLineIsACopy(istringstream&, string&, string&);
-  inline void  storeCaptionLineStruct(lineCheck&,string,CaptionLine&);
   inline void  indexWordsInCurrentLine(CaptionLine&);
   
   bool  wordIsIndexed(string);
