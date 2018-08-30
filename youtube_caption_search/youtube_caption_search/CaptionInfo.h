@@ -16,12 +16,11 @@
 #include<curl/curl.h>
 #include<stdlib.h>
 #include<stdio.h>
-#include"AdamFunctions.h"
-#include"Time.h"
+#include"userIO.h"
+#include"Menu.h"
 using namespace std;
 
-using frequentWords = vector<pair<string,set<videoCaptionsList*>>>;  
-using captionTable  = map<string,set<videoCaptionsList*>>;
+ 
 using captionLines  = vector<string>;
 using lineCheck     = map<string, videoCaptionsList*>;
 using capPair       = pair<string,set<videoCaptionsList*>>;
@@ -29,23 +28,20 @@ using capPair       = pair<string,set<videoCaptionsList*>>;
 
 
 /***********************************************************/
-/*                C A P T I O N S T R U C T                */
+/*             V I D E O  C A P T I O N  L I S T           */
 /***********************************************************/
 class videoCaptionsList{
 
 
 
 public:
-  
+
  
  
   /****************************************/
   /*      CONSTRUCTOR / DESTRUCTOR        */
   /****************************************/
   videoCaptionsList(){}
-  videoCaptionsList(const string* s, string l, string u, Time t) : 
-    videoTitle{s}, line {l}, time {t}, 
-    captionURL {constructTimestampedURL(t, u)} {}
   ~videoCaptionsList(){}
 
 
@@ -53,38 +49,37 @@ public:
   /****************************************/
   /*              VARIABLES               */
   /****************************************/
-  frequentWords*  maxMentionsVec {};
-  captionTable*   captionMap     {};
-  const string*   videoTitle     {};
-  string          line           {};
-  string          captionURL     {};
-  Time            time           {};
-  inline static string   captionText{};
-
 
 
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
-  string  constructTimestampedURL(Time,string);
-  
-  void    printCaptionsToFile();
-  void    printCaptionsToConsole(videoCaptionsList*, int);
-  void    cleanupCaptionDownloadFile();
-  void    createCaptionMap();
-  void    deleteCommonWordsFromMap();
-  void    searchForWord();
-  void    printMaxMentions(char='\0');
-  int     displayPrintMenu();
-  void    createMostFrequentWordsVector();
-  void    printTopTenMentions();
-  void    sendWebRequestForCaptions();
-  void    getCaptions();
-  
-  
-  inline bool           captionsContainWord(string);
-  inline static size_t  writefunc(char*, size_t, size_t, string*);
 
 
 };
+
+
+
+  /******************************************/
+  /*        C A P T I O N   M E N U         */
+  /******************************************/
+  class _VideoCaptionsListMenu : public Menu {
+
+  private:
+
+  public:
+    _VideoCaptionsListMenu();
+    ~_VideoCaptionsListMenu();
+    
+
+    
+
+  };
+
+
+
+
+
+
+
 

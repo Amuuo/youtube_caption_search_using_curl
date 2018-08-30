@@ -1,8 +1,8 @@
-#include "captionMenu.h"
+#include "VideoCaptionsListMenu.h"
 
 
 
-captionMenu::captionMenu() {
+VideoCaptionsListMenu::VideoCaptionsListMenu() {
   
   menuOptions = {"Print most frequent words",
                  "Search word",
@@ -12,14 +12,18 @@ captionMenu::captionMenu() {
 
 }
 
-captionMenu::~captionMenu() {}
+VideoCaptionsListMenu::~VideoCaptionsListMenu() {}
 
-void captionMenu::addVideoCaptions() {
+void VideoCaptionsListMenu::addVideoCaptions() {
+
+}
+
+void VideoCaptionsListMenu::setMenuOptions() {
 
 }
 
 
-void captionMenu::executeMenuSelection() {
+void VideoCaptionsListMenu::executeMenuSelection() {
     
   switch(getUserInput<int>("Selection")){
 
@@ -33,9 +37,16 @@ void captionMenu::executeMenuSelection() {
   }
 }
 
-void captionMenu::displayMenu() {
+void VideoCaptionsListMenu::displayMenu() {
   
   for (auto option : *menuOptions) {
 
   }
 }
+
+void VideoCaptionsListMenu::VideoCaptionsListMenu::loadVideoCaptionsList() {
+}
+
+void VideoCaptionsListMenu::listAvailableVideoCaptions() {
+}
+

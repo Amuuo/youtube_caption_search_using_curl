@@ -3,7 +3,7 @@
 #include<vector>
 #include<map>
 #include<functional>
-#include"usefulFunctions.h"
+#include"userIO.h"
 using namespace std;
 
 
@@ -16,7 +16,7 @@ class Menu {
 protected:  
   
   // holds menu option strings and corresponding functions  
-  vector<pair<string,function<void()>>> menuOptions; 
+  vector<function<void()>> menuOptions; 
 
 public:
 
