@@ -13,13 +13,6 @@ class VideoCaptions : public VideoCaptionsList {
 
 public:
 
-  /***********************************/
-  /*    CONSTRUCTOR / DESTRUCTOR     */
-  /***********************************/
-  VideoCaptions();
-  ~VideoCaptions();  
-    
-
   /****************************************/
   /*          CAPTION STRUCTURES          */
   /****************************************/
@@ -33,17 +26,26 @@ public:
     CaptionLine(string, Time){}
     CaptionLine(){}
 
-    string line;
-    Time   time;
+    string _line;
+    Time   _time;
     
   };
   
   static struct CaptionWord {
-    
-    CaptionLine* captionContext;
-    string       word;
-    int          wordCounter;
+    CaptionWord(string, CaptionLine*);
+    vector<CaptionLine*> captionContext;
+    string               word{};
+    int                  wordCounter{};
   };
+
+
+  /***********************************/
+  /*    CONSTRUCTOR / DESTRUCTOR     */
+  /***********************************/
+  VideoCaptions();
+  ~VideoCaptions();  
+    
+
 
 
 private:
@@ -54,12 +56,12 @@ private:
   
   // simplify typenames for easy reading
   using _frequentWords     = vector<CaptionWord>; 
-  using _captionWordsIndex = unordered_map<string, CaptionWord*>;
+  using _captionWordsIndex = map<string, CaptionWord*>;
   using _captionLines      = vector<CaptionLine>;
 
   
   _frequentWords*       captionWordsSortedByFrequency;
-  _captionWordsIndex*   captionWordsIndex;
+  _captionWordsIndex    captionWordsIndex{};
   _captionLines         captionLines;
   string                videoTitle;  
   string                videoURL;
@@ -69,7 +71,7 @@ private:
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
-  string  constructTimestampedURL(CaptionWord,string);  
+  string  getCaptionClipURL(CaptionWord,string);  
   void    printCaptionsToConsole(VideoCaptions*, int);
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
@@ -79,8 +81,14 @@ private:
   void    printTopTenMentions() const;
   void    sendWebRequestForCaptions();
   void    getCaptions();
+
+  inline void  buildCaptionLine(string, string, VideoCaptions::CaptionLine*&);
+  inline void  indexWord(string, CaptionLine*);
+  inline void  setWordsToLowercase(string);
+  inline bool  lineIsNotIndexed(lineCheck&, string&);
+  inline bool  lineContainsTimeInfo(string);
   
-  
+  bool  wordIsIndexed(string);
   void  printCaptionsToFile();
   void  searchForWord();
   void  printMaxMentions();

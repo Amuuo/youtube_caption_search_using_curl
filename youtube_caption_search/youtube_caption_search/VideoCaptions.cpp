@@ -19,6 +19,10 @@ VideoCaptions::CaptionLine::CaptionLine(string l,
                                                   time {t} {}
 
 
+bool VideoCaptions::wordIsIndexed(string _word) {
+  return captionWordsIndex.find(_word) == captionWordsIndex.end();
+}
+
 /*****************************************/
 /*         PRINT CAPTIONS TO FILE        */
 /*****************************************/
@@ -43,7 +47,7 @@ void VideoCaptions::printCaptionsToConsole(VideoCaptions* c, int choice) {
   switch (choice) {      
     case 1: printStrings({&c->videoURL});           break; //print url only
     case 2: printStrings({&c->line, &c->videoURL}); break; //print url+context
-    case 3: printStrings({&c->line});                 break; //print context only
+    case 3: printStrings({&c->line});               break; //print context only
     default: break;
   }
 }
@@ -87,45 +91,39 @@ void VideoCaptions::cleanupCaptionDownloadFile(){
 /*****************************************/
 void VideoCaptions::createCaptionMap() {
 
-  captionWordsIndex = new _captionWordsIndex{};
-  lineCheck*   lineMap{new lineCheck};
-  string       tmpStr[2];
+  lineCheck   lineMap;
+  string      lineInfo; 
+  string      capLine;
 
 
   printf("\n>> Generating caption hash table...");
 
-  istringstream   fileStringStream{captionText};
-  VideoCaptions*  tmpCap;
+  istringstream captionStream{captionText};
+  CaptionLine*  currentLine;
 
-  while (fileStringStream) {
+  while (captionStream) {
     
-    getline(fileStringStream,tmpStr[0]);
+    getline(captionStream,lineInfo);    
     
-    if (isdigit(tmpStr[0][0]) && tmpStr[0][2] == ':') {
-      
-      //string tmpS2{};
-      getline(fileStringStream, tmpStr[1]);
-      if (tmpStr[0] == tmpStr[1]) {
-        continue;
-      }
-      if (lineMap->find(tmpStr[1]) == lineMap->end()) {
-        
-        tmpCap = new VideoCaptions{videoTitle, tmpStr[1], videoURL, 
-                                   CaptionLine::Time {tmpStr[0].substr(0,2), 
-                                                      tmpStr[0].substr(3,2), 
-                                                      tmpStr[0].substr(6.2)}};
+    if (lineContainsTimeInfo(lineInfo)) {
 
-        lineMap->insert(make_pair(tmpStr[1],tmpCap));
+      /****** check for double line ********/
+      getline(captionStream, capLine);
+      if (lineInfo == capLine) continue;
+      /*************************************/
+
+      setWordsToLowercase(capLine);
+      if (lineIsNotIndexed(lineMap, capLine)) {        
+        buildCaptionLine(lineInfo, capLine, currentLine);
+
+        (*lineMap)[capLine] = currentLine;
       }            
 
-      istringstream lineStringStream(tmpStr[1]);
-      while (lineStringStream) {
-        lineStringStream >> tmpStr[0];
-        transform(tmpStr[0].begin(), 
-                  tmpStr[0].end(), 
-                  tmpStr[0].begin(), 
-                  ::tolower);
-        (*captionMap)[tmpStr[0]].insert(tmpCap);
+      istringstream lineStream{capLine};
+      string wordInCaptionLine;
+      while (lineStream) {
+        lineStream >> wordInCaptionLine;
+        indexWord(wordInCaptionLine, currentLine);
       }
     }
   }
@@ -158,7 +156,7 @@ void VideoCaptions::deleteCommonWordsFromMap() {
 /******************************************/
 /*        CONSTRUCT TIMESTAMPED URL       */
 /******************************************/
-string VideoCaptions::constructTimestampedURL(CaptionWord word, string userEnteredURL) {
+string VideoCaptions::getCaptionClipURL(CaptionWord word, string userEnteredURL) {
   return userEnteredURL + "&feature=youtu.be&t="  + 
          to_string(word.captionContext->time.hr)  + 'h' + 
          to_string(word.captionContext->time.min) + 'm' + 
@@ -318,6 +316,40 @@ void VideoCaptions::getCaptions() {
   createMostFrequentWordsVector();
 }
 
+void VideoCaptions::indexWord(string capWord, CaptionLine* capLine) {
+  
+  if (wordIsIndexed(capWord)) {
+    captionWordsIndex[capWord]->wordCounter++;
+    captionWordsIndex[capWord]->captionContext.push_back(capLine);
+  }
+  else{
+    captionWordsIndex[capWord] = new CaptionWord{capWord, capLine};
+  }  
+}
+
+void VideoCaptions::buildCaptionLine(string line, 
+                                     string lineInfo,
+                                     VideoCaptions::CaptionLine*& capLine) {  
+  
+  capLine = new CaptionLine{line, CaptionLine::Time{lineInfo.substr(0,2),
+                                                 lineInfo.substr(3,2),
+                                                 lineInfo.substr(6,2)}};        
+}
+
+inline void VideoCaptions::setWordsToLowercase(string line) {
+  transform(line.begin(), line.end(), line.begin(), ::tolower);
+}
+
+inline bool VideoCaptions::lineIsNotIndexed(lineCheck& lineMap,
+                                            string& capLine){
+  return lineMap.find(capLine) == lineMap.end();      
+}
+
+inline bool VideoCaptions::lineContainsTimeInfo(string line) {
+  /* check for format, ex: "00:00:00 -> 00:00:00" */
+  return isdigit(line[0]) && line[2] == ':';
+}
+
 
 
 
@@ -353,3 +385,9 @@ void VideoCaptions::printMaxMentions() const {
   }
 }
 
+VideoCaptions::CaptionWord::CaptionWord(
+  string _word, 
+  CaptionLine* context) : word{_word}, captionContext{context} {
+  
+  ++wordCounter;
+}

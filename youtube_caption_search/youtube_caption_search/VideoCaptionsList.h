@@ -6,7 +6,7 @@ using namespace std;
 
  
 using captionLines  = vector<string>;
-using lineCheck     = map<string, VideoCaptions*>;
+using lineCheck     = map<string, CaptionLine*>;
 using capPair       = pair<string,set<VideoCaptions*>>;
 
 
