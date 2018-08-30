@@ -20,30 +20,33 @@
 #include"Time.h"
 using namespace std;
 
+using frequentWords = vector<pair<string,set<videoCaptionsList*>>>;  
+using captionTable  = map<string,set<videoCaptionsList*>>;
+using captionLines  = vector<string>;
+using lineCheck     = map<string, videoCaptionsList*>;
+using capPair       = pair<string,set<videoCaptionsList*>>;
+
+
 
 /***********************************************************/
 /*                C A P T I O N S T R U C T                */
 /***********************************************************/
-struct videoCaptions{
+class videoCaptionsList{
 
 
-  using frequentWords = vector<pair<string,set<videoCaptions*>>>;  
-  using captionTable  = map<string,set<videoCaptions*>>;
-  using captionLines  = vector<string>;
-  using lineCheck     = map<string, videoCaptions*>;
-  using capPair       = pair<string,set<videoCaptions*>>;
-  
-  
 
+public:
   
+ 
+ 
   /****************************************/
   /*      CONSTRUCTOR / DESTRUCTOR        */
   /****************************************/
-  videoCaptions(){}
-  videoCaptions(const string* s, string l, string u, Time t) : 
+  videoCaptionsList(){}
+  videoCaptionsList(const string* s, string l, string u, Time t) : 
     videoTitle{s}, line {l}, time {t}, 
     captionURL {constructTimestampedURL(t, u)} {}
-  ~videoCaptions(){}
+  ~videoCaptionsList(){}
 
 
   
@@ -66,7 +69,7 @@ struct videoCaptions{
   string  constructTimestampedURL(Time,string);
   
   void    printCaptionsToFile();
-  void    printCaptionsToConsole(videoCaptions*, int);
+  void    printCaptionsToConsole(videoCaptionsList*, int);
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
   void    deleteCommonWordsFromMap();

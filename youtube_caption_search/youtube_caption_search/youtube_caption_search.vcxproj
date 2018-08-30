@@ -122,6 +122,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Time.cpp" />
+    <ClCompile Include="VideoCaptions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="captionMenu.h" />
@@ -129,6 +130,7 @@
     <ClInclude Include="CaptionInfo.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Time.h" />
+    <ClInclude Include="VideoCaptions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

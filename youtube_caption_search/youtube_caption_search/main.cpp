@@ -57,7 +57,7 @@ bool  userInteraction();
 int   getMainMenuSelection();
 
 
-videoCaptions* Captions;
+videoCaptionsList* Captions;
 
 
 
@@ -72,7 +72,7 @@ int main(int argc, char** argv){
 
   checkForValidCommandLine(argc,argv);
   
-  Captions = new videoCaptions;
+  Captions = new videoCaptionsList;
   
   getVideoUrl(argc==2, argv);
   Captions->getCaptions();

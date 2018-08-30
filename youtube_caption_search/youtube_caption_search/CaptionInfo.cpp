@@ -7,7 +7,7 @@
 /*****************************************/
 /*         PRINT CAPTIONS TO FILE        */
 /*****************************************/
-void videoCaptions::printCaptionsToFile() {
+void videoCaptionsList::printCaptionsToFile() {
   ofstream outStream{getUserInput<string>("Save as")};               
   outStream << captionText;  
   outStream.close();
@@ -19,7 +19,7 @@ void videoCaptions::printCaptionsToFile() {
 /*****************************************/
 /*       PRINT CAPTIONS TO CONSOLE       */
 /*****************************************/
-void videoCaptions::printCaptionsToConsole(videoCaptions* c, int choice) {
+void videoCaptionsList::printCaptionsToConsole(videoCaptionsList* c, int choice) {
   auto printStrings = [](vector<string*> tmp) {
     for (auto& t : tmp)
     printf("\n\t>> \"%s\"", t->c_str());
@@ -39,7 +39,7 @@ void videoCaptions::printCaptionsToConsole(videoCaptions* c, int choice) {
 /*****************************************/
 /*          CLEANUP CAPTION TEXT         */
 /*****************************************/
-void videoCaptions::cleanupCaptionDownloadFile(){
+void videoCaptionsList::cleanupCaptionDownloadFile(){
 
   printf("\n>> Parsing caption file...");
 
@@ -70,7 +70,7 @@ void videoCaptions::cleanupCaptionDownloadFile(){
 /*****************************************/
 /*           CREATE CAPTION MAP          */
 /*****************************************/
-void videoCaptions::createCaptionMap() {
+void videoCaptionsList::createCaptionMap() {
 
   captionMap = new captionTable{};
   lineCheck*   lineMap{new lineCheck};
@@ -80,7 +80,7 @@ void videoCaptions::createCaptionMap() {
   printf("\n>> Generating caption hash table...");
 
   istringstream   fileStringStream{captionText};
-  videoCaptions*  tmpCap;
+  videoCaptionsList*  tmpCap;
 
   while (fileStringStream) {
     
@@ -95,7 +95,7 @@ void videoCaptions::createCaptionMap() {
       }
       if (lineMap->find(tmpStr[2]) == lineMap->end()) {
         
-        tmpCap = new videoCaptions{videoTitle, 
+        tmpCap = new videoCaptionsList{videoTitle, 
                                    tmpStr[1], 
                                    captionURL, 
                                    Time{tmpStr[0].substr(0,2), 
@@ -124,7 +124,7 @@ void videoCaptions::createCaptionMap() {
 /******************************************/
 /*      DELETE COMMON WORDS FROM MAP      */
 /******************************************/
-void videoCaptions::deleteCommonWordsFromMap() {
+void videoCaptionsList::deleteCommonWordsFromMap() {
   
   printf("\n>> Deleting insignificant words from table...");
 
@@ -139,7 +139,7 @@ void videoCaptions::deleteCommonWordsFromMap() {
   }
 }
 
-string videoCaptions::constructTimestampedURL(Time time, string userEnteredURL) {
+string videoCaptionsList::constructTimestampedURL(Time time, string userEnteredURL) {
   return userEnteredURL + "&feature=youtu.be&t=" + to_string(time.hr) + 'h'
       + to_string(time.min) + 'm' + to_string(time.sec) + 's';
 }
@@ -150,7 +150,7 @@ string videoCaptions::constructTimestampedURL(Time time, string userEnteredURL) 
 /*****************************************/
 /*            SEARCH FOR WORD            */
 /*****************************************/
-void videoCaptions::searchForWord() {      
+void videoCaptionsList::searchForWord() {      
 
   string searchWord = getUserInput<string>("Enter word");
 
@@ -176,7 +176,7 @@ void videoCaptions::searchForWord() {
 /*****************************************/
 /*         CAPTION CONTAINS WORD         */
 /*****************************************/
-inline bool videoCaptions::captionsContainWord(string searchWord) {
+inline bool videoCaptionsList::captionsContainWord(string searchWord) {
   
   return captionMap->find(searchWord) != captionMap->end();
   
@@ -187,7 +187,7 @@ inline bool videoCaptions::captionsContainWord(string searchWord) {
 /****************************************/
 /*          DISPLAY PRINT MENU          */
 /****************************************/
-int videoCaptions::displayPrintMenu() {
+int videoCaptionsList::displayPrintMenu() {
     
   printf("\n\n\t1 - Print URL links"       );
   printf(  "\n\t2 - Print context and URLs");
@@ -204,7 +204,7 @@ int videoCaptions::displayPrintMenu() {
 /*****************************************/
 /*   CREATE MOST FREQUENT WORDS VECTOR   */
 /*****************************************/
-void videoCaptions::createMostFrequentWordsVector() {
+void videoCaptionsList::createMostFrequentWordsVector() {
     
   printf("\n>> Sorting words by number of mentions..."); 
 
@@ -213,8 +213,8 @@ void videoCaptions::createMostFrequentWordsVector() {
   }
   sort(maxMentionsVec->begin(), 
        maxMentionsVec->end(), 
-       [](pair<string, set<videoCaptions*>> p1, 
-          pair<string, set<videoCaptions*>> p2) {
+       [](pair<string, set<videoCaptionsList*>> p1, 
+          pair<string, set<videoCaptionsList*>> p2) {
           return p1.second.size() > p2.second.size(); });
 
 }
@@ -225,7 +225,7 @@ void videoCaptions::createMostFrequentWordsVector() {
 /*****************************************/
 /*         PRINT TOP TEN MENTIONS        */
 /*****************************************/
-void videoCaptions::printTopTenMentions() {
+void videoCaptionsList::printTopTenMentions() {
   printf("\n\n\n\tTOP 10 MENTIONS:\n\n\t\t");
   for (int i{1}; i<=10; ++i) {
     printf("%s(%d), ", maxMentionsVec->at(i).first.c_str(), 
@@ -241,7 +241,7 @@ void videoCaptions::printTopTenMentions() {
 /******************************************/
 /*               WRITEFUNC                */
 /******************************************/
-size_t videoCaptions::writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
+size_t videoCaptionsList::writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
   
   captionText += string{ptr + '\0'};
   //*s += string{ptr + '\0'};
@@ -255,7 +255,7 @@ size_t videoCaptions::writefunc(char* ptr, size_t size, size_t nmemb, string* s)
 /******************************************/
 /*      SEND WEB-REQUEST FOR CAPTIONS     */
 /******************************************/
-void videoCaptions::sendWebRequestForCaptions() {
+void videoCaptionsList::sendWebRequestForCaptions() {
 
   string new_url{"http://video.google.com/timedtext?type=track&lang=en&v="};
   regex rgx("v=(.{11})");
@@ -287,7 +287,7 @@ void videoCaptions::sendWebRequestForCaptions() {
 /******************************************/
 /*              GET CAPTIONS              */
 /******************************************/
-void videoCaptions::getCaptions() {
+void videoCaptionsList::getCaptions() {
 
   sendWebRequestForCaptions();  
   cleanupCaptionDownloadFile();  
@@ -303,7 +303,7 @@ void videoCaptions::getCaptions() {
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
 /*****************************************/
-void videoCaptions::printMaxMentions(char r) {
+void videoCaptionsList::printMaxMentions(char r) {
 
   r = getUserInput<int>("Enter range");
 
@@ -318,7 +318,7 @@ void videoCaptions::printMaxMentions(char r) {
       printf(format, i->second.size(), "mentions)", i->first.c_str());                
       
       for (auto& c : i->second)
-          videoCaptions::printCaptionsToConsole(c, choice);
+          videoCaptionsList::printCaptionsToConsole(c, choice);
     } 
   } else {        
     for (int i = 0; i < range; ++i) {            
@@ -327,7 +327,7 @@ void videoCaptions::printMaxMentions(char r) {
                      maxMentionsVec->at(i).first.c_str());                
       
       for (auto& c : maxMentionsVec->at(i).second)
-          videoCaptions::printCaptionsToConsole(c, choice);          
+          videoCaptionsList::printCaptionsToConsole(c, choice);          
     }
   }
 }

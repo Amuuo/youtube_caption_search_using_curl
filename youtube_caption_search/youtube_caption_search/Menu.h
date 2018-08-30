@@ -14,8 +14,9 @@ using namespace std;
 class Menu {
 
 protected:  
-  /* vector holds menu option strings and corresponding functions */
-  vector<pair<string,function<void()>>> menuOptions;
+  
+  // holds menu option strings and corresponding functions  
+  vector<pair<string,function<void()>>> menuOptions; 
 
 public:
 

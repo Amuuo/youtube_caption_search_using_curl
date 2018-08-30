@@ -12,7 +12,7 @@
 class captionMenu : public Menu {
 
 private:
-  map<int, videoCaptions> captionMap
+  map<int, videoCaptionsList> captionMap
 
 public:
   captionMenu();
