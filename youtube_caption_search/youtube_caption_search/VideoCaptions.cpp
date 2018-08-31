@@ -376,14 +376,13 @@ void VideoCaptions::createMostFrequentWordsVector() {
     
   printf("\n>> Sorting words by number of mentions..."); 
 
-  for(auto& currentWord : captionWordsIndex){      
-    captionWordsSortedByFrequency.push_back({currentWord});
-  }
+  for(auto currentWord : captionWordsIndex){      
+    captionWordsSortedByFrequency.push_back(currentWord.second);
+  }  
   sort(captionWordsSortedByFrequency.begin(), 
        captionWordsSortedByFrequency.end(), 
-       [](pair<string, set<VideoCaptions*>> p1, 
-          pair<string, set<VideoCaptions*>> p2) {
-          return p1.second.size() > p2.second.size(); });
+       [](wordPtr p1, wordPtr p2) {
+          return p1->captionContext.size() > p2->captionContext.size();});
 
 }
 
