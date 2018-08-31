@@ -119,11 +119,13 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MenuOptionsData.cpp" />
     <ClCompile Include="ProgramAssets.cpp" />
     <ClCompile Include="VideoCaptions.cpp" />
     <ClCompile Include="VideoCaptionsListMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MenuOptionsData.h" />
     <ClInclude Include="ProgramAssets.h" />
     <ClInclude Include="userIO.h" />
     <ClInclude Include="Menu.h" />

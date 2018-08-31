@@ -4,29 +4,38 @@
 
 
 
-VideoCaptions::VideoCaptions(){}
-VideoCaptions::~VideoCaptions(){}
+VideoCaptions::
+VideoCaptions(){}
 
+VideoCaptions::
+~VideoCaptions(){
+  ofstream saveCaptionStruct{videoTitle, ofstream::binary};
+}
 
-VideoCaptions::CaptionLine::Time::Time(string h, 
-                                       string m, 
-                                       string s): hr{stoi(h)}, 
-                                                  min{stoi(m)}, 
-                                                  sec{stoi(s)} {}
+VideoCaptions::CaptionLine::Time::
+Time(string h, string m, string s): hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} {}
 
-VideoCaptions::CaptionLine::CaptionLine(string l, 
-                                        Time t) : _line {l}, 
-                                                  _time {t} {}
+VideoCaptions::CaptionLine::
+CaptionLine(string l, Time t) : _line {l}, _time {t} {}
 
+VideoCaptions::CaptionWord::
+CaptionWord(string)
 
-bool VideoCaptions::wordIsIndexed(string _word) {
+bool 
+VideoCaptions::
+wordIsIndexed(string _word) {
   return captionWordsIndex.find(_word) == captionWordsIndex.end();
 }
+
+
+
 
 /*****************************************/
 /*         PRINT CAPTIONS TO FILE        */
 /*****************************************/
-void VideoCaptions::printCaptionsToFile() {
+void 
+VideoCaptions::
+printCaptionsToFile() {
   ofstream outStream{getUserInput<string>("Save as")};               
   outStream << captionText;  
   outStream.close();
@@ -38,8 +47,9 @@ void VideoCaptions::printCaptionsToFile() {
 /*****************************************/
 /*       PRINT CAPTIONS TO CONSOLE       */
 /*****************************************/
-void VideoCaptions::printCaptionsToConsole(CaptionWord* wordToPrint, 
-                                           int menuChoice) {
+void 
+VideoCaptions::
+printCaptionsToConsole(CaptionWord* wordToPrint, int menuChoice) {
   
   auto printStrings = [](vector<string> itemsToPrint) {
     for (auto& capLine : itemsToPrint)
@@ -75,7 +85,9 @@ void VideoCaptions::printCaptionsToConsole(CaptionWord* wordToPrint,
 /*****************************************/
 /*          CLEANUP CAPTION TEXT         */
 /*****************************************/
-void VideoCaptions::cleanupCaptionDownloadFile(){
+void 
+VideoCaptions::
+cleanupCaptionDownloadFile(){
 
   printf("\n>> Parsing caption file...");
 
@@ -106,9 +118,11 @@ void VideoCaptions::cleanupCaptionDownloadFile(){
 /*****************************************/
 /*           CREATE CAPTION MAP          */
 /*****************************************/
-void VideoCaptions::createCaptionMap() {
+void 
+VideoCaptions::
+createCaptionMap() {
 
-  lineCheck      lineMap;
+  map<string, CaptionLine*>      lineMap;
   string         lineInfo; 
   string         capLine;
   CaptionLine    currentLine;
@@ -138,7 +152,9 @@ void VideoCaptions::createCaptionMap() {
 /****************/
 /*  INDEX WORD  */
 /****************/
-void VideoCaptions::indexWord(string capWord, CaptionLine* capLine) {
+void 
+VideoCaptions::
+indexWord(string capWord, CaptionLine* capLine) {
   
   if (wordIsIndexed(capWord)) {
     captionWordsIndex[capWord]->wordCounter++;
@@ -153,7 +169,9 @@ void VideoCaptions::indexWord(string capWord, CaptionLine* capLine) {
 /**********************************/
 /*  BUILD AND STORE CAPTION LINE  */
 /**********************************/
-void VideoCaptions::buildAndStoreCaptionLine(lineCheck& lineMap, 
+void 
+VideoCaptions::
+buildAndStoreCaptionLine(map<string,CaptionLine*>& lineMap, 
                                              string capLine, 
                                              string lineInfo,
                                              CaptionLine& lineStruct) {  
@@ -170,7 +188,9 @@ void VideoCaptions::buildAndStoreCaptionLine(lineCheck& lineMap,
 /**********************************/
 /*     SET WORDS TO LOWERCASE     */
 /**********************************/
-inline void VideoCaptions::setWordsToLowercase(string line) {
+inline void 
+VideoCaptions::
+setWordsToLowercase(string line) {
   transform(line.begin(), line.end(), line.begin(), ::tolower);
 }
 
@@ -178,7 +198,9 @@ inline void VideoCaptions::setWordsToLowercase(string line) {
 /*********************************/
 /*  LINE IS NOT ALREADY INDEXED  */
 /*********************************/
-inline bool VideoCaptions::lineIsNotAlreadyIndexed(lineCheck& lineMap,
+inline bool 
+VideoCaptions::
+lineIsNotAlreadyIndexed(map<string,CaptionLine*>& lineMap,
                                             string& capLine){
   return lineMap.find(capLine) == lineMap.end();      
 }
@@ -187,7 +209,9 @@ inline bool VideoCaptions::lineIsNotAlreadyIndexed(lineCheck& lineMap,
 /**********************************/
 /*    LINE CONTAINS TIME INFO     */
 /**********************************/
-inline bool VideoCaptions::lineContainsTimeInfo(string line) {
+inline bool 
+VideoCaptions::
+lineContainsTimeInfo(string line) {
   /* check for format, ex: "00:00:00 -> 00:00:00" */
   return isdigit(line[0]) && line[2] == ':';
 }
@@ -196,7 +220,9 @@ inline bool VideoCaptions::lineContainsTimeInfo(string line) {
 /*********************************/
 /*      NEXT LINE IS A COPY      */
 /*********************************/
-inline bool VideoCaptions::nextLineIsACopy(istringstream& sstream, 
+inline bool 
+VideoCaptions::
+nextLineIsACopy(istringstream& sstream, 
                                            string& prevLine,
                                            string& line) {
   getline(sstream, line);
@@ -207,7 +233,9 @@ inline bool VideoCaptions::nextLineIsACopy(istringstream& sstream,
 /***********************************/
 /*   INDEX WORDS IN CURRENT LINE   */
 /***********************************/
-inline void VideoCaptions::indexWordsInCurrentLine(CaptionLine& currentLine) {
+inline void 
+VideoCaptions::
+indexWordsInCurrentLine(CaptionLine& currentLine) {
   
   istringstream lineStream{currentLine._line};
   string wordInCaptionLine;
@@ -222,10 +250,18 @@ inline void VideoCaptions::indexWordsInCurrentLine(CaptionLine& currentLine) {
 
 
 
+inline string VideoCaptions::
+getWordURL(int) {
+
+  return ;
+}
+
 /******************************************/
 /*      DELETE COMMON WORDS FROM MAP      */
 /******************************************/
-void VideoCaptions::deleteCommonWordsFromMap() {
+void 
+VideoCaptions::
+deleteCommonWordsFromMap() {
   
   printf("\n>> Deleting all common words from table...");
 
@@ -246,7 +282,8 @@ void VideoCaptions::deleteCommonWordsFromMap() {
 /******************************************/
 /*        CONSTRUCT TIMESTAMPED URL       */
 /******************************************/
-string VideoCaptions::getCaptionClipURL(CaptionLine* line) {
+string VideoCaptions::
+getCaptionClipURL(CaptionLine* line) {
   
   return "www.youtube.com/watch&feature=youtu.be&t="  + 
          to_string(line->_time.hr)  + 'h' + 
@@ -260,7 +297,8 @@ string VideoCaptions::getCaptionClipURL(CaptionLine* line) {
 /*****************************************/
 /*         CAPTION CONTAINS WORD         */
 /*****************************************/
-inline bool VideoCaptions::captionsContainWord(string searchWord) { 
+inline bool VideoCaptions::
+captionsContainWord(string searchWord) { 
   return captionWordsIndex.find(searchWord) != captionWordsIndex.end();
   
 }
@@ -269,7 +307,8 @@ inline bool VideoCaptions::captionsContainWord(string searchWord) {
 /*****************************************/
 /*            SEARCH FOR WORD            */
 /*****************************************/
-void VideoCaptions::searchForWord() {      
+void VideoCaptions::
+searchForWord() {      
 
   string searchWord = getUserInput<string>("Enter word");
 
@@ -447,9 +486,12 @@ void VideoCaptions::printMaxMentions() {
   }
 }
 
-VideoCaptions::CaptionWord::CaptionWord(
-  string _word, 
-  CaptionLine* context) : word{_word}, captionContext{context} {
-  
-  ++wordCounter;
+VideoCaptions::CaptionWord::
+CaptionWord(string word, shared_ptr<CaptionLine> context) : word{word} {
+  captionContext.push_back(context);
+}
+
+void VideoCaptions::CaptionWord::
+addContextLine(shared_ptr<CaptionLine> contextLine) {
+  captionContext.push_back(contextLine);
 }

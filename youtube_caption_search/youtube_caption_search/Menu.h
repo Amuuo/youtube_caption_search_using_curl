@@ -1,47 +1,38 @@
 #pragma once
 #ifndef MENU_H
 #define MENU_H
-
+#include<cstdio>
+#include<functional>
+#include<string>
+#include<vector>
+#include"userIO.h"
+#include"MenuOptionsData.h"
 
 using namespace std;
-
 
 
 /******************************************/
 /*                 M E N U                */
 /******************************************/
 class Menu {
-
-
-public:
+     
+public:      
 
   Menu();
+  Menu(string, vector<MenuOptionsData>);
   ~Menu();
   
-  virtual void displayMenu();
-  virtual void executeMenuSelection();
+  void displayMenu();
+  void executeMenuSelection();
       
-
 protected:  
   
-  // holds menu option strings and corresponding functions  
-  struct menuOptionsData {
-    menuOptionsData(){}
-    menuOptionsData(const char* str, function<void()>* func) :
-      menuItemDescription{str}, menuItemFunction{func}{}
-    
-    string            menuItemDescription;    
-    function<void()>* menuItemFunction; 
-  };
-
-  vector<menuOptionsData> menuOptions;
-
+  string menuTitle;
+  vector<MenuOptionsData> menuOptions;
 
 private:
 
 
 };
-
-
 
 #endif //MENU_H

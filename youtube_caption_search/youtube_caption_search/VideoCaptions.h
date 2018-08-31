@@ -19,6 +19,7 @@
 #include<curl/curl.h>
 #include<stdlib.h>
 #include<stdio.h>
+#include<memory>
 #include"userIO.h"
 
 using namespace std;
@@ -59,13 +60,22 @@ public:
   };
   
   static struct CaptionWord {
-    CaptionWord(string, CaptionLine*);
-    vector<CaptionLine*> captionContext;
-    string               word{};
-    int                  wordCounter{};
+
+    using ContextPtr = vector<shared_ptr<CaptionLine>>;
+    
+    CaptionWord(string, shared_ptr<CaptionLine>);
+    ContextPtr captionContext;
+    string     word{};
+
+    void addContextLine(shared_ptr<CaptionLine>);
   };
 
-
+protected:
+    vector<menuOptionsData> menuOptions{
+    {"Print most frequent words", &printMaxMentions()},
+    {"Search word", searchForWord()},
+    {"Print entire table", printMaxMentions()},
+    {"Print table to file", printCaptionsToFile()}};
 
 private:
   
@@ -73,21 +83,15 @@ private:
   /****************************************/
   /*              VARIABLES               */
   /****************************************/  
-  
-  // simplify typenames for easy reading
-  using _frequentWords     = vector<CaptionWord*>; 
-  using _captionWordsIndex = map<string, CaptionWord*>;
-  using _captionLines      = vector<CaptionLine*>;
-  using lineCheck          = map<string, CaptionLine*>;
 
+  vector<shared_ptr<CaptionWord>>      captionWordsSortedByFrequency{};
+  map<string, shared_ptr<CaptionWord>> captionWordsIndex{};
+  vector<unique_ptr<CaptionLine>>      captionLines{};
   
-  _frequentWords      captionWordsSortedByFrequency;
-  _captionWordsIndex  captionWordsIndex{};
-  _captionLines       captionLines;
-  string              videoTitle;  
-  string              videoURL;
-  string              videoID;
-  string              captionText{};
+  string  videoTitle;  
+  string  videoURL;
+  string  videoID;
+  string  captionText{};
 
   
   /****************************************/
@@ -97,7 +101,6 @@ private:
   void    printCaptionsToConsole(CaptionWord*, int);
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
-  void    deleteCommonWordsFromMap();
   int     displayPrintMenu();
   void    createMostFrequentWordsVector();
   void    printTopTenMentions() const;
@@ -107,17 +110,21 @@ private:
   void    searchForWord();
   void    printMaxMentions();
 
-  inline void  buildAndStoreCaptionLine(lineCheck&,string,string,CaptionLine&);
-  inline void  indexWord(string, CaptionLine*);
-  inline void  setWordsToLowercase(string);
-  inline bool  lineIsNotAlreadyIndexed(lineCheck&, string&);
-  inline bool  lineContainsTimeInfo(string);
-  inline void  indexWordsInCurrentLine(CaptionLine&);
-  inline bool  nextLineIsACopy(istringstream&, string&, string&);  
-  inline bool  wordIsIndexed(string);    
-  inline bool  captionsContainWord(string);
+  inline string  getWordURL(int); 
+  inline void    deleteCommonWordsFromMap();
+  inline void    buildAndStoreCaptionLine(map<string,CaptionLine*>&,string,string,CaptionLine&);
+  inline void    indexWord(string, CaptionLine*);
+  inline void    setWordsToLowercase(string);
+  inline bool    lineIsNotAlreadyIndexed(map<string,CaptionLine*>&, string&);
+  inline bool    lineContainsTimeInfo(string);
+  inline void    indexWordsInCurrentLine(CaptionLine&);
+  inline bool    nextLineIsACopy(istringstream&, string&, string&);  
+  inline bool    wordIsIndexed(string);    
+  inline bool    captionsContainWord(string);
   
   size_t  writefunc(char*, size_t, size_t, string*);
 };
+
+
 
 #endif // VIDEOCAPTIONS_H

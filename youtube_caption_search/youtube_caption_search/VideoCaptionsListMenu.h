@@ -1,17 +1,20 @@
 
 #include"Menu.h"
+#include"VideoCaptions.h"
+#include<map>
+#include<vector>
 
 
-class VideoCaptionsListMenu : protected Menu {
+class VideoCaptionsListMenu : public Menu {
+
+  using captionPtr = unique_ptr<VideoCaptions>;
 
 public:
-  VideoCaptionsListMenu();
+
+  VideoCaptionsListMenu(captionPtr);
   ~VideoCaptionsListMenu();
 
-  //add function to pull binary from file later
-  virtual void  executeMenuSelection();
-  virtual void  displayMenu();
-  
+
   void loadVideoCaptionsList(); 
   void listAvailableVideoCaptions();
   void addVideoCaptions();
@@ -21,7 +24,8 @@ public:
   function<void()> printCaptionsToFile();
 
 private:
-  
 
+  captionPtr captions;
+  
 };
 
