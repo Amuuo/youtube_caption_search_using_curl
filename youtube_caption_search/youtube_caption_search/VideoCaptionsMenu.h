@@ -5,14 +5,14 @@
 #include<vector>
 
 
-class VideoCaptionsListMenu : public Menu {
+class VideoCaptionsMenu : public Menu {
 
   using captionPtr = unique_ptr<VideoCaptions>;
 
 public:
 
-  VideoCaptionsListMenu(captionPtr);
-  ~VideoCaptionsListMenu();
+  VideoCaptionsMenu(captionPtr);
+  ~VideoCaptionsMenu();
 
 
   void loadVideoCaptionsList(); 

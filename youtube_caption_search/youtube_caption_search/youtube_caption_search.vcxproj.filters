@@ -27,10 +27,10 @@
     <ClCompile Include="ProgramAssets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VideoCaptionsListMenu.cpp">
+    <ClCompile Include="MenuOptionsData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MenuOptionsData.cpp">
+    <ClCompile Include="VideoCaptionsMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClInclude Include="ProgramAssets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VideoCaptionsListMenu.h">
+    <ClInclude Include="MenuOptionsData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MenuOptionsData.h">
+    <ClInclude Include="VideoCaptionsMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

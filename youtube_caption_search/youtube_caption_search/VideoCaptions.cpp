@@ -33,7 +33,7 @@ CaptionLine(string line, Time time) : line{line}, time{time} {}
 
 
 VideoCaptions::CaptionWord::
-CaptionWord(string word, shared_ptr<CaptionLine> captionLine) : word{ word } {
+CaptionWord(string word, linePtr captionLine) : word{ word } {
   captionContext.push_back(captionLine);
 }
 
@@ -136,7 +136,7 @@ cleanupCaptionDownloadFile(){
 void VideoCaptions::
 createCaptionMap() {
 
-  map<string, shared_ptr<CaptionLine>> lineMap;
+  map<string, CaptionLine> lineMap;
   
   string         lineInfo; 
   string         capLine;
@@ -170,14 +170,13 @@ createCaptionMap() {
 /*  INDEX WORD  */
 /****************/
 void VideoCaptions::
-indexWord(string capWord, CaptionLine* capLine) {
+indexWord(string capWord, linePtr capLine) {
   
   if (wordIsIndexed(capWord)) {
-    captionWordsIndex[capWord]->wordCounter++;
     captionWordsIndex[capWord]->captionContext.push_back(capLine);
   }
-  else{
-    captionWordsIndex[capWord] = new CaptionWord{capWord, capLine};
+  else{        
+    captionWordsIndex[capWord] = wordPtr{new CaptionWord{capWord, capLine}};
   }  
 }
 
@@ -188,7 +187,7 @@ indexWord(string capWord, CaptionLine* capLine) {
 /*  BUILD AND STORE CAPTION LINE  */
 /**********************************/
 void VideoCaptions::
-buildAndStoreCaptionLine(map<string,shared_ptr<CaptionLine>> lineMap, 
+buildAndStoreCaptionLine(map<string,CaptionLine> lineMap, 
                          string capLine, 
                          string lineInfo,
                          CaptionLine& lineStruct) {  
@@ -197,8 +196,8 @@ buildAndStoreCaptionLine(map<string,shared_ptr<CaptionLine>> lineMap,
   lineStruct = CaptionLine{capLine, {lineInfo.substr(0,2),
                                      lineInfo.substr(3,2),
                                      lineInfo.substr(6,2)}}; 
+  
   lineMap[capLine] = lineStruct;
-  captionLines.push_back(lineStruct);
 }
 
 
@@ -219,7 +218,7 @@ setWordsToLowercase(string line) {
 /*  LINE IS NOT ALREADY INDEXED  */
 /*********************************/
 inline bool VideoCaptions::
-lineIsNotAlreadyIndexed(map<string,shared_ptr<CaptionLine>> lineMap, string& capLine){
+lineIsNotAlreadyIndexed(map<string,CaptionLine> lineMap, string& capLine){
   return lineMap.find(capLine) == lineMap.end();      
 }
 
@@ -325,26 +324,21 @@ captionsContainWord(string searchWord) {
 /*****************************************/
 /*            SEARCH FOR WORD            */
 /*****************************************/
-void VideoCaptions::
+function<void()> VideoCaptions::
 searchForWord() {      
 
   string searchWord = getUserInput<string>("Enter word");
-
   
   if (captionsContainWord(searchWord)) {
     
     printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
-           captionWordsIndex[searchWord]->wordCounter,           
+           captionWordsIndex[searchWord]->captionContext.size(),           
            "mentions): ",
            searchWord.c_str());
+        
+    printCaptionsToConsole(captionWordsIndex[searchWord], displayPrintMenu());
     
-    int choice = displayPrintMenu();            
-    /* FUNCTION NEEDS TO BE REWRITTEN */
-    printCaptionsToConsole(c->_line, choice);
-    
-  } else {
-    cout << "\n\nThat word was not found...";
-  }
+  } else { cout << "\n\nThat word was not found..."; }
 }
 
 
@@ -417,8 +411,6 @@ void VideoCaptions::printTopTenMentions() const {
 size_t VideoCaptions::writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
   
   captionText += string{ptr + '\0'};
-  //*s += string{ptr + '\0'};
-  //captionText += *s;
   return size*nmemb;
 }
 
@@ -474,47 +466,40 @@ void VideoCaptions::getCaptions() {
 
 
 
-
-
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
 /*****************************************/
 function<void()> VideoCaptions::printMaxMentions() {
 
-  int range = getUserInput<int>("Enter range");
-  
-  static const char* wordContextFormat = "\n\t(%d %-8s:  \"%s\"";
+  int range = getUserInput<int>("Enter range");  
+  const char* wordContextFormat = "\n\t(%d %-8s:  \"%s\"";
   int choice{displayPrintMenu()};
 
-  if(choice != 4) printf("\n");
 
-  if (r == 'r') {    
-    for (auto i{captionWordsSortedByFrequency.rbegin()}; 
-         i!=captionWordsSortedByFrequency.rend(); ++i) {      
+  if(choice != 4) printf("\n");
       
-      printf(wordContextFormat, i.con.size(), "mentions)", i->first.c_str());                
-      
-      for (auto& c : i->second)
-          printCaptionsToConsole(c, choice);
-    } 
-  } else {        
-    for (int i = 0; i < range; ++i) {            
-      printf(wordContextFormat, captionWordsSortedByFrequency->at(i).second.size(),           
-                     "mentions)",
-                     captionWordsSortedByFrequency->at(i).first.c_str());                
-      
-      for (auto& c : captionWordsSortedByFrequency->at(i).second)
-          printCaptionsToConsole(c, choice);          
-    }
-  }
+  for (int i = 0; i < range; ++i) {            
+    printf(wordContextFormat, 
+           captionWordsSortedByFrequency[i]->captionContext.size(),           
+           "mentions)",
+           captionWordsSortedByFrequency[i]->word.c_str());                          
+  }  
 }
+
+
+
+
 
 VideoCaptions::CaptionWord::
 CaptionWord(string word, shared_ptr<CaptionLine> context) : word{word} {
   captionContext.push_back(context);
 }
 
+
+
+
+
 void VideoCaptions::CaptionWord::
-addContextLine(shared_ptr<CaptionLine> contextLine) {
+addContextLine(linePtr contextLine) {
   captionContext.push_back(contextLine);
 }

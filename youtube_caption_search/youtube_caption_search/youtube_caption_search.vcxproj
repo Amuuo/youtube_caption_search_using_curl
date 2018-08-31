@@ -122,7 +122,7 @@
     <ClCompile Include="MenuOptionsData.cpp" />
     <ClCompile Include="ProgramAssets.cpp" />
     <ClCompile Include="VideoCaptions.cpp" />
-    <ClCompile Include="VideoCaptionsListMenu.cpp" />
+    <ClCompile Include="VideoCaptionsMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuOptionsData.h" />
@@ -130,7 +130,7 @@
     <ClInclude Include="userIO.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="VideoCaptions.h" />
-    <ClInclude Include="VideoCaptionsListMenu.h" />
+    <ClInclude Include="VideoCaptionsMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -34,17 +34,10 @@ class VideoCaptions {
 
 public:
   
-  /***********************************/
-  /*    CONSTRUCTOR / DESTRUCTOR     */
-  /***********************************/
   VideoCaptions();
   ~VideoCaptions();  
   
-  
 
-  /**********************************/
-  /*          CAPTION LINE          */
-  /**********************************/
   struct CaptionLine {   
     
     struct Time {   
@@ -61,19 +54,17 @@ public:
     
   };
   
+  using linePtr = shared_ptr<CaptionLine>;
 
-  /**********************************/
-  /*          CAPTION WORD          */
-  /**********************************/
   struct CaptionWord {
 
-    using ContextPtr = vector<shared_ptr<CaptionLine>>;
+    using ContextPtr = vector<linePtr>;
     
-    CaptionWord(string, shared_ptr<CaptionLine>);
+    CaptionWord(string, linePtr);
     ContextPtr captionContext;
     string     word;
 
-    void addContextLine(shared_ptr<CaptionLine>);
+    void addContextLine(linePtr);
   };
 
 
@@ -111,12 +102,11 @@ private:
   /*              VARIABLES               */
   /****************************************/  
 
-  using linePtr = shared_ptr<CaptionLine>;
+  
   using wordPtr = shared_ptr<CaptionWord>;
 
   vector<wordPtr>      captionWordsSortedByFrequency{};
   map<string, wordPtr> captionWordsIndex{};
-  vector<unique_ptr<CaptionLine>>      captionLines{};
   
   string  videoTitle;  
   string  videoURL;
@@ -131,10 +121,10 @@ private:
 
   inline string  getWordURL(int); 
   inline void    deleteCommonWordsFromMap();
-  inline void    buildAndStoreCaptionLine(map<string,shared_ptr<CaptionLine>>,string,string,CaptionLine&);
-  inline void    indexWord(string, CaptionLine*);
+  inline void    buildAndStoreCaptionLine(map<string,CaptionLine>,string,string,CaptionLine&);
+  inline void    indexWord(string, linePtr);
   inline void    setWordsToLowercase(string);
-  inline bool    lineIsNotAlreadyIndexed(map<string,shared_ptr<CaptionLine>>, string&);
+  inline bool    lineIsNotAlreadyIndexed(map<string,CaptionLine>, string&);
   inline bool    lineContainsTimeInfo(string);
   inline void    indexWordsInCurrentLine(CaptionLine&);
   inline bool    nextLineIsACopy(istringstream&, string&, string&);  
