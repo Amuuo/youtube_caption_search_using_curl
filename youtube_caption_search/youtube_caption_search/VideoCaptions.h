@@ -80,20 +80,22 @@ public:
   void    sendWebRequestForCaptions();
   void    getCaptions();
   
+  
   function<void()> printCaptionsToFile();
   function<void()> searchForWord();
   function<void()> printMaxMentions();
-
+  shared_ptr<vector<MenuOptionsData>> getMenuOptions();
 
 protected:
 
-  vector<MenuOptionsData> menuOptions = {
-    
-    {"Print most frequent words", printMaxMentions()},
-    {"Search word",               searchForWord()},
-    {"Print entire table",        printMaxMentions()},
-    {"Print table to file",       printCaptionsToFile()}
+
+  vector<MenuOptionsData> menuOptions{    
+    {"Print most frequent words", printMaxMentions},
+    {"Search word",               searchForWord},
+    {"Print entire table",        printMaxMentions},
+    {"Print table to file",       printCaptionsToFile}
   };
+
 
 private:
   
@@ -112,7 +114,7 @@ private:
   string  videoURL;
   string  videoID;
   string  captionText{};
-
+  
   
   /****************************************/
   /*         FUNCTION DEFINITIONS         */

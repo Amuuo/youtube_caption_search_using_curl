@@ -13,23 +13,18 @@ Menu::
 
 
 void Menu::
-displayMenu() {
+launchMenu() {
+    
+  const char* itemFormat = "\n%d - %d";
+  int itemNumber{0};
   
-  int i = 1;
-  for (auto option : menuOptions) {
-    printf("\n%d - ");
+  for (auto option : *menuOptions) {
+    printf(itemFormat, (itemNumber++)+1, option.menuItemDescription);    
   }    
+    
+  getUserInput<int>("Selection");
 }
 
-
-void Menu::
-executeMenuSelection() {
-  
-  switch (getUserInput<int>("Selection")) { 
-      
-
-  }     
-}
 
 
 

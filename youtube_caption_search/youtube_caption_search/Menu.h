@@ -19,16 +19,16 @@ class Menu {
 public:      
 
   Menu();
-  Menu(string, vector<MenuOptionsData>);
+  Menu(string,vector<MenuOptionsData>);
   ~Menu();
   
-  void displayMenu();
-  void executeMenuSelection();
+  void launchMenu();
+
       
 protected:  
   
   string menuTitle;
-  vector<MenuOptionsData> menuOptions;
+  shared_ptr<vector<MenuOptionsData>> menuOptions;
 
 private:
 

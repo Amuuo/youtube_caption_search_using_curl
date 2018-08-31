@@ -18,10 +18,7 @@ public:
   void loadVideoCaptionsList(); 
   void listAvailableVideoCaptions();
   void addVideoCaptions();
-  void setMenuOptions();
-  function<void()> searchForWord()    const;
-  function<void()> printMaxMentions() const;
-  function<void()> printCaptionsToFile();
+
 
 private:
 

@@ -15,6 +15,7 @@ VideoCaptions(){
 VideoCaptions::
 ~VideoCaptions(){
   ofstream saveCaptionStruct{videoTitle, ofstream::binary};
+  saveCaptionStruct.write((char*)this, sizeof(VideoCaptions));
 }
 
 
@@ -460,6 +461,10 @@ void VideoCaptions::getCaptions() {
   createCaptionMap();
   deleteCommonWordsFromMap();    
   createMostFrequentWordsVector();
+}
+
+shared_ptr<vector<MenuOptionsData>> VideoCaptions::getMenuOptions() {
+  return make_shared<vector<MenuOptionsData>>(menuOptions);
 }
 
 

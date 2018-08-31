@@ -3,9 +3,9 @@
 
 
 VideoCaptionsMenu::
-VideoCaptionsMenu(captionPtr caps) : Menu{}, captions{move(caps)} {}
-
-
+VideoCaptionsMenu(captionPtr captions) : Menu{}, captions{move(captions)} {
+  menuOptions = captions->getMenuOptions(); 
+}
 
 
 
@@ -14,56 +14,16 @@ VideoCaptionsMenu::
 
 
 
-
-
 void VideoCaptionsMenu::
-addVideoCaptions() {
-
-}
-
-
-
-
-void VideoCaptionsMenu::
-setMenuOptions() {
-
-}
-
-
-
-
-function<void()> VideoCaptionsMenu::
-searchForWord() const {
-  return function<void()>();
-}
-
-
-
-
-function<void()> VideoCaptionsMenu::
-printMaxMentions() const {
-  return function<void()>();
-}
-
-
-
-
-function<void()> VideoCaptionsMenu::
-printCaptionsToFile() {
-  return function<void()>();
-}
-
+addVideoCaptions() {}
 
 
 
 void VideoCaptionsMenu::VideoCaptionsMenu::
-loadVideoCaptionsList() {
-}
-
+loadVideoCaptionsList() {}
 
 
 
 void VideoCaptionsMenu::
-listAvailableVideoCaptions() {
-}
+listAvailableVideoCaptions() {}
 
