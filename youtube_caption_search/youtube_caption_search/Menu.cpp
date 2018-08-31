@@ -5,7 +5,7 @@ Menu::
 Menu() {}
 
 Menu::
-Menu(string menuTitle, vector<menuOptionsData> menuOptions) :
+Menu(string menuTitle, vector<MenuOptionsData> menuOptions) :
   menuTitle{menuTitle}, menuOptions{menuOptions}{}
 
 Menu::

@@ -7,7 +7,9 @@
 using namespace std;
 
 
-
+/*******************************************/
+/*     M E N U  O P T I O N S  D A T A     */
+/*******************************************/
 class MenuOptionsData {
 
 public:      
