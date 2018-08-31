@@ -41,15 +41,14 @@
 =============================================================================*/
 
                       
-#define __USE_MINGW_ANSI_STDIO 0
+//#define __USE_MINGW_ANSI_STDIO 0
 #define _CRT_SECURE_NO_WARNINGS
 #include"userIO.h"
 #include"Menu.h"
 #include"MenuOptionsData.h"
-#include"ProgramAssets.h"
 #include"VideoCaptions.h"
 #include"VideoCaptionsMenu.h"
-#include"Time.h"
+
 
 using namespace std;
 
@@ -61,7 +60,7 @@ bool  userInteraction();
 int   getMainMenuSelection();
 
 
-VideoCaptions Captions;
+shared_ptr<VideoCaptions> Captions;
 
 
 
@@ -76,7 +75,7 @@ int main(int argc, char** argv){
 
   checkForValidCommandLine(argc,argv);
   
-  Captions = new videoCaptionsList;
+  Captions = make_shared<VideoCaptions>(new VideoCaptions);
   
   getVideoUrl(argc==2, argv);
   Captions->getCaptions();
@@ -87,7 +86,6 @@ int main(int argc, char** argv){
   /**************************/
   while(userInteraction()); 
  
-  delete Captions;
   return 0;
 }
 

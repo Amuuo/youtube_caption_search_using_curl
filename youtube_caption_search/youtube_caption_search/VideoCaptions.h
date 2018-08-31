@@ -89,12 +89,13 @@ public:
 protected:
 
 
-  vector<MenuOptionsData> menuOptions{    
-    {"Print most frequent words", printMaxMentions},
-    {"Search word",               searchForWord},
-    {"Print entire table",        printMaxMentions},
-    {"Print table to file",       printCaptionsToFile}
-  };
+  shared_ptr<vector<MenuOptionsData>> 
+  menuOptions{new vector<MenuOptionsData>{
+    {"Print most frequent words", printMaxMentions()},
+    {"Search word",               searchForWord()},
+    {"Print entire table",        printMaxMentions()},
+    {"Print table to file",       printCaptionsToFile()}
+  }};
 
 
 private:

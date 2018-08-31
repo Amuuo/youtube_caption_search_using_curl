@@ -6,7 +6,8 @@ Menu() {}
 
 Menu::
 Menu(string menuTitle, vector<MenuOptionsData> menuOptions) :
-  menuTitle{menuTitle}, menuOptions{menuOptions}{}
+  menuTitle{menuTitle}, 
+  menuOptions{make_shared<vector<MenuOptionsData>>(menuOptions)}{}
 
 Menu::
 ~Menu() {}
@@ -22,7 +23,7 @@ launchMenu() {
     printf(itemFormat, (itemNumber++)+1, option.menuItemDescription);    
   }    
     
-  getUserInput<int>("Selection");
+  menuOptions->at(getUserInput<int>("Selection", "\n\n\t")).menuItemFunction();
 }
 
 

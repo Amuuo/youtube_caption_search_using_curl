@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -95,7 +95,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -120,13 +120,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MenuOptionsData.cpp" />
-    <ClCompile Include="ProgramAssets.cpp" />
     <ClCompile Include="VideoCaptions.cpp" />
     <ClCompile Include="VideoCaptionsMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuOptionsData.h" />
-    <ClInclude Include="ProgramAssets.h" />
     <ClInclude Include="userIO.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="VideoCaptions.h" />

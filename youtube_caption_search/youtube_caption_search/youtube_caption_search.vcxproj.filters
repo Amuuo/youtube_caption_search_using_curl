@@ -24,9 +24,6 @@
     <ClCompile Include="VideoCaptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProgramAssets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MenuOptionsData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,9 +39,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="userIO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProgramAssets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MenuOptionsData.h">
