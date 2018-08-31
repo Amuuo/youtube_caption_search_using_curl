@@ -1,21 +1,7 @@
 #pragma once
-#include<conio.h>
-#include<iostream>
-#include<sstream>
-#include<fstream>
-#include<string>
-#include<vector>
-#include<map>
-#include<set>
-#include<regex>
-#include<algorithm>
-#include<functional>
-#include<cstdio>
-#include<string>
-#include<curl/curl.h>
-#include<stdlib.h>
-#include<stdio.h>
-#include"userIO.h"
+#ifndef MENU_H
+#define MENU_H
+
 
 using namespace std;
 
@@ -26,6 +12,7 @@ using namespace std;
 /******************************************/
 class Menu {
 
+
 public:
 
   Menu();
@@ -33,7 +20,6 @@ public:
   
   virtual void displayMenu();
   virtual void executeMenuSelection();
-
       
 
 protected:  
@@ -51,9 +37,11 @@ protected:
   vector<menuOptionsData> menuOptions;
 
 
-
 private:
 
 
 };
 
+
+
+#endif //MENU_H

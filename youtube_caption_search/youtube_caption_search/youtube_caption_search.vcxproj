@@ -121,7 +121,6 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="ProgramAssets.cpp" />
     <ClCompile Include="VideoCaptions.cpp" />
-    <ClCompile Include="VideoCaptionsList.cpp" />
     <ClCompile Include="VideoCaptionsListMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -129,7 +128,6 @@
     <ClInclude Include="userIO.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="VideoCaptions.h" />
-    <ClInclude Include="VideoCaptionsList.h" />
     <ClInclude Include="VideoCaptionsListMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

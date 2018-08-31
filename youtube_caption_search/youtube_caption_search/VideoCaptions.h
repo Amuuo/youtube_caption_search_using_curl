@@ -1,18 +1,44 @@
 #pragma once
-#include"VideoCaptionsList.h"
-#include<functional>
+
+#ifndef VIDEOCAPTIONS_H
+#define VIDEOCAPTIONS_H
+
+#include<conio.h>
+#include<iostream>
+#include<sstream>
+#include<fstream>
+#include<string>
 #include<vector>
-#include<unordered_map>
+#include<map>
+#include<set>
+#include<regex>
+#include<algorithm>
+#include<functional>
+#include<cstdio>
+#include<string>
+#include<curl/curl.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include"userIO.h"
+
+using namespace std;
 
 
-/***********************************************************/
-/*           V I D E O  C A P T I O N  L I S T             */
-/***********************************************************/
-class VideoCaptions : public VideoCaptionsList {
+/**********************************************************/
+/*                V I D E O  C A P T I O N                */
+/**********************************************************/
+class VideoCaptions {
 
 
 public:
-
+  
+  /***********************************/
+  /*    CONSTRUCTOR / DESTRUCTOR     */
+  /***********************************/
+  VideoCaptions();
+  ~VideoCaptions();  
+  
+  
   /****************************************/
   /*          CAPTION STRUCTURES          */
   /****************************************/
@@ -40,35 +66,28 @@ public:
   };
 
 
-  /***********************************/
-  /*    CONSTRUCTOR / DESTRUCTOR     */
-  /***********************************/
-  VideoCaptions();
-  ~VideoCaptions();  
-    
-
-
 
 private:
- 
+  
+
   /****************************************/
   /*              VARIABLES               */
   /****************************************/  
   
   // simplify typenames for easy reading
-  using _frequentWords     = vector<CaptionWord>; 
+  using _frequentWords     = vector<CaptionWord*>; 
   using _captionWordsIndex = map<string, CaptionWord*>;
-  using _captionLines      = vector<CaptionLine>;
-  using lineCheck          = map<string, CaptionLine>;
+  using _captionLines      = vector<CaptionLine*>;
+  using lineCheck          = map<string, CaptionLine*>;
 
   
-  _frequentWords*       captionWordsSortedByFrequency;
-  _captionWordsIndex    captionWordsIndex{};
-  _captionLines         captionLines;
-  string                videoTitle;  
-  string                videoURL;
-  string                videoID;
-  string                captionText{};
+  _frequentWords      captionWordsSortedByFrequency;
+  _captionWordsIndex  captionWordsIndex{};
+  _captionLines       captionLines;
+  string              videoTitle;  
+  string              videoURL;
+  string              videoID;
+  string              captionText{};
 
   
   /****************************************/
@@ -84,6 +103,9 @@ private:
   void    printTopTenMentions() const;
   void    sendWebRequestForCaptions();
   void    getCaptions();
+  void    printCaptionsToFile();
+  void    searchForWord();
+  void    printMaxMentions();
 
   inline void  buildAndStoreCaptionLine(lineCheck&,string,string,CaptionLine&);
   inline void  indexWord(string, CaptionLine*);
@@ -91,14 +113,11 @@ private:
   inline bool  lineIsNotAlreadyIndexed(lineCheck&, string&);
   inline bool  lineContainsTimeInfo(string);
   inline void  indexWordsInCurrentLine(CaptionLine&);
-  inline bool  nextLineIsACopy(istringstream&, string&, string&);
+  inline bool  nextLineIsACopy(istringstream&, string&, string&);  
+  inline bool  wordIsIndexed(string);    
+  inline bool  captionsContainWord(string);
   
-  bool  wordIsIndexed(string);
-  void  printCaptionsToFile();
-  void  searchForWord();
-  void  printMaxMentions();
-  
-  inline bool           captionsContainWord(string);
-  inline static size_t  writefunc(char*, size_t, size_t, string*);
+  size_t  writefunc(char*, size_t, size_t, string*);
 };
 
+#endif // VIDEOCAPTIONS_H

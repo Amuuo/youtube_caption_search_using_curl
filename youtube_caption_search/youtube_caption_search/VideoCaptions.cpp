@@ -15,8 +15,8 @@ VideoCaptions::CaptionLine::Time::Time(string h,
                                                   sec{stoi(s)} {}
 
 VideoCaptions::CaptionLine::CaptionLine(string l, 
-                                        Time t) : line {l}, 
-                                                  time {t} {}
+                                        Time t) : _line {l}, 
+                                                  _time {t} {}
 
 
 bool VideoCaptions::wordIsIndexed(string _word) {
@@ -38,17 +38,34 @@ void VideoCaptions::printCaptionsToFile() {
 /*****************************************/
 /*       PRINT CAPTIONS TO CONSOLE       */
 /*****************************************/
-void VideoCaptions::printCaptionsToConsole(CaptionWord* capWord, int choice) {
-  auto printStrings = [](vector<CaptionLine*> lineStructVector) {
-    for (auto& capLine : lineStructVector)
-    printf("\n\t>> \"%s\"", capLine->_line.c_str());
+void VideoCaptions::printCaptionsToConsole(CaptionWord* wordToPrint, 
+                                           int menuChoice) {
+  
+  auto printStrings = [](vector<string> itemsToPrint) {
+    for (auto& capLine : itemsToPrint)
+    printf("\n\t>> \"%s\"", capLine.c_str());
   };     
 
-  switch (choice) {      
-    case 1: printStrings({&capWord->videoURL});           break; //print url only
-    case 2: printStrings({&capWord->_line, getCaptionClipURL(*capWord,); break; //print url+context
-    case 3: printStrings({&capWord->_line});               break; //print context only
-    default: break;
+  switch (menuChoice) {      
+    
+    //print url only
+    case 1: 
+      printStrings({wordToPrint->captionContext[menuChoice]->timedURL});           
+      break; 
+    
+    //print url+context
+    case 2: 
+      printStrings({wordToPrint->captionContext[menuChoice]->timedURL, 
+                   getCaptionClipURL(wordToPrint->captionContext[menuChoice])}); 
+      break; 
+    
+    //print context only
+    case 3: 
+      printStrings({wordToPrint->captionContext[menuChoice]->timedURL});               
+      break; 
+    
+    default: 
+      break;
   }
 }
 
@@ -264,11 +281,10 @@ void VideoCaptions::searchForWord() {
            "mentions): ",
            searchWord.c_str());
     
-    int choice = displayPrintMenu();        
-    for (auto& c : captionWordsIndex[searchWord]->captionContext) {
-      /* FUNCTION NEEDS TO BE REWRITTEN */
-      printCaptionsToConsole(c->_line, choice);
-    }
+    int choice = displayPrintMenu();            
+    /* FUNCTION NEEDS TO BE REWRITTEN */
+    printCaptionsToConsole(c->_line, choice);
+    
   } else {
     cout << "\n\nThat word was not found...";
   }
@@ -401,30 +417,32 @@ void VideoCaptions::getCaptions() {
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
 /*****************************************/
-void VideoCaptions::printMaxMentions() const {
+void VideoCaptions::printMaxMentions() {
 
   int range = getUserInput<int>("Enter range");
   
-  static const char* format = "\n\t(%d %-8s:  \"%s\"";
+  static const char* wordContextFormat = "\n\t(%d %-8s:  \"%s\"";
   int choice{displayPrintMenu()};
 
   if(choice != 4) printf("\n");
 
   if (r == 'r') {    
-    for (auto i{captionWordsSortedByFrequency->rbegin()}; i!=captionWordsSortedByFrequency->rend(); ++i) {      
-      printf(format, i->second.size(), "mentions)", i->first.c_str());                
+    for (auto i{captionWordsSortedByFrequency.rbegin()}; 
+         i!=captionWordsSortedByFrequency.rend(); ++i) {      
+      
+      printf(wordContextFormat, i->second.size(), "mentions)", i->first.c_str());                
       
       for (auto& c : i->second)
-          VideoCaptions::printCaptionsToConsole(c, choice);
+          printCaptionsToConsole(c, choice);
     } 
   } else {        
     for (int i = 0; i < range; ++i) {            
-      printf(format, captionWordsSortedByFrequency->at(i).second.size(),           
+      printf(wordContextFormat, captionWordsSortedByFrequency->at(i).second.size(),           
                      "mentions)",
                      captionWordsSortedByFrequency->at(i).first.c_str());                
       
       for (auto& c : captionWordsSortedByFrequency->at(i).second)
-          VideoCaptions::printCaptionsToConsole(c, choice);          
+          printCaptionsToConsole(c, choice);          
     }
   }
 }
