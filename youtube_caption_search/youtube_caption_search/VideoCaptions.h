@@ -21,6 +21,7 @@
 #include<stdio.h>
 #include<memory>
 #include"userIO.h"
+#include"MenuOptionsData.h"
 
 using namespace std;
 
@@ -40,12 +41,13 @@ public:
   ~VideoCaptions();  
   
   
-  /****************************************/
-  /*          CAPTION STRUCTURES          */
-  /****************************************/
-  static struct CaptionLine {   
+
+  /**********************************/
+  /*          CAPTION LINE          */
+  /**********************************/
+  struct CaptionLine {   
     
-    static struct Time {   
+    struct Time {   
       Time(){}
       Time(string,string,string){}      
       int hr, min, sec;         
@@ -53,29 +55,54 @@ public:
     CaptionLine(string, Time){}
     CaptionLine(){}
 
-    string _line;
+    string line;
     string timedURL;
-    Time   _time;
+    Time   time;
     
   };
   
-  static struct CaptionWord {
+
+  /**********************************/
+  /*          CAPTION WORD          */
+  /**********************************/
+  struct CaptionWord {
 
     using ContextPtr = vector<shared_ptr<CaptionLine>>;
     
     CaptionWord(string, shared_ptr<CaptionLine>);
     ContextPtr captionContext;
-    string     word{};
+    string     word;
 
     void addContextLine(shared_ptr<CaptionLine>);
   };
 
+
+
+
+  string  getCaptionClipURL(shared_ptr<CaptionLine>);  
+  void    printCaptionsToConsole(shared_ptr<CaptionWord>, int);
+  void    cleanupCaptionDownloadFile();
+  void    createCaptionMap();
+  int     displayPrintMenu();
+  void    createMostFrequentWordsVector();
+  void    printTopTenMentions() const;
+  void    sendWebRequestForCaptions();
+  void    getCaptions();
+  
+  function<void()> printCaptionsToFile();
+  function<void()> searchForWord();
+  function<void()> printMaxMentions();
+
+
 protected:
-    vector<menuOptionsData> menuOptions{
-    {"Print most frequent words", &printMaxMentions()},
-    {"Search word", searchForWord()},
-    {"Print entire table", printMaxMentions()},
-    {"Print table to file", printCaptionsToFile()}};
+
+  vector<MenuOptionsData> menuOptions = {
+    
+    {"Print most frequent words", printMaxMentions()},
+    {"Search word",               searchForWord()},
+    {"Print entire table",        printMaxMentions()},
+    {"Print table to file",       printCaptionsToFile()}
+  };
 
 private:
   
@@ -84,8 +111,11 @@ private:
   /*              VARIABLES               */
   /****************************************/  
 
-  vector<shared_ptr<CaptionWord>>      captionWordsSortedByFrequency{};
-  map<string, shared_ptr<CaptionWord>> captionWordsIndex{};
+  using linePtr = shared_ptr<CaptionLine>;
+  using wordPtr = shared_ptr<CaptionWord>;
+
+  vector<wordPtr>      captionWordsSortedByFrequency{};
+  map<string, wordPtr> captionWordsIndex{};
   vector<unique_ptr<CaptionLine>>      captionLines{};
   
   string  videoTitle;  
@@ -97,25 +127,14 @@ private:
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
-  string  getCaptionClipURL(CaptionLine*);  
-  void    printCaptionsToConsole(CaptionWord*, int);
-  void    cleanupCaptionDownloadFile();
-  void    createCaptionMap();
-  int     displayPrintMenu();
-  void    createMostFrequentWordsVector();
-  void    printTopTenMentions() const;
-  void    sendWebRequestForCaptions();
-  void    getCaptions();
-  void    printCaptionsToFile();
-  void    searchForWord();
-  void    printMaxMentions();
+
 
   inline string  getWordURL(int); 
   inline void    deleteCommonWordsFromMap();
-  inline void    buildAndStoreCaptionLine(map<string,CaptionLine*>&,string,string,CaptionLine&);
+  inline void    buildAndStoreCaptionLine(map<string,shared_ptr<CaptionLine>>,string,string,CaptionLine&);
   inline void    indexWord(string, CaptionLine*);
   inline void    setWordsToLowercase(string);
-  inline bool    lineIsNotAlreadyIndexed(map<string,CaptionLine*>&, string&);
+  inline bool    lineIsNotAlreadyIndexed(map<string,shared_ptr<CaptionLine>>, string&);
   inline bool    lineContainsTimeInfo(string);
   inline void    indexWordsInCurrentLine(CaptionLine&);
   inline bool    nextLineIsACopy(istringstream&, string&, string&);  

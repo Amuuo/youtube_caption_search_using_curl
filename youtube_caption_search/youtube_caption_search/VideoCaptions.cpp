@@ -5,26 +5,44 @@
 
 
 VideoCaptions::
-VideoCaptions(){}
+VideoCaptions(){
+  
+}
+
+
+
 
 VideoCaptions::
 ~VideoCaptions(){
   ofstream saveCaptionStruct{videoTitle, ofstream::binary};
 }
 
+
+
+
 VideoCaptions::CaptionLine::Time::
 Time(string h, string m, string s): hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} {}
 
+
+
+
 VideoCaptions::CaptionLine::
-CaptionLine(string l, Time t) : _line {l}, _time {t} {}
+CaptionLine(string line, Time time) : line{line}, time{time} {}
+
+
+
 
 VideoCaptions::CaptionWord::
-CaptionWord(string)
+CaptionWord(string word, shared_ptr<CaptionLine> captionLine) : word{ word } {
+  captionContext.push_back(captionLine);
+}
 
-bool 
-VideoCaptions::
-wordIsIndexed(string _word) {
-  return captionWordsIndex.find(_word) == captionWordsIndex.end();
+
+
+
+bool VideoCaptions::
+wordIsIndexed(string word) {
+  return captionWordsIndex.find(word) == captionWordsIndex.end();
 }
 
 
@@ -33,8 +51,7 @@ wordIsIndexed(string _word) {
 /*****************************************/
 /*         PRINT CAPTIONS TO FILE        */
 /*****************************************/
-void 
-VideoCaptions::
+function<void()> VideoCaptions::
 printCaptionsToFile() {
   ofstream outStream{getUserInput<string>("Save as")};               
   outStream << captionText;  
@@ -47,9 +64,8 @@ printCaptionsToFile() {
 /*****************************************/
 /*       PRINT CAPTIONS TO CONSOLE       */
 /*****************************************/
-void 
-VideoCaptions::
-printCaptionsToConsole(CaptionWord* wordToPrint, int menuChoice) {
+void VideoCaptions::
+printCaptionsToConsole(shared_ptr<CaptionWord> wordToPrint, int menuChoice) {
   
   auto printStrings = [](vector<string> itemsToPrint) {
     for (auto& capLine : itemsToPrint)
@@ -85,8 +101,7 @@ printCaptionsToConsole(CaptionWord* wordToPrint, int menuChoice) {
 /*****************************************/
 /*          CLEANUP CAPTION TEXT         */
 /*****************************************/
-void 
-VideoCaptions::
+void VideoCaptions::
 cleanupCaptionDownloadFile(){
 
   printf("\n>> Parsing caption file...");
@@ -118,11 +133,11 @@ cleanupCaptionDownloadFile(){
 /*****************************************/
 /*           CREATE CAPTION MAP          */
 /*****************************************/
-void 
-VideoCaptions::
+void VideoCaptions::
 createCaptionMap() {
 
-  map<string, CaptionLine*>      lineMap;
+  map<string, shared_ptr<CaptionLine>> lineMap;
+  
   string         lineInfo; 
   string         capLine;
   CaptionLine    currentLine;
@@ -149,11 +164,12 @@ createCaptionMap() {
 }
 
 
+
+
 /****************/
 /*  INDEX WORD  */
 /****************/
-void 
-VideoCaptions::
+void VideoCaptions::
 indexWord(string capWord, CaptionLine* capLine) {
   
   if (wordIsIndexed(capWord)) {
@@ -166,15 +182,16 @@ indexWord(string capWord, CaptionLine* capLine) {
 }
 
 
+
+
 /**********************************/
 /*  BUILD AND STORE CAPTION LINE  */
 /**********************************/
-void 
-VideoCaptions::
-buildAndStoreCaptionLine(map<string,CaptionLine*>& lineMap, 
-                                             string capLine, 
-                                             string lineInfo,
-                                             CaptionLine& lineStruct) {  
+void VideoCaptions::
+buildAndStoreCaptionLine(map<string,shared_ptr<CaptionLine>> lineMap, 
+                         string capLine, 
+                         string lineInfo,
+                         CaptionLine& lineStruct) {  
 
   /* parse first three values of timestamp, ex: "00:00:00" */
   lineStruct = CaptionLine{capLine, {lineInfo.substr(0,2),
@@ -185,59 +202,61 @@ buildAndStoreCaptionLine(map<string,CaptionLine*>& lineMap,
 }
 
 
+
+
 /**********************************/
 /*     SET WORDS TO LOWERCASE     */
 /**********************************/
-inline void 
-VideoCaptions::
+inline void VideoCaptions::
 setWordsToLowercase(string line) {
   transform(line.begin(), line.end(), line.begin(), ::tolower);
 }
 
 
+
+
 /*********************************/
 /*  LINE IS NOT ALREADY INDEXED  */
 /*********************************/
-inline bool 
-VideoCaptions::
-lineIsNotAlreadyIndexed(map<string,CaptionLine*>& lineMap,
-                                            string& capLine){
+inline bool VideoCaptions::
+lineIsNotAlreadyIndexed(map<string,shared_ptr<CaptionLine>> lineMap, string& capLine){
   return lineMap.find(capLine) == lineMap.end();      
 }
+
+
 
 
 /**********************************/
 /*    LINE CONTAINS TIME INFO     */
 /**********************************/
-inline bool 
-VideoCaptions::
+inline bool VideoCaptions::
 lineContainsTimeInfo(string line) {
   /* check for format, ex: "00:00:00 -> 00:00:00" */
   return isdigit(line[0]) && line[2] == ':';
 }
 
 
+
+
 /*********************************/
 /*      NEXT LINE IS A COPY      */
 /*********************************/
-inline bool 
-VideoCaptions::
-nextLineIsACopy(istringstream& sstream, 
-                                           string& prevLine,
-                                           string& line) {
+inline bool VideoCaptions::
+nextLineIsACopy(istringstream& sstream, string& prevLine, string& line) {
   getline(sstream, line);
   return prevLine == line;
 }
 
 
+
+
 /***********************************/
 /*   INDEX WORDS IN CURRENT LINE   */
 /***********************************/
-inline void 
-VideoCaptions::
+inline void VideoCaptions::
 indexWordsInCurrentLine(CaptionLine& currentLine) {
   
-  istringstream lineStream{currentLine._line};
+  istringstream lineStream{currentLine.line};
   string wordInCaptionLine;
   while (lineStream) {
     lineStream >> wordInCaptionLine;
@@ -259,8 +278,7 @@ getWordURL(int) {
 /******************************************/
 /*      DELETE COMMON WORDS FROM MAP      */
 /******************************************/
-void 
-VideoCaptions::
+void VideoCaptions::
 deleteCommonWordsFromMap() {
   
   printf("\n>> Deleting all common words from table...");
@@ -283,12 +301,12 @@ deleteCommonWordsFromMap() {
 /*        CONSTRUCT TIMESTAMPED URL       */
 /******************************************/
 string VideoCaptions::
-getCaptionClipURL(CaptionLine* line) {
+getCaptionClipURL(shared_ptr<CaptionLine> line) {
   
   return "www.youtube.com/watch&feature=youtu.be&t="  + 
-         to_string(line->_time.hr)  + 'h' + 
-         to_string(line->_time.min) + 'm' + 
-         to_string(line->_time.sec) + 's' + videoID;
+         to_string(line->time.hr)  + 'h' + 
+         to_string(line->time.min) + 'm' + 
+         to_string(line->time.sec) + 's' + videoID;
 }
 
 
@@ -358,11 +376,11 @@ void VideoCaptions::createMostFrequentWordsVector() {
     
   printf("\n>> Sorting words by number of mentions..."); 
 
-  for(auto& m : *captionMap){      
-    captionWordsSortedByFrequency->push_back({make_pair(m.first, m.second)});
+  for(auto& currentWord : captionWordsIndex){      
+    captionWordsSortedByFrequency.push_back({currentWord});
   }
-  sort(captionWordsSortedByFrequency->begin(), 
-       captionWordsSortedByFrequency->end(), 
+  sort(captionWordsSortedByFrequency.begin(), 
+       captionWordsSortedByFrequency.end(), 
        [](pair<string, set<VideoCaptions*>> p1, 
           pair<string, set<VideoCaptions*>> p2) {
           return p1.second.size() > p2.second.size(); });
@@ -375,11 +393,17 @@ void VideoCaptions::createMostFrequentWordsVector() {
 /*****************************************/
 /*         PRINT TOP TEN MENTIONS        */
 /*****************************************/
+/* 
+ * prints 10 most used words
+ * format: "word(10)" 
+ */
 void VideoCaptions::printTopTenMentions() const {
+  
   printf("\n\n\n\tTOP 10 MENTIONS:\n\n\t\t");
-  for (int i{1}; i<=10; ++i) {
-    printf("%s(%d), ", captionWordsSortedByFrequency->at(i).first.c_str(), 
-                       captionWordsSortedByFrequency->at(i).second.size());
+  
+  for (int i=0; i<10; ++i) {
+    printf("%s(%d), ", captionWordsSortedByFrequency[i]->word.c_str(), 
+                       captionWordsSortedByFrequency[i]->captionContext.size());
     if(i % 2 == 0) 
       printf("\n\t\t");
   }
@@ -456,7 +480,7 @@ void VideoCaptions::getCaptions() {
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
 /*****************************************/
-void VideoCaptions::printMaxMentions() {
+function<void()> VideoCaptions::printMaxMentions() {
 
   int range = getUserInput<int>("Enter range");
   
@@ -469,7 +493,7 @@ void VideoCaptions::printMaxMentions() {
     for (auto i{captionWordsSortedByFrequency.rbegin()}; 
          i!=captionWordsSortedByFrequency.rend(); ++i) {      
       
-      printf(wordContextFormat, i->second.size(), "mentions)", i->first.c_str());                
+      printf(wordContextFormat, i.con.size(), "mentions)", i->first.c_str());                
       
       for (auto& c : i->second)
           printCaptionsToConsole(c, choice);
