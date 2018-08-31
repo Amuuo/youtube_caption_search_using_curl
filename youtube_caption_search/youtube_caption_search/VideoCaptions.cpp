@@ -9,6 +9,11 @@ VideoCaptions(){
   
 }
 
+VideoCaptions::VideoCaptions(string url) : videoURL{url} {
+  
+  getCaptions();
+}
+
 
 
 
@@ -21,21 +26,44 @@ VideoCaptions::
 
 
 
+VideoCaptions::CaptionLine::Time::Time(){}
+
+
+
+
 VideoCaptions::CaptionLine::Time::
 Time(string h, string m, string s): hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} {}
 
 
 
 
+VideoCaptions::CaptionLine::CaptionLine(){}
+
+
+
+
 VideoCaptions::CaptionLine::
-CaptionLine(string line, Time time) : line{line}, time{time} {}
+CaptionLine(string line, Time _time) : line{line}, _time{_time} {}
+
+
+
+
+VideoCaptions::CaptionWord::CaptionWord() {}
 
 
 
 
 VideoCaptions::CaptionWord::
-CaptionWord(string word, linePtr captionLine) : word{ word } {
-  captionContext.push_back(captionLine);
+CaptionWord(string word, linePtr context) : word{word} {
+  captionContext.push_back(context);
+}
+
+
+
+
+void VideoCaptions::CaptionWord::
+addContextLine(linePtr contextLine) {
+  captionContext.push_back(contextLine);
 }
 
 
@@ -52,7 +80,7 @@ wordIsIndexed(string word) {
 /*****************************************/
 /*         PRINT CAPTIONS TO FILE        */
 /*****************************************/
-function<void()> VideoCaptions::
+void VideoCaptions::
 printCaptionsToFile() {
   ofstream outStream{getUserInput<string>("Save as")};               
   outStream << captionText;  
@@ -260,20 +288,17 @@ indexWordsInCurrentLine(CaptionLine& currentLine) {
   string wordInCaptionLine;
   while (lineStream) {
     lineStream >> wordInCaptionLine;
-    indexWord(wordInCaptionLine, &currentLine);
+    indexWord(wordInCaptionLine, make_shared<CaptionLine>(currentLine));
   }
 }
 
 
 
-
-
-
 inline string VideoCaptions::
-getWordURL(int) {
+getWordURL(int) {}
 
-  return ;
-}
+
+
 
 /******************************************/
 /*      DELETE COMMON WORDS FROM MAP      */
@@ -304,9 +329,9 @@ string VideoCaptions::
 getCaptionClipURL(shared_ptr<CaptionLine> line) {
   
   return "www.youtube.com/watch&feature=youtu.be&t="  + 
-         to_string(line->time.hr)  + 'h' + 
-         to_string(line->time.min) + 'm' + 
-         to_string(line->time.sec) + 's' + videoID;
+         to_string(line->_time.hr)  + 'h' + 
+         to_string(line->_time.min) + 'm' + 
+         to_string(line->_time.sec) + 's' + videoID;
 }
 
 
@@ -325,7 +350,7 @@ captionsContainWord(string searchWord) {
 /*****************************************/
 /*            SEARCH FOR WORD            */
 /*****************************************/
-function<void()> VideoCaptions::
+void VideoCaptions::
 searchForWord() {      
 
   string searchWord = getUserInput<string>("Enter word");
@@ -350,7 +375,8 @@ searchForWord() {
 /****************************************/
 /*          DISPLAY PRINT MENU          */
 /****************************************/
-int VideoCaptions::displayPrintMenu() {
+int VideoCaptions::
+displayPrintMenu() {
     
   printf("\n\n\t1 - Print URL links"       );
   printf(  "\n\t2 - Print context and URLs");
@@ -367,7 +393,8 @@ int VideoCaptions::displayPrintMenu() {
 /*****************************************/
 /*   CREATE MOST FREQUENT WORDS VECTOR   */
 /*****************************************/
-void VideoCaptions::createMostFrequentWordsVector() {
+void VideoCaptions::
+createMostFrequentWordsVector() {
     
   printf("\n>> Sorting words by number of mentions..."); 
 
@@ -391,7 +418,8 @@ void VideoCaptions::createMostFrequentWordsVector() {
  * prints 10 most used words
  * format: "word(10)" 
  */
-void VideoCaptions::printTopTenMentions() const {
+void VideoCaptions::
+printTopTenMentions() const {
   
   printf("\n\n\n\tTOP 10 MENTIONS:\n\n\t\t");
   
@@ -409,7 +437,8 @@ void VideoCaptions::printTopTenMentions() const {
 /******************************************/
 /*               WRITEFUNC                */
 /******************************************/
-size_t VideoCaptions::writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
+size_t VideoCaptions::
+writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
   
   captionText += string{ptr + '\0'};
   return size*nmemb;
@@ -421,7 +450,8 @@ size_t VideoCaptions::writefunc(char* ptr, size_t size, size_t nmemb, string* s)
 /******************************************/
 /*      SEND WEB-REQUEST FOR CAPTIONS     */
 /******************************************/
-void VideoCaptions::sendWebRequestForCaptions() {
+void VideoCaptions::
+sendWebRequestForCaptions() {
 
   string new_url{"http://video.google.com/timedtext?type=track&lang=en&v="};
   regex rgx("v=(.{11})");
@@ -463,7 +493,12 @@ void VideoCaptions::getCaptions() {
   createMostFrequentWordsVector();
 }
 
-shared_ptr<vector<MenuOptionsData>> VideoCaptions::getMenuOptions() {
+
+
+
+
+shared_ptr<vector<MenuOptionsData>> VideoCaptions::
+getMenuOptions() {
   return make_shared<vector<MenuOptionsData>>(menuOptions);
 }
 
@@ -474,7 +509,7 @@ shared_ptr<vector<MenuOptionsData>> VideoCaptions::getMenuOptions() {
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
 /*****************************************/
-function<void()> VideoCaptions::printMaxMentions() {
+void VideoCaptions::printMaxMentions() {
 
   int range = getUserInput<int>("Enter range");  
   const char* wordContextFormat = "\n\t(%d %-8s:  \"%s\"";
@@ -495,16 +530,3 @@ function<void()> VideoCaptions::printMaxMentions() {
 
 
 
-VideoCaptions::CaptionWord::
-CaptionWord(string word, shared_ptr<CaptionLine> context) : word{word} {
-  captionContext.push_back(context);
-}
-
-
-
-
-
-void VideoCaptions::CaptionWord::
-addContextLine(linePtr contextLine) {
-  captionContext.push_back(contextLine);
-}

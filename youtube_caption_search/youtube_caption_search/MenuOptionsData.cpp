@@ -10,6 +10,6 @@ MenuOptionsData::
 ~MenuOptionsData() {}
 
 MenuOptionsData::
-MenuOptionsData(string menuItemDescription, function<void()> menuItemFunction) :  
+MenuOptionsData(const char* menuItemDescription, shared_ptr<function<void()>> menuItemFunction) :  
   menuItemDescription{menuItemDescription}, menuItemFunction{menuItemFunction} {}
 

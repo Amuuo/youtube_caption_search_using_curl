@@ -73,13 +73,8 @@ shared_ptr<VideoCaptions> Captions;
 /*****************************************/
 int main(int argc, char** argv){
 
-  checkForValidCommandLine(argc,argv);
-  
-  Captions = make_shared<VideoCaptions>(new VideoCaptions);
-  
-  getVideoUrl(argc==2, argv);
-  Captions->getCaptions();
-  
+  checkForValidCommandLine(argc,argv);      
+  getVideoUrl(argc==2, argv);    
   
   /**************************/
   /* loop through user mode */
@@ -101,9 +96,9 @@ int main(int argc, char** argv){
 void getVideoUrl(bool cmdLineUrlPresent, char** args) {
   
   if (cmdLineUrlPresent)
-    Captions->captionURL = string{args[1]};    
+    Captions = make_shared<VideoCaptions>(string{{args[1]}});    
   else
-    Captions->captionURL = getUserInput<string>("Enter URL");    
+    Captions = make_shared<VideoCaptions>(getUserInput<string>("Enter URL"));    
 }
 
 

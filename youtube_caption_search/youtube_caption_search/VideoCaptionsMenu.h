@@ -1,13 +1,17 @@
 
+
+//#ifndef VIDEO_CAPTION_MENU_H
+//#define VIDEO_CAPTION_MENU_H
+
 #pragma once
-
-#ifndef VIDEO_CAPTION_MENU_H
-#define VIDEO_CAPTION_MENU_H
-
-#include"Menu.h"
-#include"VideoCaptions.h"
 #include<map>
 #include<vector>
+#include<memory>
+#include"Menu.h"
+#include"VideoCaptions.h"
+
+
+using std::unique_ptr;
 
 
 class VideoCaptionsMenu : public Menu {
@@ -31,5 +35,5 @@ private:
   
 };
 
-#endif //VIDEO_CAPTION_MENU_H
+//#endif //VIDEO_CAPTION_MENU_H
 

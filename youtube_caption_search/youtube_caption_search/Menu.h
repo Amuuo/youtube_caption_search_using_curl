@@ -1,14 +1,21 @@
+
+//#ifndef MENU_H
+//#define MENU_H
 #pragma once
-#ifndef MENU_H
-#define MENU_H
+
 #include<cstdio>
 #include<functional>
 #include<string>
 #include<vector>
+#include<memory>
 #include"userIO.h"
 #include"MenuOptionsData.h"
 
-using namespace std;
+
+using std::string;
+using std::vector;
+using std::shared_ptr;
+using std::make_shared;
 
 
 /******************************************/
@@ -35,4 +42,4 @@ private:
 
 };
 
-#endif //MENU_H
+//#endif //MENU_H

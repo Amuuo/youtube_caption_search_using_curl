@@ -1,8 +1,8 @@
+
+//#ifndef VIDEOCAPTIONS_H
+//#define VIDEOCAPTIONS_H
+
 #pragma once
-
-#ifndef VIDEOCAPTIONS_H
-#define VIDEOCAPTIONS_H
-
 #include<conio.h>
 #include<iostream>
 #include<sstream>
@@ -23,8 +23,22 @@
 #include"userIO.h"
 #include"MenuOptionsData.h"
 
-using namespace std;
-
+using std::map;
+using std::vector;
+using std::shared_ptr;
+using std::string;
+using std::ofstream;
+using std::istringstream;
+using std::ifstream;
+using std::getline;
+using std::cout;
+using std::to_string;
+using std::make_shared;
+using std::smatch;
+using std::regex;
+using std::regex_match;
+using std::back_inserter;
+using std::function;
 
 /**********************************************************/
 /*                V I D E O  C A P T I O N                */
@@ -35,22 +49,25 @@ class VideoCaptions {
 public:
   
   VideoCaptions();
+  VideoCaptions(string);
   ~VideoCaptions();  
   
 
-  struct CaptionLine {   
+  static struct CaptionLine {   
     
-    struct Time {   
-      Time(){}
-      Time(string,string,string){}      
-      int hr, min, sec;         
+    static struct Time {   
+      Time();
+      Time(string,string,string);      
+      int hr; 
+      int min; 
+      int sec;         
     };  
-    CaptionLine(string, Time){}
-    CaptionLine(){}
+    CaptionLine();
+    CaptionLine(string, Time);
 
     string line;
     string timedURL;
-    Time   time;
+    Time   _time;
     
   };
   
@@ -60,6 +77,7 @@ public:
 
     using ContextPtr = vector<linePtr>;
     
+    CaptionWord();
     CaptionWord(string, linePtr);
     ContextPtr captionContext;
     string     word;
@@ -81,25 +99,25 @@ public:
   void    getCaptions();
   
   
-  function<void()> printCaptionsToFile();
-  function<void()> searchForWord();
-  function<void()> printMaxMentions();
+  void printCaptionsToFile();
+  void searchForWord();
+  void printMaxMentions();
   shared_ptr<vector<MenuOptionsData>> getMenuOptions();
 
 protected:
 
-
-  shared_ptr<vector<MenuOptionsData>> 
-  menuOptions{new vector<MenuOptionsData>{
-    {"Print most frequent words", printMaxMentions()},
-    {"Search word",               searchForWord()},
-    {"Print entire table",        printMaxMentions()},
-    {"Print table to file",       printCaptionsToFile()}
-  }};
+  /********************************************************** 
+    THIS IS BROKEN, FIGURE OUT HOW TO USE FUNCTION POINTERS 
+   **********************************************************/
+  vector<MenuOptionsData> menuOptions = {
+    {"Print most frequent words", new function<void()>{printMaxMentions}},
+    {"Search word",               new function<void()>{searchForWord},
+    {"Print entire table",        new function<void()>{printMaxMentions},
+    {"Print table to file",       new function<void()>{printCaptionsToFile}}; 
+   /*********************************************************/
 
 
 private:
-  
 
   /****************************************/
   /*              VARIABLES               */
@@ -114,7 +132,7 @@ private:
   string  videoTitle;  
   string  videoURL;
   string  videoID;
-  string  captionText{};
+  static string  captionText;
   
   
   /****************************************/
@@ -134,9 +152,9 @@ private:
   inline bool    wordIsIndexed(string);    
   inline bool    captionsContainWord(string);
   
-  size_t  writefunc(char*, size_t, size_t, string*);
+  static size_t  writefunc(char*, size_t, size_t, string*);
 };
 
 
 
-#endif // VIDEOCAPTIONS_H
+//#endif // VIDEOCAPTIONS_H
