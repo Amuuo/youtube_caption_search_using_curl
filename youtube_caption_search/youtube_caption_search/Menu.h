@@ -26,7 +26,7 @@ class Menu {
 public:      
 
   Menu();
-  Menu(string,vector<MenuOptionsData>);
+  Menu(string, shared_ptr<vector<shared_ptr<MenuOptionsData>>>);
   ~Menu();
   
   void launchMenu();
@@ -35,7 +35,7 @@ public:
 protected:  
   
   string menuTitle;
-  shared_ptr<vector<MenuOptionsData>> menuOptions;
+  shared_ptr<vector<shared_ptr<MenuOptionsData>>> menuOptions;
 
 private:
 

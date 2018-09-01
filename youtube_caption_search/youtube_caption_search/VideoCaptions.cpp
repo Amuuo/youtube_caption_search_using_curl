@@ -499,7 +499,21 @@ void VideoCaptions::getCaptions() {
 
 shared_ptr<vector<MenuOptionsData>> VideoCaptions::
 getMenuOptions() {
-  return make_shared<vector<MenuOptionsData>>(menuOptions);
+   
+  
+  auto option1 = searchForWord;
+  auto option2 = printCaptionsToFile;
+  auto option3 = printMaxMentions;
+  
+  vector<MenuOptionsData> menuOps = {
+   {"Print most frequent words", make_shared<function<void()>>(option1)},
+   {"Search word",               make_shared<function<void()>>(option2)},
+   {"Print entire table",        make_shared<function<void()>>(option1)},
+   {"Print table to file",       make_shared<function<void()>>(option3)}}; ;
+    
+
+  return make_shared<vector<MenuOptionsData>>(menuOps);
+  
 }
 
 

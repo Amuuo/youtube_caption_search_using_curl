@@ -85,8 +85,8 @@ public:
     void addContextLine(linePtr);
   };
 
-
-
+  //using menuOptionPtr = shared_ptr<MenuOptionsData>;
+  //using menuOptionFunc = vector<menuOptionPtr>;
 
   string  getCaptionClipURL(shared_ptr<CaptionLine>);  
   void    printCaptionsToConsole(shared_ptr<CaptionWord>, int);
@@ -104,17 +104,8 @@ public:
   void printMaxMentions();
   shared_ptr<vector<MenuOptionsData>> getMenuOptions();
 
-protected:
 
-  /********************************************************** 
-    THIS IS BROKEN, FIGURE OUT HOW TO USE FUNCTION POINTERS 
-   **********************************************************/
-  vector<MenuOptionsData> menuOptions = {
-    {"Print most frequent words", new function<void()>{printMaxMentions}},
-    {"Search word",               new function<void()>{searchForWord},
-    {"Print entire table",        new function<void()>{printMaxMentions},
-    {"Print table to file",       new function<void()>{printCaptionsToFile}}; 
-   /*********************************************************/
+protected:
 
 
 private:

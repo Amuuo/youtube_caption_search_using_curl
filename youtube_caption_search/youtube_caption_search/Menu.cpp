@@ -5,9 +5,9 @@ Menu::
 Menu() {}
 
 Menu::
-Menu(string menuTitle, vector<MenuOptionsData> menuOptions) :
+Menu(string menuTitle, shared_ptr<vector<shared_ptr<MenuOptionsData>>> menuOptions) :
   menuTitle{menuTitle}, 
-  menuOptions{make_shared<vector<MenuOptionsData>>(menuOptions)}{}
+  menuOptions{menuOptions}{}
 
 Menu::
 ~Menu() {}
@@ -20,10 +20,10 @@ launchMenu() {
   int itemNumber{0};
   
   for (auto option : *menuOptions) {
-    printf(itemFormat, (itemNumber++)+1, option.menuItemDescription);    
+    printf(itemFormat, (itemNumber++)+1, option->menuItemDescription);    
   }    
     
-  menuOptions->at(getUserInput<int>("Selection", "\n\n\t")).menuItemFunction();
+  (*menuOptions->at(getUserInput<int>("Selection", "\n\n\t"))->menuItemFunction)();
 }
 
 
