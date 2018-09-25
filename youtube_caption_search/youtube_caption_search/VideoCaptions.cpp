@@ -42,7 +42,7 @@ CaptionLine(string line, Time time) : line{line}, contextTime{time}
 
 
 VideoCaptions::CaptionWord::
-CaptionWord(string word, ContextPtrVec context) : word{word} {
+CaptionWord(string word, ContextPtr context) : word{word} {
   captionContexts.push_back(context);
 }
 
@@ -50,7 +50,7 @@ CaptionWord(string word, ContextPtrVec context) : word{word} {
 
 
 void VideoCaptions::CaptionWord::
-addContextLine(shared_ptr<CaptionLine> contextLine) {
+addContextLine(ContextPtr contextLine) {
   captionContexts.push_back(contextLine);
 }
 
@@ -163,7 +163,7 @@ cleanupCaptionDownloadFile()
 void VideoCaptions::
 createCaptionMap() 
 {
-  map<string, CaptionLine> lineMap;
+  map<string, CaptionLine> tmpLineMap;
 
   string                  currentLine; 
   string                  nextLine; 
@@ -181,7 +181,7 @@ createCaptionMap()
     
     if(lineContainsTimeInfo(currentLine)) 
     {      
-      if(nextLineIsACopy(captionStream,currentLine)) 
+      if(nextLineIsADuplicate(captionStream,currentLine)) 
       {
         continue;      
       } 
@@ -191,7 +191,7 @@ createCaptionMap()
         
         if(lineIsNotAlreadyIndexed(nextLine)) 
         {        
-          buildAndStoreCaptionLine(lineMap,currentLine,nextLine);                            
+          buildCaptionLineAndWords(tmpLineMap,currentLine,nextLine);                            
         }   
       }
     }
@@ -205,15 +205,15 @@ createCaptionMap()
 /*  INDEX WORD  */
 /****************/
 void VideoCaptions::
-indexWord(string capWord, linePtr capLine) 
+indexWord(string capWord, ContextPtr capLinePtr) 
 {
   if (wordIsIndexed(capWord)) 
   {
-    captionWordsIndex[capWord]->captionContexts.push_back(capLine);
+    captionWordsIndex[capWord]->captionContexts.push_back(capLinePtr);
   }
   else
   {        
-    captionWordsIndex[capWord] = wordPtr{new CaptionWord{capWord, capLine}};
+    captionWordsIndex[capWord] = make_shared<shared_ptr<CaptionWord>>(capWord, capLinePtr);
   }  
 }
 
@@ -223,8 +223,8 @@ indexWord(string capWord, linePtr capLine)
 /**********************************/
 /*  BUILD AND STORE CAPTION LINE  */
 /**********************************/
-shared_ptr<VideoCaptions::CaptionLine> VideoCaptions::
-buildAndStoreCaptionLine(map<string,CaptionLine> lineMap, 
+void VideoCaptions::
+buildCaptionLineAndWords(map<string,shared_ptr<CaptionLine>> lineMap, 
                          string                  capLine, 
                          string                  lineInfo) 
 {  
@@ -232,12 +232,14 @@ buildAndStoreCaptionLine(map<string,CaptionLine> lineMap,
   using Time        = CaptionLine::Time;
   
   /* parse first three values of timestamp, ex: "00:00:00" */
-  linePtrMap[capLine] = make_shared<CaptionLine>(
-                          capLine, Time{lineInfo.substr(0,2),
-                                        lineInfo.substr(3,2),
-                                        lineInfo.substr(6,2)}
+  lineMap[capLine] = make_shared<CaptionLine>(
+                                capLine, Time{lineInfo.substr(0,2),
+                                              lineInfo.substr(3,2),
+                                              lineInfo.substr(6,2)}
                         ); 
-  return linePtrMap[capLine];
+
+
+  indexWordsInCurrentLine(lineMap[capLine]);
 }
 
 
@@ -261,7 +263,7 @@ setWordsToLowercase(string line)
 inline bool VideoCaptions::
 lineIsNotAlreadyIndexed(string& capLine)
 {
-  return linePtrMap.find(capLine) == linePtrMap.end();      
+  return captionWordsIndex.find(capLine) == captionWordsIndex.end();      
 }
 
 
@@ -284,20 +286,14 @@ lineContainsTimeInfo(string line)
 /*      NEXT LINE IS A COPY      */
 /*********************************/
 inline bool VideoCaptions::
-nextLineIsACopy(istringstream& sstream, string& currentLine) 
+nextLineIsADuplicate(istringstream& sstream, 
+                     string& nextLine, 
+                     map<string,CaptionLine> tmpLineMap) 
 {
-  string nextLine;
   getline(sstream, nextLine);
   
-  if(currentLine == nextLine)
-  {
-    return true;
-  }
-  else
-  {
-    currentLine = nextLine;
-    return false;
-  }
+  // if the temporary map find the line just taken
+  return tmpLineMap.find(nextLine) != tmpLineMap.end();
 }
 
 
@@ -307,15 +303,15 @@ nextLineIsACopy(istringstream& sstream, string& currentLine)
 /*   INDEX WORDS IN CURRENT LINE   */
 /***********************************/
 inline void VideoCaptions::
-indexWordsInCurrentLine(CaptionLine& currentLine) 
+indexWordsInCurrentLine(ContextPtr currentLine) 
 { 
-  istringstream lineStream{currentLine.line};
+  istringstream lineStream{currentLine->line};
   string wordInCaptionLine;
   
   while (lineStream) 
   {
     lineStream >> wordInCaptionLine;
-    indexWord(wordInCaptionLine, make_shared<CaptionLine>(currentLine));
+    indexWord(wordInCaptionLine, currentLine);
   }
 }
 
@@ -420,7 +416,7 @@ createMostFrequentWordsVector()
   }  
   sort(captionWordsSortedByFrequency.begin(), 
        captionWordsSortedByFrequency.end(), 
-       [](wordPtr p1, wordPtr p2) 
+       [](shared_ptr<CaptionWord> p1, shared_ptr<CaptionWord> p2) 
        {
           return p1->captionContexts.size() > p2->captionContexts.size();
        });

@@ -75,24 +75,32 @@ public:
     using ContextPtr    = shared_ptr<CaptionLine>;
     using ContextPtrVec = vector<shared_ptr<CaptionLine>>;
     
-    CaptionWord(string, ContextPtrVec);
+    CaptionWord(string, ContextPtr);
     ContextPtrVec captionContexts;
-    string     word;
+    string        word;
 
     void addContextLine(ContextPtr);
   };
 
 
+
+
+
   /****************************************/
   /*              VARIABLES               */
   /****************************************/  
-
-  using wordPtr         = shared_ptr<CaptionWord>;
-  using mostMentionVec  = vector<wordPtr>;
-  using captionMap      = map<string,wordPtr>; 
-
-  map<string,shared_ptr<CaptionLine>> linePtrMap;
   
+  
+  using mostMentionVec    = vector<shared_ptr<CaptionWord>>;
+  using captionMap        = map<string,shared_ptr<CaptionWord>>; 
+  using ContextPtr        = shared_ptr<CaptionLine>;
+
+
+  VideoCaptions();
+  VideoCaptions(string);
+  ~VideoCaptions();  
+
+
   mostMentionVec  captionWordsSortedByFrequency;
   captionMap      captionWordsIndex;  
   vector<string>  captionLines;
@@ -104,15 +112,11 @@ public:
 
 
 
-  using MenuOptions = Menu::MenuFunction;
-  using MenuOptionsVec = vector<MenuOptions>;
-  using MenuOptionsVecPtr = unique_ptr<vector<MenuOptions>>;
-  
 
 
-  VideoCaptions();
-  VideoCaptions(string);
-  ~VideoCaptions();  
+  using MenuOptions         = Menu::MenuFunction;
+  using MenuOptionsVec      = vector<MenuOptions>;
+  using MenuOptionsVecPtr   = unique_ptr<vector<MenuOptions>>;
   
 
   //string  getCaptionClipURL(shared_ptr<CaptionLines>);  
@@ -142,16 +146,15 @@ public:
   /****************************************/
 
 
-  shared_ptr<CaptionLine> buildAndStoreCaptionLine(map<string,CaptionLine>,string,string,string);
-  
+  inline void    buildCaptionLineAndWords(map<string,CaptionLine>,string,string,string);
   inline string  getWordURL(int); 
   inline void    deleteCommonWordsFromMap();
   inline void    indexWord(string, linePtr);
   inline void    setWordsToLowercase(string);
   inline bool    lineIsNotAlreadyIndexed(string&);
   inline bool    lineContainsTimeInfo(string);
-  inline void    indexWordsInCurrentLine(CaptionLine&);
-  inline bool    nextLineIsACopy(istringstream&,string&);  
+  inline void    indexWordsInCurrentLine(ContextPtr);
+  inline bool    nextLineIsADuplicate(istringstream&,string&);  
   inline bool    wordIsIndexed(string);    
   inline bool    captionsContainWord(string);
   
