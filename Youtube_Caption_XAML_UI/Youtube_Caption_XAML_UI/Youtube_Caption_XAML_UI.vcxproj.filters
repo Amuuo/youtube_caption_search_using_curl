@@ -15,13 +15,13 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="MainPage.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
-    <ClCompile Include="..\..\youtube_caption_search\youtube_caption_search\VideoCaptions.cpp" />
+    <ClCompile Include="VideoCaptions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="MainPage.h" />
-    <ClInclude Include="..\..\youtube_caption_search\youtube_caption_search\VideoCaptions.h" />
+    <ClInclude Include="VideoCaptions.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">

@@ -163,8 +163,7 @@ cleanupCaptionDownloadFile()
 void VideoCaptions::
 createCaptionMap() 
 {
-  map<string, CaptionLine> tmpLineMap;
-
+  captionLineMap          tmpLineMap;
   string                  currentLine; 
   string                  nextLine; 
   CaptionLine::Time       time;
@@ -181,7 +180,7 @@ createCaptionMap()
     
     if(lineContainsTimeInfo(currentLine)) 
     {      
-      if(nextLineIsADuplicate(captionStream,currentLine)) 
+      if(nextLineIsADuplicate(captionStream,currentLine, tmpLineMap)) 
       {
         continue;      
       } 
@@ -205,11 +204,11 @@ createCaptionMap()
 /*  INDEX WORD  */
 /****************/
 void VideoCaptions::
-indexWord(string capWord, ContextPtr capLinePtr) 
+indexWord(string& capWord, ContextPtr capLinePtr) 
 {
   if (wordIsIndexed(capWord)) 
   {
-    captionWordsIndex[capWord]->captionContexts.push_back(capLinePtr);
+    captionWordsIndex[capWord]->captionContextsList.push_back(capLinePtr);
   }
   else
   {        
@@ -224,9 +223,9 @@ indexWord(string capWord, ContextPtr capLinePtr)
 /*  BUILD AND STORE CAPTION LINE  */
 /**********************************/
 void VideoCaptions::
-buildCaptionLineAndWords(map<string,shared_ptr<CaptionLine>> lineMap, 
-                         string                  capLine, 
-                         string                  lineInfo) 
+buildCaptionLineAndWords(captionLineMap lineMap, 
+                         string      capLine, 
+                         string      lineInfo) 
 {  
   using CaptionLine = VideoCaptions::CaptionLine;
   using Time        = CaptionLine::Time;
@@ -288,7 +287,7 @@ lineContainsTimeInfo(string line)
 inline bool VideoCaptions::
 nextLineIsADuplicate(istringstream& sstream, 
                      string& nextLine, 
-                     map<string,CaptionLine> tmpLineMap) 
+                     map<string,CaptionLine>& tmpLineMap) 
 {
   getline(sstream, nextLine);
   
@@ -386,7 +385,7 @@ searchForWord()
   if (captionsContainWord(searchWord)) 
   {    
     printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
-           captionWordsIndex[searchWord]->captionContexts.size(),           
+           captionWordsIndex[searchWord]->captionContextsList.size(),           
            "mentions): ",
            searchWord.c_str());
         
@@ -418,7 +417,7 @@ createMostFrequentWordsVector()
        captionWordsSortedByFrequency.end(), 
        [](shared_ptr<CaptionWord> p1, shared_ptr<CaptionWord> p2) 
        {
-          return p1->captionContexts.size() > p2->captionContexts.size();
+          return p1->captionContextsList.size() > p2->captionContextsList.size();
        });
 }
 
@@ -440,7 +439,7 @@ printTopTenMentions() const
   for (int i=0; i<10; ++i) 
   {
     printf("%s(%d), ", captionWordsSortedByFrequency[i]->word.c_str(), 
-                       captionWordsSortedByFrequency[i]->captionContexts.size());
+                       captionWordsSortedByFrequency[i]->captionContextsList.size());
     
     if(i % 2 == 0) 
     {

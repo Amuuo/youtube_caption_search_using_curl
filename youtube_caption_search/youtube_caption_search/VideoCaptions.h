@@ -50,6 +50,8 @@ using std::function;
 /**********************************************************/
 class VideoCaptions 
 {
+
+
 public:
 
 
@@ -69,14 +71,13 @@ public:
     Time   contextTime;         
   };
 
-
-  static class CaptionWord 
+  static struct CaptionWord 
   {
     using ContextPtr    = shared_ptr<CaptionLine>;
     using ContextPtrVec = vector<shared_ptr<CaptionLine>>;
     
     CaptionWord(string, ContextPtr);
-    ContextPtrVec captionContexts;
+    ContextPtrVec captionContextsList;
     string        word;
 
     void addContextLine(ContextPtr);
@@ -92,7 +93,8 @@ public:
   
   
   using mostMentionVec    = vector<shared_ptr<CaptionWord>>;
-  using captionMap        = map<string,shared_ptr<CaptionWord>>; 
+  using captionMap        = map<string,shared_ptr<CaptionWord>>;
+  using captionLineMap    = map<string,shared_ptr<CaptionLine>>;
   using ContextPtr        = shared_ptr<CaptionLine>;
 
 
@@ -146,15 +148,15 @@ public:
   /****************************************/
 
 
-  inline void    buildCaptionLineAndWords(map<string,CaptionLine>,string,string,string);
+  inline void    buildCaptionLineAndWords(captionLineMap,string,string);
   inline string  getWordURL(int); 
   inline void    deleteCommonWordsFromMap();
-  inline void    indexWord(string, linePtr);
+  inline void    indexWord(string&, ContextPtr);
   inline void    setWordsToLowercase(string);
   inline bool    lineIsNotAlreadyIndexed(string&);
-  inline bool    lineContainsTimeInfo(string);
+  inline bool    lineContainsTimeInfo(string&);
   inline void    indexWordsInCurrentLine(ContextPtr);
-  inline bool    nextLineIsADuplicate(istringstream&,string&);  
+  inline bool    nextLineIsADuplicate(istringstream&,string&, captionLineMap&);  
   inline bool    wordIsIndexed(string);    
   inline bool    captionsContainWord(string);
   
@@ -197,7 +199,7 @@ MenuOptionsVec menuOptionsVec
       if (captionsContainWord(searchWord)) 
       {    
         printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
-               captionWordsIndex[searchWord]->captionContexts.size(),           
+               captionWordsIndex[searchWord]->captionContextsList.size(),           
                "mentions): ",
                searchWord.c_str());        
         printCaptionsToConsole(captionWordsIndex[searchWord], displayPrintMenu());    
@@ -230,7 +232,7 @@ MenuOptionsVec menuOptionsVec
       for (int i = 0; i < range; ++i) 
       {            
         printf(wordContextFormat, 
-               captionWordsSortedByFrequency[i]->captionContexts.size(),           
+               captionWordsSortedByFrequency[i]->captionContextsList.size(),           
                "mentions)",
                captionWordsSortedByFrequency[i]->word.c_str()); 
       }

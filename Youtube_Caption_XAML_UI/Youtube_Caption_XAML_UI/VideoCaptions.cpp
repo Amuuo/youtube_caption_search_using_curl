@@ -2,7 +2,13 @@
 
 #include "VideoCaptions.h"
 
-
+template<typename type_>
+type_ getUserInput(string prompt, string leadingSpace="\n\t") {
+  printf("%s%s: ", leadingSpace.c_str(), prompt.c_str());
+  type_ tmp;
+  cin >> tmp;
+  return tmp;
+}
 
 VideoCaptions::
 VideoCaptions()
@@ -26,13 +32,19 @@ VideoCaptions::
 }
 
 
+VideoCaptions::Time::Time() 
+{
+}
 
-VideoCaptions::CaptionLine::Time::
+VideoCaptions::Time::
 Time(string h, string m, string s): hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} 
 {
 }
 
 
+VideoCaptions::CaptionLine::CaptionLine() 
+{
+}
 
 VideoCaptions::CaptionLine::
 CaptionLine(string line, Time time) : line{line}, contextTime{time} 
@@ -40,10 +52,13 @@ CaptionLine(string line, Time time) : line{line}, contextTime{time}
 }
 
 
+VideoCaptions::CaptionWord::CaptionWord() 
+{
+}
 
 VideoCaptions::CaptionWord::
 CaptionWord(string word, ContextPtr context) : word{word} {
-  captionContexts.push_back(context);
+  captionContextsList.push_back(context);
 }
 
 
@@ -51,7 +66,7 @@ CaptionWord(string word, ContextPtr context) : word{word} {
 
 void VideoCaptions::CaptionWord::
 addContextLine(ContextPtr contextLine) {
-  captionContexts.push_back(contextLine);
+  captionContextsList.push_back(contextLine);
 }
 
 
@@ -103,18 +118,18 @@ printCaptionsToConsole(shared_ptr<CaptionWord> wordToPrint, int menuChoice)
   {        
     //print url only
     case 1: 
-      printStrings({wordToPrint->captionContext[menuChoice]->timedURL});           
+      printStrings({wordToPrint->captionContextsList[menuChoice]->timedURL});           
       break; 
     
     //print url+context
     case 2: 
-      printStrings({wordToPrint->captionContext[menuChoice]->timedURL, 
-                   getCaptionClipURL(wordToPrint->captionContext[menuChoice])}); 
+      printStrings({wordToPrint->captionContextsList[menuChoice]->timedURL, 
+                   getCaptionClipURL(wordToPrint->captionContextsList[menuChoice])}); 
       break; 
     
     //print context only
     case 3: 
-      printStrings({wordToPrint->captionContext[menuChoice]->timedURL});               
+      printStrings({wordToPrint->captionContextsList[menuChoice]->timedURL});               
       break; 
     
     default: 
@@ -163,11 +178,10 @@ cleanupCaptionDownloadFile()
 void VideoCaptions::
 createCaptionMap() 
 {
-  map<string, CaptionLine> tmpLineMap;
-
+  captionLineMap          tmpLineMap;
   string                  currentLine; 
   string                  nextLine; 
-  CaptionLine::Time       time;
+  Time                    time;
   istringstream           captionStream{captionText};
   shared_ptr<CaptionLine> currentLinePtr{};
 
@@ -181,7 +195,7 @@ createCaptionMap()
     
     if(lineContainsTimeInfo(currentLine)) 
     {      
-      if(nextLineIsADuplicate(captionStream,currentLine)) 
+      if(nextLineIsADuplicate(captionStream,currentLine, tmpLineMap)) 
       {
         continue;      
       } 
@@ -205,11 +219,11 @@ createCaptionMap()
 /*  INDEX WORD  */
 /****************/
 void VideoCaptions::
-indexWord(string capWord, ContextPtr capLinePtr) 
+indexWord(string& capWord, ContextPtr capLinePtr) 
 {
   if (wordIsIndexed(capWord)) 
   {
-    captionWordsIndex[capWord]->captionContexts.push_back(capLinePtr);
+    captionWordsIndex[capWord]->captionContextsList.push_back(capLinePtr);
   }
   else
   {        
@@ -224,19 +238,16 @@ indexWord(string capWord, ContextPtr capLinePtr)
 /*  BUILD AND STORE CAPTION LINE  */
 /**********************************/
 void VideoCaptions::
-buildCaptionLineAndWords(map<string,shared_ptr<CaptionLine>> lineMap, 
-                         string                  capLine, 
-                         string                  lineInfo) 
+buildCaptionLineAndWords(captionLineMap lineMap, 
+                         string         capLine, 
+                         string         lineInfo) 
 {  
-  using CaptionLine = VideoCaptions::CaptionLine;
-  using Time        = CaptionLine::Time;
   
   /* parse first three values of timestamp, ex: "00:00:00" */
-  lineMap[capLine] = make_shared<CaptionLine>(
-                                capLine, Time{lineInfo.substr(0,2),
-                                              lineInfo.substr(3,2),
-                                              lineInfo.substr(6,2)}
-                        ); 
+  lineMap[capLine] = make_shared<CaptionLine>( capLine, 
+                                               Time{lineInfo.substr(0,2),
+                                                    lineInfo.substr(3,2),
+                                                    lineInfo.substr(6,2)} ); 
 
 
   indexWordsInCurrentLine(lineMap[capLine]);
@@ -273,7 +284,7 @@ lineIsNotAlreadyIndexed(string& capLine)
 /*    LINE CONTAINS TIME INFO     */
 /**********************************/
 inline bool VideoCaptions::
-lineContainsTimeInfo(string line) 
+lineContainsTimeInfo(string& line) 
 {
   /* check for format, ex: "00:00:00 -> 00:00:00" */
   return isdigit(line[0]) && line[2] == ':';
@@ -288,7 +299,7 @@ lineContainsTimeInfo(string line)
 inline bool VideoCaptions::
 nextLineIsADuplicate(istringstream& sstream, 
                      string& nextLine, 
-                     map<string,CaptionLine> tmpLineMap) 
+                     map<string,CaptionLine>& tmpLineMap) 
 {
   getline(sstream, nextLine);
   
@@ -354,12 +365,12 @@ deleteCommonWordsFromMap()
 /*        CONSTRUCT TIMESTAMPED URL       */
 /******************************************/
 string VideoCaptions::
-getCaptionClipURL(shared_ptr<CaptionLine> line) 
+getCaptionClipURL(ContextPtr line) 
 {  
   return "www.youtube.com/watch&feature=youtu.be&t="  + 
-         to_string(line->_time.hr)  + 'h' + 
-         to_string(line->_time.min) + 'm' + 
-         to_string(line->_time.sec) + 's' + videoID;
+         to_string(line->contextTime.hr)  + 'h' + 
+         to_string(line->contextTime.min) + 'm' + 
+         to_string(line->contextTime.sec) + 's' + videoID;
 }
 
 
@@ -386,7 +397,7 @@ searchForWord()
   if (captionsContainWord(searchWord)) 
   {    
     printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
-           captionWordsIndex[searchWord]->captionContexts.size(),           
+           captionWordsIndex[searchWord]->captionContextsList.size(),           
            "mentions): ",
            searchWord.c_str());
         
@@ -418,7 +429,7 @@ createMostFrequentWordsVector()
        captionWordsSortedByFrequency.end(), 
        [](shared_ptr<CaptionWord> p1, shared_ptr<CaptionWord> p2) 
        {
-          return p1->captionContexts.size() > p2->captionContexts.size();
+          return p1->captionContextsList.size() > p2->captionContextsList.size();
        });
 }
 
@@ -440,7 +451,7 @@ printTopTenMentions() const
   for (int i=0; i<10; ++i) 
   {
     printf("%s(%d), ", captionWordsSortedByFrequency[i]->word.c_str(), 
-                       captionWordsSortedByFrequency[i]->captionContexts.size());
+                       captionWordsSortedByFrequency[i]->captionContextsList.size());
     
     if(i % 2 == 0) 
     {
