@@ -18,33 +18,45 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Menu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VideoCaptions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuOptionsData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VideoCaptionsMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DownloadCaptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Caption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptionLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Menu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VideoCaptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="userIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MenuOptionsData.h">
+    <ClInclude Include="VideoCaptionsMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VideoCaptionsMenu.h">
+    <ClInclude Include="DownloadCaptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Caption.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptionLine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

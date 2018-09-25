@@ -14,7 +14,7 @@
 using std::unique_ptr;
 
 
-class VideoCaptionsMenu : public Menu {
+static class VideoCaptionsMenu : public Menu {
 
   using captionPtr = unique_ptr<VideoCaptions>;
 

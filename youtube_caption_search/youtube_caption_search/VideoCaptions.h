@@ -21,7 +21,7 @@
 #include<stdio.h>
 #include<memory>
 #include"userIO.h"
-#include"MenuOptionsData.h"
+#include"Menu.h"
 
 using std::map;
 using std::vector;
@@ -40,55 +40,82 @@ using std::regex_match;
 using std::back_inserter;
 using std::function;
 
+
+
+
+
+
 /**********************************************************/
 /*                V I D E O  C A P T I O N                */
 /**********************************************************/
-class VideoCaptions {
-
-
+class VideoCaptions 
+{
 public:
-  
-  VideoCaptions();
-  VideoCaptions(string);
-  ~VideoCaptions();  
-  
 
-  static struct CaptionLine {   
+
+  static struct CaptionLine{
     
-    static struct Time {   
-      Time();
+    static struct Time 
+    {   
       Time(string,string,string);      
       int hr; 
       int min; 
       int sec;         
     };  
-    CaptionLine();
-    CaptionLine(string, Time);
 
+    CaptionLine(string,Time);
     string line;
     string timedURL;
-    Time   _time;
-    
+    Time   contextTime;         
   };
-  
-  using linePtr = shared_ptr<CaptionLine>;
 
-  struct CaptionWord {
 
-    using ContextPtr = vector<linePtr>;
+  static class CaptionWord 
+  {
+    using ContextPtr    = shared_ptr<CaptionLine>;
+    using ContextPtrVec = vector<shared_ptr<CaptionLine>>;
     
-    CaptionWord();
-    CaptionWord(string, linePtr);
-    ContextPtr captionContext;
+    CaptionWord(string, ContextPtrVec);
+    ContextPtrVec captionContexts;
     string     word;
 
-    void addContextLine(linePtr);
+    void addContextLine(ContextPtr);
   };
 
-  //using menuOptionPtr = shared_ptr<MenuOptionsData>;
-  //using menuOptionFunc = vector<menuOptionPtr>;
 
-  string  getCaptionClipURL(shared_ptr<CaptionLine>);  
+  /****************************************/
+  /*              VARIABLES               */
+  /****************************************/  
+
+  using wordPtr         = shared_ptr<CaptionWord>;
+  using mostMentionVec  = vector<wordPtr>;
+  using captionMap      = map<string,wordPtr>; 
+
+  map<string,shared_ptr<CaptionLine>> linePtrMap;
+  
+  mostMentionVec  captionWordsSortedByFrequency;
+  captionMap      captionWordsIndex;  
+  vector<string>  captionLines;
+  string          videoTitle;  
+  string          videoURL;
+  string          videoID;
+  string          captionText;
+
+
+
+
+  using MenuOptions = Menu::MenuFunction;
+  using MenuOptionsVec = vector<MenuOptions>;
+  using MenuOptionsVecPtr = unique_ptr<vector<MenuOptions>>;
+  
+
+
+  VideoCaptions();
+  VideoCaptions(string);
+  ~VideoCaptions();  
+  
+
+  //string  getCaptionClipURL(shared_ptr<CaptionLines>);  
   void    printCaptionsToConsole(shared_ptr<CaptionWord>, int);
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
@@ -99,51 +126,113 @@ public:
   void    getCaptions();
   
   
-  void printCaptionsToFile();
-  void searchForWord();
-  void printMaxMentions();
-  shared_ptr<vector<MenuOptionsData>> getMenuOptions();
+  //void printCaptionsToFile();
+  //void searchForWord();
+  //void printMaxMentions();
 
 
-protected:
-
-
-private:
-
-  /****************************************/
-  /*              VARIABLES               */
-  /****************************************/  
 
   
-  using wordPtr = shared_ptr<CaptionWord>;
+  
 
-  vector<wordPtr>      captionWordsSortedByFrequency{};
-  map<string, wordPtr> captionWordsIndex{};
-  
-  string  videoTitle;  
-  string  videoURL;
-  string  videoID;
-  static string  captionText;
-  
-  
+
+
   /****************************************/
   /*         FUNCTION DEFINITIONS         */
   /****************************************/
 
 
+  shared_ptr<CaptionLine> buildAndStoreCaptionLine(map<string,CaptionLine>,string,string,string);
+  
   inline string  getWordURL(int); 
   inline void    deleteCommonWordsFromMap();
-  inline void    buildAndStoreCaptionLine(map<string,CaptionLine>,string,string,CaptionLine&);
   inline void    indexWord(string, linePtr);
   inline void    setWordsToLowercase(string);
-  inline bool    lineIsNotAlreadyIndexed(map<string,CaptionLine>, string&);
+  inline bool    lineIsNotAlreadyIndexed(string&);
   inline bool    lineContainsTimeInfo(string);
   inline void    indexWordsInCurrentLine(CaptionLine&);
-  inline bool    nextLineIsACopy(istringstream&, string&, string&);  
+  inline bool    nextLineIsACopy(istringstream&,string&);  
   inline bool    wordIsIndexed(string);    
   inline bool    captionsContainWord(string);
   
   static size_t  writefunc(char*, size_t, size_t, string*);
+  
+  
+  /*MenuOptionsVecPtr menuOptionsVecPtr
+  {   
+   {"Print most frequent words", 
+    make_shared<function<void()>>([this]()
+    {      
+      int range = getUserInput<int>("Enter range");  
+      const char* wordContextFormat = "\n\t(%d %-8s:  \"%s\"";
+      int choice{displayPrintMenu()};
+
+
+      if(choice != 4) printf("\n");
+      
+      for (int i = 0; i < range; ++i) 
+      {            
+        printf(wordContextFormat, 
+        captionWordsSortedByFrequency[i]->captionContext.size(),           
+        "mentions)",
+        captionWordsSortedByFrequency[i]->word.c_str()); 
+      }
+  })
+  },
+   {"Search word",               make_shared<function<void()>>(searchForWord)},
+   {"Print entire table",        make_shared<function<void()>>(searchFor),
+   {"Print table to file",       make_shared<function<void()>>(option3)}};
+  }*/
+
+MenuOptionsVec menuOptionsVec
+{     
+  {
+    "Search for word",
+    make_shared<function<void()>>([this]()
+    {
+      auto searchWord = getUserInput<string>("Enter word");
+      if (captionsContainWord(searchWord)) 
+      {    
+        printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
+               captionWordsIndex[searchWord]->captionContexts.size(),           
+               "mentions): ",
+               searchWord.c_str());        
+        printCaptionsToConsole(captionWordsIndex[searchWord], displayPrintMenu());    
+      } 
+      else 
+      { 
+        cout << "\n\nThat word was not found..."; 
+      }
+    })
+  },
+  
+  {
+    "Print Captions to File",
+    make_shared<function<void()>>([this]()
+    {
+      ofstream outStream{getUserInput<string>("Save as")};               
+      outStream << captionText;  
+      outStream.close();
+    })
+  },
+  
+  {
+    "Print Max Mentions",
+    make_shared<function<void()>>([this]()
+    {
+      int range = getUserInput<int>("Enter range");  
+      const char* wordContextFormat = "\n\t(%d %-8s:  \"%s\"";
+      int choice{displayPrintMenu()};
+      if(choice != 4) printf("\n");      
+      for (int i = 0; i < range; ++i) 
+      {            
+        printf(wordContextFormat, 
+               captionWordsSortedByFrequency[i]->captionContexts.size(),           
+               "mentions)",
+               captionWordsSortedByFrequency[i]->word.c_str()); 
+      }
+    })
+  }
 };
 
 

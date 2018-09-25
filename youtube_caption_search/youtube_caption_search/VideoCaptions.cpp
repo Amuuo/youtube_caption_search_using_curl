@@ -5,72 +5,61 @@
 
 
 VideoCaptions::
-VideoCaptions(){
-  
+VideoCaptions()
+{  
 }
 
-VideoCaptions::VideoCaptions(string url) : videoURL{url} {
-  
+
+
+VideoCaptions::VideoCaptions(string url) : videoURL{url} 
+{    
   getCaptions();
 }
 
 
 
-
 VideoCaptions::
-~VideoCaptions(){
+~VideoCaptions()
+{
   ofstream saveCaptionStruct{videoTitle, ofstream::binary};
   saveCaptionStruct.write((char*)this, sizeof(VideoCaptions));
 }
 
 
 
-
-VideoCaptions::CaptionLine::Time::Time(){}
-
-
-
-
 VideoCaptions::CaptionLine::Time::
-Time(string h, string m, string s): hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} {}
-
-
-
-
-VideoCaptions::CaptionLine::CaptionLine(){}
-
+Time(string h, string m, string s): hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} 
+{
+}
 
 
 
 VideoCaptions::CaptionLine::
-CaptionLine(string line, Time _time) : line{line}, _time{_time} {}
-
-
-
-
-VideoCaptions::CaptionWord::CaptionWord() {}
-
+CaptionLine(string line, Time time) : line{line}, contextTime{time} 
+{
+}
 
 
 
 VideoCaptions::CaptionWord::
-CaptionWord(string word, linePtr context) : word{word} {
-  captionContext.push_back(context);
+CaptionWord(string word, ContextPtrVec context) : word{word} {
+  captionContexts.push_back(context);
 }
 
 
 
 
 void VideoCaptions::CaptionWord::
-addContextLine(linePtr contextLine) {
-  captionContext.push_back(contextLine);
+addContextLine(shared_ptr<CaptionLine> contextLine) {
+  captionContexts.push_back(contextLine);
 }
 
 
 
 
 bool VideoCaptions::
-wordIsIndexed(string word) {
+wordIsIndexed(string word) 
+{
   return captionWordsIndex.find(word) == captionWordsIndex.end();
 }
 
@@ -81,7 +70,8 @@ wordIsIndexed(string word) {
 /*         PRINT CAPTIONS TO FILE        */
 /*****************************************/
 void VideoCaptions::
-printCaptionsToFile() {
+printCaptionsToFile() 
+{
   ofstream outStream{getUserInput<string>("Save as")};               
   outStream << captionText;  
   outStream.close();
@@ -90,19 +80,27 @@ printCaptionsToFile() {
 
 
 
+/****************************************/
+/*          DISPLAY PRINT MENU          */
+/****************************************/
+int VideoCaptions::
+displayPrintMenu() 
+{
+  return getUserInput<int>("Selection");
+}
+
+
+
+
+
 /*****************************************/
 /*       PRINT CAPTIONS TO CONSOLE       */
 /*****************************************/
 void VideoCaptions::
-printCaptionsToConsole(shared_ptr<CaptionWord> wordToPrint, int menuChoice) {
-  
-  auto printStrings = [](vector<string> itemsToPrint) {
-    for (auto& capLine : itemsToPrint)
-    printf("\n\t>> \"%s\"", capLine.c_str());
-  };     
-
-  switch (menuChoice) {      
-    
+printCaptionsToConsole(shared_ptr<CaptionWord> wordToPrint, int menuChoice) 
+{
+  switch (menuChoice) 
+  {        
     //print url only
     case 1: 
       printStrings({wordToPrint->captionContext[menuChoice]->timedURL});           
@@ -131,8 +129,8 @@ printCaptionsToConsole(shared_ptr<CaptionWord> wordToPrint, int menuChoice) {
 /*          CLEANUP CAPTION TEXT         */
 /*****************************************/
 void VideoCaptions::
-cleanupCaptionDownloadFile(){
-
+cleanupCaptionDownloadFile()
+{
   printf("\n>> Parsing caption file...");
 
   string* caps = &captionText;
@@ -163,30 +161,38 @@ cleanupCaptionDownloadFile(){
 /*           CREATE CAPTION MAP          */
 /*****************************************/
 void VideoCaptions::
-createCaptionMap() {
-
+createCaptionMap() 
+{
   map<string, CaptionLine> lineMap;
-  
-  string         lineInfo; 
-  string         capLine;
-  CaptionLine    currentLine;
-  istringstream  captionStream{captionText};
 
+  string                  currentLine; 
+  string                  nextLine; 
+  CaptionLine::Time       time;
+  istringstream           captionStream{captionText};
+  shared_ptr<CaptionLine> currentLinePtr{};
 
   printf("\n>> Generating caption index...");
 
 
 
-  while (captionStream) {    
-    getline(captionStream,lineInfo);        
-    if (lineContainsTimeInfo(lineInfo)) {      
-      if(nextLineIsACopy(captionStream,lineInfo,capLine)) {
+  while (captionStream) 
+  {        
+    getline(captionStream,currentLine);        
+    
+    if(lineContainsTimeInfo(currentLine)) 
+    {      
+      if(nextLineIsACopy(captionStream,currentLine)) 
+      {
         continue;      
-      } else {
-        setWordsToLowercase(capLine);
-        if (lineIsNotAlreadyIndexed(lineMap,capLine)) {        
-          buildAndStoreCaptionLine(lineMap,lineInfo,capLine,currentLine);                    
-        }          
+      } 
+      else
+      {
+        setWordsToLowercase(nextLine);
+        
+        if(lineIsNotAlreadyIndexed(nextLine)) 
+        {        
+          buildAndStoreCaptionLine(lineMap,currentLine,nextLine);                            
+        }   
       }
     }
   }
@@ -199,12 +205,14 @@ createCaptionMap() {
 /*  INDEX WORD  */
 /****************/
 void VideoCaptions::
-indexWord(string capWord, linePtr capLine) {
-  
-  if (wordIsIndexed(capWord)) {
-    captionWordsIndex[capWord]->captionContext.push_back(capLine);
+indexWord(string capWord, linePtr capLine) 
+{
+  if (wordIsIndexed(capWord)) 
+  {
+    captionWordsIndex[capWord]->captionContexts.push_back(capLine);
   }
-  else{        
+  else
+  {        
     captionWordsIndex[capWord] = wordPtr{new CaptionWord{capWord, capLine}};
   }  
 }
@@ -215,18 +223,21 @@ indexWord(string capWord, linePtr capLine) {
 /**********************************/
 /*  BUILD AND STORE CAPTION LINE  */
 /**********************************/
-void VideoCaptions::
+shared_ptr<VideoCaptions::CaptionLine> VideoCaptions::
 buildAndStoreCaptionLine(map<string,CaptionLine> lineMap, 
-                         string capLine, 
-                         string lineInfo,
-                         CaptionLine& lineStruct) {  
-
-  /* parse first three values of timestamp, ex: "00:00:00" */
-  lineStruct = CaptionLine{capLine, {lineInfo.substr(0,2),
-                                     lineInfo.substr(3,2),
-                                     lineInfo.substr(6,2)}}; 
+                         string                  capLine, 
+                         string                  lineInfo) 
+{  
+  using CaptionLine = VideoCaptions::CaptionLine;
+  using Time        = CaptionLine::Time;
   
-  lineMap[capLine] = lineStruct;
+  /* parse first three values of timestamp, ex: "00:00:00" */
+  linePtrMap[capLine] = make_shared<CaptionLine>(
+                          capLine, Time{lineInfo.substr(0,2),
+                                        lineInfo.substr(3,2),
+                                        lineInfo.substr(6,2)}
+                        ); 
+  return linePtrMap[capLine];
 }
 
 
@@ -236,7 +247,8 @@ buildAndStoreCaptionLine(map<string,CaptionLine> lineMap,
 /*     SET WORDS TO LOWERCASE     */
 /**********************************/
 inline void VideoCaptions::
-setWordsToLowercase(string line) {
+setWordsToLowercase(string line) 
+{
   transform(line.begin(), line.end(), line.begin(), ::tolower);
 }
 
@@ -247,8 +259,9 @@ setWordsToLowercase(string line) {
 /*  LINE IS NOT ALREADY INDEXED  */
 /*********************************/
 inline bool VideoCaptions::
-lineIsNotAlreadyIndexed(map<string,CaptionLine> lineMap, string& capLine){
-  return lineMap.find(capLine) == lineMap.end();      
+lineIsNotAlreadyIndexed(string& capLine)
+{
+  return linePtrMap.find(capLine) == linePtrMap.end();      
 }
 
 
@@ -258,21 +271,33 @@ lineIsNotAlreadyIndexed(map<string,CaptionLine> lineMap, string& capLine){
 /*    LINE CONTAINS TIME INFO     */
 /**********************************/
 inline bool VideoCaptions::
-lineContainsTimeInfo(string line) {
+lineContainsTimeInfo(string line) 
+{
   /* check for format, ex: "00:00:00 -> 00:00:00" */
   return isdigit(line[0]) && line[2] == ':';
 }
 
-
+                      
 
 
 /*********************************/
 /*      NEXT LINE IS A COPY      */
 /*********************************/
 inline bool VideoCaptions::
-nextLineIsACopy(istringstream& sstream, string& prevLine, string& line) {
-  getline(sstream, line);
-  return prevLine == line;
+nextLineIsACopy(istringstream& sstream, string& currentLine) 
+{
+  string nextLine;
+  getline(sstream, nextLine);
+  
+  if(currentLine == nextLine)
+  {
+    return true;
+  }
+  else
+  {
+    currentLine = nextLine;
+    return false;
+  }
 }
 
 
@@ -282,11 +307,13 @@ nextLineIsACopy(istringstream& sstream, string& prevLine, string& line) {
 /*   INDEX WORDS IN CURRENT LINE   */
 /***********************************/
 inline void VideoCaptions::
-indexWordsInCurrentLine(CaptionLine& currentLine) {
-  
+indexWordsInCurrentLine(CaptionLine& currentLine) 
+{ 
   istringstream lineStream{currentLine.line};
   string wordInCaptionLine;
-  while (lineStream) {
+  
+  while (lineStream) 
+  {
     lineStream >> wordInCaptionLine;
     indexWord(wordInCaptionLine, make_shared<CaptionLine>(currentLine));
   }
@@ -295,7 +322,9 @@ indexWordsInCurrentLine(CaptionLine& currentLine) {
 
 
 inline string VideoCaptions::
-getWordURL(int) {}
+getWordURL(int) 
+{
+}
 
 
 
@@ -304,16 +333,19 @@ getWordURL(int) {}
 /*      DELETE COMMON WORDS FROM MAP      */
 /******************************************/
 void VideoCaptions::
-deleteCommonWordsFromMap() {
-  
+deleteCommonWordsFromMap() 
+{ 
   printf("\n>> Deleting all common words from table...");
 
   string   commonWord;
   ifstream commonWordsStream{"commonWords.txt"};
 
-  while (commonWordsStream) {    
+  while (commonWordsStream) 
+  {    
     getline(commonWordsStream, commonWord);
-    if (captionWordsIndex.find(commonWord) != captionWordsIndex.end()){
+    
+    if (captionWordsIndex.find(commonWord) != captionWordsIndex.end())
+    {
       captionWordsIndex.erase(commonWord);
     }
   }
@@ -326,8 +358,8 @@ deleteCommonWordsFromMap() {
 /*        CONSTRUCT TIMESTAMPED URL       */
 /******************************************/
 string VideoCaptions::
-getCaptionClipURL(shared_ptr<CaptionLine> line) {
-  
+getCaptionClipURL(shared_ptr<CaptionLine> line) 
+{  
   return "www.youtube.com/watch&feature=youtu.be&t="  + 
          to_string(line->_time.hr)  + 'h' + 
          to_string(line->_time.min) + 'm' + 
@@ -341,9 +373,9 @@ getCaptionClipURL(shared_ptr<CaptionLine> line) {
 /*         CAPTION CONTAINS WORD         */
 /*****************************************/
 inline bool VideoCaptions::
-captionsContainWord(string searchWord) { 
-  return captionWordsIndex.find(searchWord) != captionWordsIndex.end();
-  
+captionsContainWord(string searchWord) 
+{ 
+  return captionWordsIndex.find(searchWord) != captionWordsIndex.end();  
 }
 
 
@@ -351,41 +383,25 @@ captionsContainWord(string searchWord) {
 /*            SEARCH FOR WORD            */
 /*****************************************/
 void VideoCaptions::
-searchForWord() {      
-
-  string searchWord = getUserInput<string>("Enter word");
+searchForWord() 
+{      
+  auto searchWord = getUserInput<string>("Enter word");
   
-  if (captionsContainWord(searchWord)) {
-    
+  if (captionsContainWord(searchWord)) 
+  {    
     printf("\n\n\tFOUND!\n\n\t(%d %-12s\"%s\"", 
-           captionWordsIndex[searchWord]->captionContext.size(),           
+           captionWordsIndex[searchWord]->captionContexts.size(),           
            "mentions): ",
            searchWord.c_str());
         
-    printCaptionsToConsole(captionWordsIndex[searchWord], displayPrintMenu());
-    
-  } else { cout << "\n\nThat word was not found..."; }
+    printCaptionsToConsole(captionWordsIndex[searchWord], displayPrintMenu());  
+  } 
+  else 
+  { 
+    cout << "\n\nThat word was not found..."; 
+  }
 }
 
-
-
-
-
-
-/****************************************/
-/*          DISPLAY PRINT MENU          */
-/****************************************/
-int VideoCaptions::
-displayPrintMenu() {
-    
-  printf("\n\n\t1 - Print URL links"       );
-  printf(  "\n\t2 - Print context and URLs");
-  printf(  "\n\t3 - Print context"         );
-  printf(  "\n\t4 - Print words only"      );
-  printf(  "\n\t5 - Export URLs to file\n" );
-  
-  return getUserInput<int>("Selection");
-}
 
 
 
@@ -394,18 +410,20 @@ displayPrintMenu() {
 /*   CREATE MOST FREQUENT WORDS VECTOR   */
 /*****************************************/
 void VideoCaptions::
-createMostFrequentWordsVector() {
-    
+createMostFrequentWordsVector() 
+{    
   printf("\n>> Sorting words by number of mentions..."); 
 
-  for(auto currentWord : captionWordsIndex){      
+  for(auto currentWord : captionWordsIndex)
+  {      
     captionWordsSortedByFrequency.push_back(currentWord.second);
   }  
   sort(captionWordsSortedByFrequency.begin(), 
        captionWordsSortedByFrequency.end(), 
-       [](wordPtr p1, wordPtr p2) {
-          return p1->captionContext.size() > p2->captionContext.size();});
-
+       [](wordPtr p1, wordPtr p2) 
+       {
+          return p1->captionContexts.size() > p2->captionContexts.size();
+       });
 }
 
 
@@ -419,15 +437,19 @@ createMostFrequentWordsVector() {
  * format: "word(10)" 
  */
 void VideoCaptions::
-printTopTenMentions() const {
-  
+printTopTenMentions() const 
+{  
   printf("\n\n\n\tTOP 10 MENTIONS:\n\n\t\t");
   
-  for (int i=0; i<10; ++i) {
+  for (int i=0; i<10; ++i) 
+  {
     printf("%s(%d), ", captionWordsSortedByFrequency[i]->word.c_str(), 
-                       captionWordsSortedByFrequency[i]->captionContext.size());
+                       captionWordsSortedByFrequency[i]->captionContexts.size());
+    
     if(i % 2 == 0) 
+    {
       printf("\n\t\t");
+    }
   }
 }
 
@@ -438,8 +460,8 @@ printTopTenMentions() const {
 /*               WRITEFUNC                */
 /******************************************/
 size_t VideoCaptions::
-writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
-  
+writefunc(char* ptr, size_t size, size_t nmemb, string* s) 
+{  
   captionText += string{ptr + '\0'};
   return size*nmemb;
 }
@@ -451,8 +473,8 @@ writefunc(char* ptr, size_t size, size_t nmemb, string* s) {
 /*      SEND WEB-REQUEST FOR CAPTIONS     */
 /******************************************/
 void VideoCaptions::
-sendWebRequestForCaptions() {
-
+sendWebRequestForCaptions() 
+{
   string new_url{"http://video.google.com/timedtext?type=track&lang=en&v="};
   regex rgx("v=(.{11})");
   smatch video_id_match;
@@ -484,8 +506,8 @@ sendWebRequestForCaptions() {
 /******************************************/
 /*              GET CAPTIONS              */
 /******************************************/
-void VideoCaptions::getCaptions() {
-
+void VideoCaptions::getCaptions() 
+{
   sendWebRequestForCaptions();  
   cleanupCaptionDownloadFile();  
   createCaptionMap();
@@ -497,23 +519,52 @@ void VideoCaptions::getCaptions() {
 
 
 
-shared_ptr<vector<MenuOptionsData>> VideoCaptions::
-getMenuOptions() {
-   
-  
-  auto option1 = searchForWord;
-  auto option2 = printCaptionsToFile;
-  auto option3 = printMaxMentions;
-  
-  vector<MenuOptionsData> menuOps = {
-   {"Print most frequent words", make_shared<function<void()>>(option1)},
-   {"Search word",               make_shared<function<void()>>(option2)},
-   {"Print entire table",        make_shared<function<void()>>(option1)},
-   {"Print table to file",       make_shared<function<void()>>(option3)}}; ;
+void VideoCaptions::
+displayMenu() 
+{
+  printf("\n\n\t1 - Print URL links"       );
+  printf(  "\n\t2 - Print context and URLs");
+  printf(  "\n\t3 - Print context"         );
+  printf(  "\n\t4 - Print words only"      );
+  printf(  "\n\t5 - Export URLs to file\n" );
+}
+
+
+
+
+
+
+ 
     
 
-  return make_shared<vector<MenuOptionsData>>(menuOps);
+//return make_shared<vector<MenuOptionsData>>(menuOps);
+
+
+shared_ptr<vector<MenuOptionsData>> VideoCaptions::
+selectedCaptionMenuOptions() 
+{  
+  auto printStrings = [](vector<string> itemsToPrint) 
+  {
+    for (auto& capLine : itemsToPrint)
+    {
+      printf("\n\t>> \"%s\"", capLine.c_str());
+    }
+  };  
   
+  auto printURL = [&]()
+  {
+    printStrings({itemsToPrint->captionContext[menuChoice]->timeURL});
+  };
+
+  vector<MenuOptionsData> menuOps = 
+  {
+    {"\n\n\t1 - Print URL links"       ;
+  printf(  "\n\t2 - Print context and URLs");
+  printf(  "\n\t3 - Print context"         );
+  printf(  "\n\t4 - Print words only"      );
+  printf(  "\n\t5 - Export URLs to file\n" );
+  
+  return shared_ptr<vector<MenuOptionsData>>();
 }
 
 
@@ -523,8 +574,9 @@ getMenuOptions() {
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
 /*****************************************/
-void VideoCaptions::printMaxMentions() {
-
+void VideoCaptions::
+printMaxMentions() 
+{
   int range = getUserInput<int>("Enter range");  
   const char* wordContextFormat = "\n\t(%d %-8s:  \"%s\"";
   int choice{displayPrintMenu()};
@@ -532,7 +584,8 @@ void VideoCaptions::printMaxMentions() {
 
   if(choice != 4) printf("\n");
       
-  for (int i = 0; i < range; ++i) {            
+  for (int i = 0; i < range; ++i) 
+  {            
     printf(wordContextFormat, 
            captionWordsSortedByFrequency[i]->captionContext.size(),           
            "mentions)",

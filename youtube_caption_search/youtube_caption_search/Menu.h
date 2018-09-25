@@ -1,45 +1,59 @@
-
-//#ifndef MENU_H
-//#define MENU_H
 #pragma once
 
-#include<cstdio>
+#include<memory>
+#include<vector>
 #include<functional>
 #include<string>
-#include<vector>
-#include<memory>
+#include<iostream>
+#include<stack>
+#include<fstream>
+#include<algorithm>
 #include"userIO.h"
-#include"MenuOptionsData.h"
+
+using namespace std;
 
 
-using std::string;
-using std::vector;
-using std::shared_ptr;
-using std::make_shared;
 
 
-/******************************************/
-/*                 M E N U                */
-/******************************************/
-class Menu {
-     
-public:      
 
-  Menu();
-  Menu(string, shared_ptr<vector<shared_ptr<MenuOptionsData>>>);
-  ~Menu();
+class Menu
+{
+
+
+  public:  
   
-  void launchMenu();
 
-      
-protected:  
+    static struct MenuFunction 
+    {
+      using functionPtr = shared_ptr<function<void()>>;
   
-  string menuTitle;
-  shared_ptr<vector<shared_ptr<MenuOptionsData>>> menuOptions;
+      MenuFunction(string,functionPtr);
+      string       description;
+      functionPtr  menuFunction;
+    };
+    
+    using optionsVecPtr = unique_ptr<vector<MenuFunction>>;
+  
 
-private:
+    Menu();
+    Menu(optionsVecPtr, string="", string="\n\n", string="\t");
+    ~Menu();  
+  
 
+    inline bool getMenuSelection(int, int);
+    bool        displayMenu(int=0);
+    void        setTitle(string);
+
+
+
+
+  private:
+  
+
+    optionsVecPtr  optionsPtr{};
+    string         title;
+    string         spaceBeforeMenu;
+    string         spaceBeforeMenuOptions;
 
 };
 
-//#endif //MENU_H

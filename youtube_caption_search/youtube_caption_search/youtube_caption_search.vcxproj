@@ -117,16 +117,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Caption.cpp" />
+    <ClCompile Include="CaptionLine.cpp" />
+    <ClCompile Include="DownloadCaptions.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="MenuOptionsData.cpp" />
     <ClCompile Include="VideoCaptions.cpp" />
     <ClCompile Include="VideoCaptionsMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MenuOptionsData.h" />
-    <ClInclude Include="userIO.h" />
+    <ClInclude Include="Caption.h" />
+    <ClInclude Include="CaptionLine.h" />
+    <ClInclude Include="DownloadCaptions.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="userIO.h" />
     <ClInclude Include="VideoCaptions.h" />
     <ClInclude Include="VideoCaptionsMenu.h" />
   </ItemGroup>
