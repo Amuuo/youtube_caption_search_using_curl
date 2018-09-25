@@ -4,10 +4,10 @@
 #include "VideoCaptions.h"
 
 template<typename type_>
-type_ getUserInput(wstring prompt, wstring leadingSpace="\n\t") {
-  wprintf("%s%s: ", leadingSpace.c_str(), prompt.c_str());
+type_ getUserInput(wstring prompt, wstring leadingSpace=L"\n\t") {
+  wprintf(L"%s%s: ", leadingSpace, prompt);
   type_ tmp;
-  cin >> tmp;
+  std::wcin >> tmp;
   return tmp;
 }
 
@@ -237,7 +237,7 @@ indexWord(wstring& capWord, ContextPtr capLinePtr)
   }
   else
   {        
-    captionWordsIndex[capWord] = make_shared<shared_ptr<CaptionWord>>(capWord, capLinePtr);
+    captionWordsIndex[capWord] = make_shared<CaptionWord>(capWord, capLinePtr);
   }  
 }
 
@@ -311,7 +311,7 @@ nextLineIsADuplicate(wstringstream& sstream,
                      wstring&       nextLine, 
                      captionLineMap tmpLineMap) 
 {    
-  sstream.getline(nextLine.data, 128, L'\n');
+  getline(sstream, nextLine);
   //wcin.getline(sstream, nextLine);
   
   // if the temporary map find the line just taken
@@ -502,7 +502,7 @@ sendWebRequestForCaptions()
   videoURL = new_url.c_str() + wstring{video_id_match[1]};
   wstring testURL = new_url + wstring(video_id_match[1]);
 
-  wstring r{"start: "};
+  //wstring r{"start: "};
 
   HttpRequestMessage urlRequest{HttpMethod::Get(), Windows::Foundation::Uri(testURL)};
 
