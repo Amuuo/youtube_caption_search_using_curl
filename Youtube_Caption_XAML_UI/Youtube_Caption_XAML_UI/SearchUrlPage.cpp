@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "SearchUrlPage.h"
+#include "VideoCaptions.h"
 
 using namespace winrt;
 using namespace Windows::UI::Xaml;
@@ -24,5 +25,7 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
     void SearchUrlPage::ClickHandler(IInspectable const&, RoutedEventArgs const&)
     {
         Button().Content(box_value(L"Clicked"));
+        wstring tmpUrl{UrlBox().Text()};
+        VideoCaptions* tmpCaptions = new VideoCaptions{tmpUrl};
     }
 }

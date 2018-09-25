@@ -24,5 +24,6 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
     void MainPage::ClickHandler(IInspectable const&, RoutedEventArgs const&)
     {
         myButton().Content(box_value(L"Clicked"));
+        this->Frame().Navigate(xaml_typename<Youtube_Caption_XAML_UI::SearchUrlPage>(), nullptr);
     }
 }

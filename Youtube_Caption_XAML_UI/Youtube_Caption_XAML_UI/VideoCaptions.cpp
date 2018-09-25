@@ -499,13 +499,36 @@ sendWebRequestForCaptions()
   std::wsmatch video_id_match;
   regex_search(videoURL, video_id_match, rgx);
   videoID = video_id_match[1];
-  videoURL = new_url.c_str() + wstring{video_id_match[1]};
-  wstring testURL = new_url + wstring(video_id_match[1]);
+  wstring testURL = new_url;
+  testURL += videoID;
 
   //wstring r{"start: "};
+  HttpClient tmpClient;
+  
+  Windows::Foundation::Uri testURI(L"https://www.google.com");
+  HttpRequestMessage urlRequest(HttpMethod::Get(), testURI);
+  
+  auto result = tmpClient.GetStringAsync(testURI);
+  auto result5 = tmpClient.GetAsync(testURI);
+  auto error = result5.ErrorCode();
+  auto result2 = tmpClient.GetBufferAsync(testURI);
+  auto result3 = tmpClient.GetInputStreamAsync(testURI);
+  auto result4 = tmpClient.SendRequestAsync(urlRequest);
+  auto progress = result.Status();
+  wstring blank2;
+  try 
+  {
 
-  HttpRequestMessage urlRequest{HttpMethod::Get(), Windows::Foundation::Uri(testURL)};
-
+    auto resultString = result.GetResults();
+    auto result2String = result2.GetResults();
+    auto results3String = result3.GetResults();
+    auto results4String = result4.GetResults();
+  }
+  catch (std::exception& e) {}
+  
+  
+  
+  //HttpResponseMessage urlResponse{};
   /*
   CURL* curl = curl_easy_init();
 
