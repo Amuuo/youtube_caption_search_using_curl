@@ -15,32 +15,38 @@
 #include<algorithm>
 #include<functional>
 #include<cstdio>
-#include<string>
-#include<curl/curl.h>
+
+//#include<wwstring>
+//#include<curl/curl.h>
 #include<stdlib.h>
 #include<stdio.h>
 #include<memory>
 
+
 using std::map;
 using std::vector;
 using std::shared_ptr;
-using std::string;
+using std::wstring;
 using std::ofstream;
 using std::istringstream;
+using std::wstringstream;
 using std::ifstream;
 using std::getline;
 using std::cout;
-using std::to_string;
+using std::to_wstring;
 using std::make_shared;
 using std::smatch;
 using std::regex;
 using std::regex_match;
 using std::back_inserter;
 using std::function;
+using std::wstring;
+using std::wregex;
 
 
 
-
+using namespace winrt;
+using namespace Windows::Web::Http;
 
 
 /**********************************************************/
@@ -55,7 +61,7 @@ public:
   static struct Time 
   {   
     Time();
-    Time(string,string,string);      
+    Time(wstring,wstring,wstring);      
     int hr; 
     int min; 
     int sec;         
@@ -65,9 +71,9 @@ public:
   static struct CaptionLine
   {
     CaptionLine();
-    CaptionLine(string,Time);
-    string line;
-    string timedURL;
+    CaptionLine(wstring,Time);
+    wstring line;
+    wstring timedURL;
     Time   contextTime;         
   };
 
@@ -78,9 +84,9 @@ public:
     using ContextPtrVec = vector<shared_ptr<CaptionLine>>;
     
     CaptionWord();
-    CaptionWord(string, ContextPtr);
+    CaptionWord(wstring, ContextPtr);
     ContextPtrVec captionContextsList;
-    string        word;
+    wstring        word;
 
     void addContextLine(ContextPtr);
   };
@@ -95,29 +101,29 @@ public:
   
   
   using mostMentionVec    = vector<shared_ptr<CaptionWord>>;
-  using captionMap        = map<string,shared_ptr<CaptionWord>>;
-  using captionLineMap    = map<string,shared_ptr<CaptionLine>>;
+  using captionMap        = map<wstring,shared_ptr<CaptionWord>>;
+  using captionLineMap    = map<wstring,shared_ptr<CaptionLine>>;
   using ContextPtr        = shared_ptr<CaptionLine>;
 
 
   VideoCaptions();
-  VideoCaptions(string);
+  VideoCaptions(wstring);
   ~VideoCaptions();  
 
 
   mostMentionVec  captionWordsSortedByFrequency;
   captionMap      captionWordsIndex;  
-  vector<string>  captionLines;
-  string          videoTitle;  
-  string          videoURL;
-  string          videoID;
-  string          captionText;
+  vector<wstring> captionLines;
+  wstring         videoTitle;  
+  wstring         videoURL;
+  wstring         videoID;
+  wstring         captionText;
 
 
 
   
 
-  string  getCaptionClipURL(ContextPtr);  
+  wstring  getCaptionClipURL(ContextPtr);  
   void    printCaptionsToConsole(shared_ptr<CaptionWord>, int);
   void    cleanupCaptionDownloadFile();
   void    createCaptionMap();
@@ -129,7 +135,7 @@ public:
   
   
   //void printCaptionsToFile();
-  //void searchForWord();
+  void searchForWord();
   //void printMaxMentions();
 
 
@@ -144,17 +150,19 @@ public:
   /****************************************/
 
 
-  inline void    buildCaptionLineAndWords(captionLineMap,string,string);
-  inline string  getWordURL(int); 
+  inline void    buildCaptionLineAndWords(captionLineMap,wstring,wstring);
+  inline wstring  getWordURL(int); 
   inline void    deleteCommonWordsFromMap();
-  inline void    indexWord(string&, ContextPtr);
-  inline void    setWordsToLowercase(string);
-  inline bool    lineIsNotAlreadyIndexed(string&);
-  inline bool    lineContainsTimeInfo(string&);
+  inline void    indexWord(wstring&, ContextPtr);
+  inline void    setWordsToLowercase(wstring);
+  inline bool    lineIsNotAlreadyIndexed(wstring&);
+  inline bool    lineContainsTimeInfo(wstring&);
   inline void    indexWordsInCurrentLine(ContextPtr);
-  inline bool    nextLineIsADuplicate(istringstream&,string&, captionLineMap&);  
-  inline bool    wordIsIndexed(string);    
-  inline bool    captionsContainWord(string);
+  inline bool    nextLineIsADuplicate(wstringstream&,wstring&, captionLineMap);  
+  inline bool    wordIsIndexed(wstring);    
+  inline bool    captionsContainWord(wstring);
   
-  static size_t  writefunc(char*, size_t, size_t, string*);
+  //static size_t  writefunc(char*, size_t, size_t, wstring*);
+ 
   
+};

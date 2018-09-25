@@ -7,6 +7,7 @@
 
 #include "App.h"
 #include "MainPage.h"
+#include "VideoCaptions.h"
 
 using namespace winrt;
 using namespace Windows::ApplicationModel;
