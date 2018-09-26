@@ -28,6 +28,11 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
       wstring tmpUrl{UrlBox().Text()};
 
       auto tmpCaptions = make_shared<VideoCaptions>(tmpUrl);
+      tmpCaptions->captionText.clear();
+      for (auto linePtr : tmpCaptions->captionLines) 
+      {
+        tmpCaptions->captionText += linePtr->line + L'\n';          
+      }
       ResultsBlock().Text(tmpCaptions->captionText);
     }
 }

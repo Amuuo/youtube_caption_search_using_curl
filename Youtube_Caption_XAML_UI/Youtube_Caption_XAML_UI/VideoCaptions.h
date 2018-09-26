@@ -131,14 +131,14 @@ public:
   
 
   wstring  getCaptionClipURL(ContextPtr);  
-  void    printCaptionsToConsole(shared_ptr<CaptionWord>, int);
-  void    cleanupCaptionDownloadFile();
-  void    createCaptionMap();
-  int     displayPrintMenu();
-  void    createMostFrequentWordsVector();
-  void    printTopTenMentions() const;
-  void    sendWebRequestForCaptions();
-  void    getCaptions();
+  void     printCaptionsToConsole(shared_ptr<CaptionWord>, int);
+  void     cleanupCaptionDownloadFile();
+  void     createCaptionMap();
+  int      displayPrintMenu();
+  void     createMostFrequentWordsVector();
+  void     printTopTenMentions() const;
+  void     sendWebRequestForCaptions();
+  void     getCaptions();
   
   
   //void printCaptionsToFile();

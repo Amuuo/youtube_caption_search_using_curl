@@ -256,6 +256,8 @@ buildCaptionLineAndWords(captionLineMap lineMap,
     (seconds%3600)/60, 
     (seconds%3600)%60};
   
+  //get blank space
+  lineStream.get();
 
   getline(lineStream, capLine);
   captionLinePtr = make_shared<CaptionLine>(capLine, tmpTime);

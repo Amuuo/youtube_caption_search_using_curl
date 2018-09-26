@@ -123,7 +123,9 @@
     <None Include="Youtube_Caption_XAML_UI_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Assets\CapScrubLogo.png" />
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
+    <Image Include="Assets\Respecting Ideas, Even Dangerous Ones (Claire Lehmann Pt. 1).jpg" />
     <Image Include="Assets\SplashScreen.scale-200.png" />
     <Image Include="Assets\Square150x150Logo.scale-200.png" />
     <Image Include="Assets\Square44x44Logo.scale-200.png" />
