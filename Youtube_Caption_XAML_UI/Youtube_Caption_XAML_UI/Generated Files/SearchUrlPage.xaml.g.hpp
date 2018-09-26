@@ -39,11 +39,17 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
         {
         case 2:
             {
+                auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::TextBlock>();
+                this->ResultsBlock(targetElement);
+            }
+            break;
+        case 3:
+            {
                 auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::TextBox>();
                 this->UrlBox(targetElement);
             }
             break;
-        case 3:
+        case 4:
             {
                 auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::Button>();
                 this->Button(targetElement);

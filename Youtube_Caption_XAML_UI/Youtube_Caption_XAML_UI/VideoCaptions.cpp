@@ -494,7 +494,7 @@ void VideoCaptions::
 sendWebRequestForCaptions() 
 {
   using std::wstring;
-  wstring new_url{L"http://video.google.com/timedtext?type=track&lang=en&v="};
+  wstring new_url{L"http://video.google.com/timedtext?charset=utf16&type=track&lang=en&v="};
   std::wregex rgx(L"v=(.{11})");
   std::wsmatch video_id_match;
   regex_search(videoURL, video_id_match, rgx);
@@ -502,30 +502,30 @@ sendWebRequestForCaptions()
   wstring testURL = new_url;
   testURL += videoID;
 
+  wstring r1 = L"Accept-Charset";
+  wstring r2 = L"utf-16";
   //wstring r{"start: "};
   HttpClient tmpClient;
+  Windows::Foundation::Uri testURI(testURL);
+  HttpRequestMessage urlRequest(HttpMethod::Get(), testURI);  
   
-  Windows::Foundation::Uri testURI(L"https://www.google.com");
-  HttpRequestMessage urlRequest(HttpMethod::Get(), testURI);
-  
-  auto result = tmpClient.GetStringAsync(testURI);
-  auto result5 = tmpClient.GetAsync(testURI);
-  auto error = result5.ErrorCode();
-  auto result2 = tmpClient.GetBufferAsync(testURI);
-  auto result3 = tmpClient.GetInputStreamAsync(testURI);
-  auto result4 = tmpClient.SendRequestAsync(urlRequest);
-  auto progress = result.Status();
-  wstring blank2;
-  try 
+  Windows::Foundation::Uri request2 = urlRequest.RequestUri();
+  auto response = tmpClient.GetStringAsync(request2);
+  //OutputDebugString(response.get().c_str());
+  auto inBuffer = tmpClient.GetBufferAsync(testURI);
+  auto buffer = inBuffer.get();
+  auto bufferLength = buffer.Length();
+  auto inStream = tmpClient.GetInputStreamAsync(testURI);
+  auto progress = inStream.get().ReadAsync(buffer,bufferLength,Windows::Storage::Streams::InputStreamOptions::None);
+  while (!progress.Completed()) 
   {
-
-    auto resultString = result.GetResults();
-    auto result2String = result2.GetResults();
-    auto results3String = result3.GetResults();
-    auto results4String = result4.GetResults();
+    progress.get();
+    OutputDebugString(buffer.as<wstring>());
   }
-  catch (std::exception& e) {}
+  wstring tmp;
   
+  response = tmpClient.GetStringAsync(testURI);
+  wstring blank = response.get().c_str();
   
   
   //HttpResponseMessage urlResponse{};
@@ -553,7 +553,7 @@ sendWebRequestForCaptions()
 /*              GET CAPTIONS              */
 /******************************************/
 void VideoCaptions::getCaptions() 
-{
+{  
   sendWebRequestForCaptions();  
   cleanupCaptionDownloadFile();  
   createCaptionMap();

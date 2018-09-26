@@ -24,8 +24,16 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
 
     void SearchUrlPage::ClickHandler(IInspectable const&, RoutedEventArgs const&)
     {
-        Button().Content(box_value(L"Clicked"));
-        wstring tmpUrl{UrlBox().Text()};
-        VideoCaptions* tmpCaptions = new VideoCaptions{tmpUrl};
+      Button().Content(box_value(L"Clicked"));
+      wstring tmpUrl{UrlBox().Text()};
+      /*HttpClient tmpClient;
+      auto testURI = Windows::Foundation::Uri{L"https://www.google.com"};
+      HttpRequestMessage urlRequest(HttpMethod::Get(), testURI);
+      
+      
+      auto response = tmpClient.GetStringAsync(testURI);
+      OutputDebugString(response.get().c_str());
+      */
+      VideoCaptions* tmpCaptions = new VideoCaptions{tmpUrl};
     }
 }

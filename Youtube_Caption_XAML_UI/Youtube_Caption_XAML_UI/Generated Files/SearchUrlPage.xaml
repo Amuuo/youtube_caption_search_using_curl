@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="Youtube_Caption_XAML_UI.SearchUrlPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Youtube_Caption_XAML_UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFA26363"/>
+            <GradientStop Color="#FF3E1616" Offset="1"/>
+        </LinearGradientBrush>
+    </Page.Background>
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Background="#3F6C6C6C">
+        <TextBlock x:ConnectionId='2' x:Name="ResultsBlock" Width="500" Height="500" Margin="0,100,0,100" FocusVisualPrimaryBrush="#FFA03333" SelectionHighlightColor="#FFB06B4B" FocusVisualSecondaryBrush="#99A62929" Foreground="#FF573E3E"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBox x:ConnectionId='3' x:Name="UrlBox" HorizontalAlignment="Left" Text="No Text" VerticalAlignment="Center" Width="421" PlaceholderText="Enter Youtube URL"/>
+            <Button x:ConnectionId='4' x:Name="Button"                     >Search For Captions</Button>
+        </StackPanel>
+    </StackPanel>
+</Page>
+
