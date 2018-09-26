@@ -26,14 +26,8 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
     {
       Button().Content(box_value(L"Clicked"));
       wstring tmpUrl{UrlBox().Text()};
-      /*HttpClient tmpClient;
-      auto testURI = Windows::Foundation::Uri{L"https://www.google.com"};
-      HttpRequestMessage urlRequest(HttpMethod::Get(), testURI);
-      
-      
-      auto response = tmpClient.GetStringAsync(testURI);
-      OutputDebugString(response.get().c_str());
-      */
-      VideoCaptions* tmpCaptions = new VideoCaptions{tmpUrl};
+
+      auto tmpCaptions = make_shared<VideoCaptions>(tmpUrl);
+      ResultsBlock().Text(tmpCaptions->captionText);
     }
 }

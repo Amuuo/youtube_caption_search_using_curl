@@ -494,38 +494,27 @@ void VideoCaptions::
 sendWebRequestForCaptions() 
 {
   using std::wstring;
+  using Windows::Foundation::Uri;
+
   wstring new_url{L"http://video.google.com/timedtext?charset=utf16&type=track&lang=en&v="};
   std::wregex rgx(L"v=(.{11})");
   std::wsmatch video_id_match;
   regex_search(videoURL, video_id_match, rgx);
+  
   videoID = video_id_match[1];
   wstring testURL = new_url;
   testURL += videoID;
+     
+  HttpClient client;
 
-  wstring r1 = L"Accept-Charset";
-  wstring r2 = L"utf-16";
-  //wstring r{"start: "};
-  HttpClient tmpClient;
-  Windows::Foundation::Uri testURI(testURL);
-  HttpRequestMessage urlRequest(HttpMethod::Get(), testURI);  
-  
-  Windows::Foundation::Uri request2 = urlRequest.RequestUri();
-  auto response = tmpClient.GetStringAsync(request2);
-  //OutputDebugString(response.get().c_str());
-  auto inBuffer = tmpClient.GetBufferAsync(testURI);
-  auto buffer = inBuffer.get();
-  auto bufferLength = buffer.Length();
-  auto inStream = tmpClient.GetInputStreamAsync(testURI);
-  auto progress = inStream.get().ReadAsync(buffer,bufferLength,Windows::Storage::Streams::InputStreamOptions::None);
-  while (!progress.Completed()) 
-  {
-    progress.get();
-    OutputDebugString(buffer.as<wstring>());
-  }
-  wstring tmp;
-  
-  response = tmpClient.GetStringAsync(testURI);
-  wstring blank = response.get().c_str();
+  auto stringResponse = client.GetStringAsync(Uri{testURL});
+
+  while(stringResponse.Progress());  
+  //wstring tmp{stringResponse.get()};      
+  captionText = stringResponse.get();
+  //OutputDebugString(responseString.c_str());
+  //OutputDebugString(stringResponse.get().c_str());
+ 
   
   
   //HttpResponseMessage urlResponse{};

@@ -15,6 +15,8 @@
 #include<algorithm>
 #include<functional>
 #include<cstdio>
+#include<future>
+
 
 //#include<wwstring>
 //#include<curl/curl.h>
