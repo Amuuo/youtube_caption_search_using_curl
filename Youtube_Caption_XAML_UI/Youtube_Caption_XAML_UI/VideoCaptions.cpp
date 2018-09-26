@@ -506,12 +506,15 @@ sendWebRequestForCaptions()
   testURL += videoID;
      
   HttpClient client;
-
+  HttpRequestMessage requestMsg(HttpMethod::Get(), Uri{testURL});
+  requestMsg.Content().Headers().ContentType(Headers::HttpMediaTypeHeaderValue{L"text/plain; charset=utf-16"});
   auto stringResponse = client.GetStringAsync(Uri{testURL});
 
   while(stringResponse.Progress());  
   //wstring tmp{stringResponse.get()};      
   captionText = stringResponse.get();
+  stringResponse.Close();
+  return;
   //OutputDebugString(responseString.c_str());
   //OutputDebugString(stringResponse.get().c_str());
  

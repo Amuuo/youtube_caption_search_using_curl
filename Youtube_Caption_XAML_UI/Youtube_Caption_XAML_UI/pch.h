@@ -20,5 +20,6 @@
 #include "winrt/Windows.UI.Xaml.Navigation.h"
 #include "winrt/Windows.Web.h"
 #include "winrt/Windows.Web.Http.h"
+#include "winrt/Windows.Web.Http.Headers.h"
 #include "winrt/Windows.Web.Syndication.h"
 #include "VideoCaptions.h"

@@ -12,11 +12,34 @@
             <GradientStop Color="#FF3E1616" Offset="1"/>
         </LinearGradientBrush>
     </Page.Background>
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Background="#3F6C6C6C">
-        <TextBlock x:Name="ResultsBlock" Width="500" Height="500" Margin="0,100,0,100" FocusVisualPrimaryBrush="#FFA03333" SelectionHighlightColor="#FFB06B4B" FocusVisualSecondaryBrush="#99A62929" Foreground="#FF573E3E"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBox x:Name="UrlBox" HorizontalAlignment="Left" Text="No Text" VerticalAlignment="Center" Width="421" PlaceholderText="Enter Youtube URL"/>
-            <Button x:Name="Button" Click="ClickHandler">Search For Captions</Button>
-        </StackPanel>
+    
+    
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBox x:Name="UrlBox" 
+                 HorizontalAlignment="Left" 
+                 Text="https://www.youtube.com/watch?v=f-wWBGo6a2w" 
+                 VerticalAlignment="Center" 
+                 Width="421" 
+                 PlaceholderText="Enter Youtube URL" 
+                 Margin="100,0,0,0"/>
+        <Button x:Name="Button" 
+                Click="ClickHandler">Search For Captions
+        </Button>
+        
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="500">
+            <TextBlock x:Name="ResultsBlock" 
+                   ScrollViewer.IsVerticalRailEnabled="True" 
+                   ScrollViewer.IsScrollInertiaEnabled="True" 
+                   TextWrapping="Wrap" 
+                   Width="500" 
+                   Margin="50,100,100,100" 
+                   FocusVisualPrimaryBrush="#FFA03333" 
+                   SelectionHighlightColor="#FFB06B4B" 
+                   FocusVisualSecondaryBrush="#FF7C6F6F" 
+                   Foreground="#FFD1D1D1" 
+                   ManipulationMode="All">
+            </TextBlock>
+        </ScrollViewer>
     </StackPanel>
+    
 </Page>
