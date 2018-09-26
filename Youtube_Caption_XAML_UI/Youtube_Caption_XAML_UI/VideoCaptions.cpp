@@ -89,14 +89,6 @@ addContextLine(ContextPtr contextLine) {
 
 
 
-bool VideoCaptions::
-wordIsIndexed(wstring word) 
-{
-  return captionWordsIndex.find(word) != captionWordsIndex.end();
-}
-
-
-
 
 /*****************************************/
 /*         PRINT CAPTIONS TO FILE        */
@@ -229,7 +221,8 @@ createCaptionMap()
   {            
     getline(captionStream,currentLine);            
     setWordsToLowercase(currentLine);
-    buildCaptionLineAndWords(tmpLineMap,currentLine);        
+    buildCaptionLineAndWords(tmpLineMap,currentLine); 
+    currentLine.clear();
   }
 }
 
@@ -251,12 +244,18 @@ buildCaptionLineAndWords(captionLineMap lineMap,
   int           seconds;
   lineStream >> strSeconds;
   
-  seconds = stoi(strSeconds);
   
+  if(!isdigit(strSeconds[0])) 
+  {
+    return;
+  }
+
+  seconds = stoi(strSeconds);
   Time tmpTime{\
      seconds/3600, 
     (seconds%3600)/60, 
     (seconds%3600)%60};
+  
 
   getline(lineStream, capLine);
   captionLinePtr = make_shared<CaptionLine>(capLine, tmpTime);
@@ -282,6 +281,7 @@ indexWordsInCurrentLine(ContextPtr captionLinePtr)
   {
     lineStream >> wordInCaptionLine;
     indexWord(wordInCaptionLine, captionLinePtr);
+    wordInCaptionLine.clear();
   }
 }
 
@@ -303,6 +303,16 @@ indexWord(wstring& capWord, ContextPtr capLinePtr)
     captionWordsIndex[capWord] = make_shared<CaptionWord>(capWord, capLinePtr);
   }  
 }
+
+
+
+
+bool VideoCaptions::
+wordIsIndexed(wstring word) 
+{
+  return captionWordsIndex.find(word) != captionWordsIndex.end();
+}
+
 
 
 

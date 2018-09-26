@@ -12,34 +12,38 @@
             <GradientStop Color="#FF3E1616" Offset="1"/>
         </LinearGradientBrush>
     </Page.Background>
-    
-    
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBox x:Name="UrlBox" 
-                 HorizontalAlignment="Left" 
-                 Text="https://www.youtube.com/watch?v=f-wWBGo6a2w" 
-                 VerticalAlignment="Center" 
-                 Width="421" 
-                 PlaceholderText="Enter Youtube URL" 
-                 Margin="100,0,0,0"/>
-        <Button x:Name="Button" 
-                Click="ClickHandler">Search For Captions
-        </Button>
-        
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="500">
-            <TextBlock x:Name="ResultsBlock" 
-                   ScrollViewer.IsVerticalRailEnabled="True" 
-                   ScrollViewer.IsScrollInertiaEnabled="True" 
-                   TextWrapping="Wrap" 
-                   Width="500" 
-                   Margin="50,100,100,100" 
-                   FocusVisualPrimaryBrush="#FFA03333" 
-                   SelectionHighlightColor="#FFB06B4B" 
-                   FocusVisualSecondaryBrush="#FF7C6F6F" 
-                   Foreground="#FFD1D1D1" 
-                   ManipulationMode="All">
-            </TextBlock>
-        </ScrollViewer>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Height="261" Margin="0,0,0,0">
+            <Image Height="145" Width="412" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="/Assets/LockScreenLogo.png"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBox x:Name="UrlBox" 
+                         HorizontalAlignment="Left" 
+                         Text="https://www.youtube.com/watch?v=f-wWBGo6a2w" 
+                         VerticalAlignment="Center" 
+                         Width="421" 
+                         PlaceholderText="Enter Youtube URL" 
+                         Margin="100,0,0,0">
+                </TextBox>
+                <Button x:Name="Button" 
+                            Click="ClickHandler">Search For Captions
+                </Button>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="500">
+                <TextBlock x:Name="ResultsBlock" 
+                       ScrollViewer.IsVerticalRailEnabled="True" 
+                       ScrollViewer.IsScrollInertiaEnabled="True" 
+                       TextWrapping="Wrap" 
+                       Width="589" 
+                       FocusVisualPrimaryBrush="#FFA03333" 
+                       SelectionHighlightColor="#FFB06B4B" 
+                       FocusVisualSecondaryBrush="#FF7C6F6F" 
+                       Foreground="#FFD1D1D1" 
+                       ManipulationMode="All" Height="499"/>
+            </ScrollViewer>
+        </StackPanel>
     </StackPanel>
-    
+
 </Page>
