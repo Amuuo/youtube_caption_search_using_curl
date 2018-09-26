@@ -37,8 +37,24 @@ VideoCaptions::Time::Time()
 {
 }
 
+VideoCaptions::Time::Time(const Time & time) :  hr{time.hr }, 
+                                               min{time.min}, 
+                                               sec{time.sec} 
+{
+}
+
+VideoCaptions::Time::Time(Time&& time) :  hr{std::move(time.hr )}, 
+                                         min{std::move(time.min)}, 
+                                         sec{std::move(time.sec)}
+{      
+}
+
 VideoCaptions::Time::
 Time(wstring h, wstring m, wstring s): hr{stoi(h)}, min{stoi(m)}, sec{stoi(s)} 
+{
+}
+
+VideoCaptions::Time::Time(int hr, int min, int sec) : hr{hr}, min{min}, sec{sec}
 {
 }
 
@@ -48,7 +64,7 @@ VideoCaptions::CaptionLine::CaptionLine()
 }
 
 VideoCaptions::CaptionLine::
-CaptionLine(wstring line, Time time) : line{line}, contextTime{time} 
+CaptionLine(wstring line, Time time) : line{line}, time{time} 
 {
 }
 
@@ -76,7 +92,7 @@ addContextLine(ContextPtr contextLine) {
 bool VideoCaptions::
 wordIsIndexed(wstring word) 
 {
-  return captionWordsIndex.find(word) == captionWordsIndex.end();
+  return captionWordsIndex.find(word) != captionWordsIndex.end();
 }
 
 
@@ -124,11 +140,12 @@ printCaptionsToConsole(shared_ptr<CaptionWord> wordToPrint, int menuChoice)
     }
   }; 
 
+  /*
   switch (menuChoice) 
   {        
     //print url only
     case 1: 
-      printStrings({wordToPrint->captionContextsList[menuChoice]->timedURL});           
+      printStrings({(*(wordToPrint->captionContextsList.begin()) + menuChoice)->timedURL});           
       break; 
     
     //print url+context
@@ -144,7 +161,7 @@ printCaptionsToConsole(shared_ptr<CaptionWord> wordToPrint, int menuChoice)
     
     default: 
       break;
-  }
+  }*/
 }
 
 
@@ -157,26 +174,34 @@ void VideoCaptions::
 cleanupCaptionDownloadFile()
 {
   wprintf(L"\n>> Parsing caption file...");
-
-  wstring* caps = &captionText;
+  
   wstring insert{};
 
-  wregex parser1{L"<[^>]*>"};
+  wregex parser1{L"<text start=\\\"(\\d{1,3})[^>]*>"};
   wregex parser2{L"-->.*%"};
   wregex parser3{L"\\.\\d{3}"};
+  wregex parser4{L"<[^>]*>"};
+  wregex parser5{L"&amp;#39;"};
+  wregex parser6{L"[?!.,:;\\[\\]]"};
 
+  auto regexReplace = [&](wstring&& replacement, wregex& parser) 
+  {
+    regex_replace(back_inserter(insert), 
+                  captionText.begin(), 
+                  captionText.end(), 
+                  parser, 
+                  replacement);
+    
+    captionText = insert;
+    insert.clear();
+  };
 
-  regex_replace(back_inserter(insert), caps->begin(), caps->end(), parser1, L"");
-  *caps = insert;
-  insert.clear();
-  
-  regex_replace(back_inserter(insert), caps->begin(), caps->end(), parser2, L"");
-  *caps = insert;
-  insert.clear();
-  
-  regex_replace(back_inserter(insert), caps->begin(), caps->end(), parser3, L"");
-  *caps = insert;
-  insert.clear();
+  regexReplace(L"\n$1 ", parser1);
+  regexReplace(L"",  parser2);
+  regexReplace(L"",  parser3);
+  regexReplace(L"",  parser4);
+  regexReplace(L"'", parser5);  
+  regexReplace(L"",  parser6);
 }
 
 
@@ -197,28 +222,66 @@ createCaptionMap()
 
   wprintf(L"\n>> Generating caption index...");
 
-
-
+  //get first empty line
+  getline(captionStream, currentLine);
+  
   while (captionStream) 
-  {        
-    getline(captionStream,currentLine);        
-    
-    if(lineContainsTimeInfo(currentLine)) 
-    {      
-      if(nextLineIsADuplicate(captionStream,currentLine,tmpLineMap)) 
-      {
-        continue;      
-      } 
-      else
-      {
-        setWordsToLowercase(nextLine);
-        
-        if(lineIsNotAlreadyIndexed(nextLine)) 
-        {        
-          buildCaptionLineAndWords(tmpLineMap,currentLine,nextLine);                            
-        }   
-      }
-    }
+  {            
+    getline(captionStream,currentLine);            
+    setWordsToLowercase(currentLine);
+    buildCaptionLineAndWords(tmpLineMap,currentLine);        
+  }
+}
+
+
+
+
+
+
+/**********************************/
+/*  BUILD AND STORE CAPTION LINE  */
+/**********************************/
+void VideoCaptions::
+buildCaptionLineAndWords(captionLineMap lineMap, 
+                         wstring&       capLine) 
+{  
+  shared_ptr<CaptionLine> captionLinePtr;
+  wstring       strSeconds;    
+  wstringstream lineStream{capLine};
+  int           seconds;
+  lineStream >> strSeconds;
+  
+  seconds = stoi(strSeconds);
+  
+  Time tmpTime{\
+     seconds/3600, 
+    (seconds%3600)/60, 
+    (seconds%3600)%60};
+
+  getline(lineStream, capLine);
+  captionLinePtr = make_shared<CaptionLine>(capLine, tmpTime);
+  captionLines.push_back(captionLinePtr);
+  /* parse first three values of timestamp, ex: "00:00:00" */
+  
+  indexWordsInCurrentLine(captionLinePtr);
+}
+
+
+
+
+/***********************************/
+/*   INDEX WORDS IN CURRENT LINE   */
+/***********************************/
+inline void VideoCaptions::
+indexWordsInCurrentLine(ContextPtr captionLinePtr) 
+{   
+  wstring       wordInCaptionLine;
+  wstringstream lineStream{captionLinePtr->line};
+  
+  while (lineStream) 
+  {
+    lineStream >> wordInCaptionLine;
+    indexWord(wordInCaptionLine, captionLinePtr);
   }
 }
 
@@ -245,32 +308,10 @@ indexWord(wstring& capWord, ContextPtr capLinePtr)
 
 
 /**********************************/
-/*  BUILD AND STORE CAPTION LINE  */
-/**********************************/
-void VideoCaptions::
-buildCaptionLineAndWords(captionLineMap lineMap, 
-                         wstring         capLine, 
-                         wstring         lineInfo) 
-{  
-  
-  /* parse first three values of timestamp, ex: "00:00:00" */
-  lineMap[capLine] = make_shared<CaptionLine>( capLine, 
-                                               Time{lineInfo.substr(0,2),
-                                                    lineInfo.substr(3,2),
-                                                    lineInfo.substr(6,2)} ); 
-
-
-  indexWordsInCurrentLine(lineMap[capLine]);
-}
-
-
-
-
-/**********************************/
 /*     SET WORDS TO LOWERCASE     */
 /**********************************/
 inline void VideoCaptions::
-setWordsToLowercase(wstring line) 
+setWordsToLowercase(wstring& line) 
 {
   transform(line.begin(), line.end(), line.begin(), ::tolower);
 }
@@ -297,7 +338,7 @@ inline bool VideoCaptions::
 lineContainsTimeInfo(wstring& line) 
 {
   /* check for format, ex: "00:00:00 -> 00:00:00" */
-  return isdigit(line[0]) && line[2] == ':';
+  return isdigit(line[0]);
 }
 
                       
@@ -321,21 +362,7 @@ nextLineIsADuplicate(wstringstream& sstream,
 
 
 
-/***********************************/
-/*   INDEX WORDS IN CURRENT LINE   */
-/***********************************/
-inline void VideoCaptions::
-indexWordsInCurrentLine(ContextPtr currentLine) 
-{ 
-  wstringstream lineStream{currentLine->line};
-  wstring wordInCaptionLine;
-  
-  while (lineStream) 
-  {
-    lineStream >> wordInCaptionLine;
-    indexWord(wordInCaptionLine, currentLine);
-  }
-}
+
 
 
 
@@ -379,9 +406,9 @@ wstring VideoCaptions::
 getCaptionClipURL(ContextPtr line) 
 {  
   return L"www.youtube.com/watch&feature=youtu.be&t="  + 
-         to_wstring(line->contextTime.hr)  + L'h' + 
-         to_wstring(line->contextTime.min) + L'm' + 
-         to_wstring(line->contextTime.sec) + L's' + videoID;
+         to_wstring(line->time.hr)  + L'h' + 
+         to_wstring(line->time.min) + L'm' + 
+         to_wstring(line->time.sec) + L's' + videoID;
 }
 
 
@@ -496,7 +523,7 @@ sendWebRequestForCaptions()
   using std::wstring;
   using Windows::Foundation::Uri;
 
-  wstring new_url{L"http://video.google.com/timedtext?charset=utf16&type=track&lang=en&v="};
+  wstring new_url{L"http://video.google.com/timedtext?type=track&lang=en&v="};
   std::wregex rgx(L"v=(.{11})");
   std::wsmatch video_id_match;
   regex_search(videoURL, video_id_match, rgx);
@@ -507,9 +534,13 @@ sendWebRequestForCaptions()
      
   HttpClient client;
   HttpRequestMessage requestMsg(HttpMethod::Get(), Uri{testURL});
-  requestMsg.Content().Headers().ContentType(Headers::HttpMediaTypeHeaderValue{L"text/plain; charset=utf-16"});
-  auto stringResponse = client.GetStringAsync(Uri{testURL});
+  //auto rMsg = requestMsg.Content().Headers().Append(L"Content-Type", L"text/plain");  
+  client.DefaultRequestHeaders().Accept().Append(
+    Headers::HttpMediaTypeWithQualityHeaderValue(L"text/plain, text/xml"));
 
+  auto clientString = client.ToString();
+  auto stringResponse = client.GetStringAsync(Uri{testURL});
+  
   while(stringResponse.Progress());  
   //wstring tmp{stringResponse.get()};      
   captionText = stringResponse.get();

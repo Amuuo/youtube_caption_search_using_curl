@@ -11,6 +11,7 @@
 #include<vector>
 #include<map>
 #include<set>
+#include<unordered_set>
 #include<regex>
 #include<algorithm>
 #include<functional>
@@ -64,7 +65,10 @@ public:
   static struct Time 
   {   
     Time();
-    Time(wstring,wstring,wstring);      
+    Time(const Time&);
+    Time(Time&&);
+    Time(wstring,wstring,wstring); 
+    Time(int,int,int);
     int hr; 
     int min; 
     int sec;         
@@ -77,18 +81,18 @@ public:
     CaptionLine(wstring,Time);
     wstring line;
     wstring timedURL;
-    Time   contextTime;         
+    Time    time;         
   };
 
 
   static struct CaptionWord 
   {
     using ContextPtr    = shared_ptr<CaptionLine>;
-    using ContextPtrVec = vector<shared_ptr<CaptionLine>>;
+    using ContextPtrSet = vector<shared_ptr<CaptionLine>>;
     
     CaptionWord();
     CaptionWord(wstring, ContextPtr);
-    ContextPtrVec captionContextsList;
+    ContextPtrSet captionContextsList;
     wstring        word;
 
     void addContextLine(ContextPtr);
@@ -114,9 +118,9 @@ public:
   ~VideoCaptions();  
 
 
+  vector<shared_ptr<CaptionLine>> captionLines;
   mostMentionVec  captionWordsSortedByFrequency;
   captionMap      captionWordsIndex;  
-  vector<wstring> captionLines;
   wstring         videoTitle;  
   wstring         videoURL;
   wstring         videoID;
@@ -153,11 +157,11 @@ public:
   /****************************************/
 
 
-  inline void    buildCaptionLineAndWords(captionLineMap,wstring,wstring);
+  inline void    buildCaptionLineAndWords(captionLineMap,wstring&);
   inline wstring  getWordURL(int); 
   inline void    deleteCommonWordsFromMap();
   inline void    indexWord(wstring&, ContextPtr);
-  inline void    setWordsToLowercase(wstring);
+  inline void    setWordsToLowercase(wstring&);
   inline bool    lineIsNotAlreadyIndexed(wstring&);
   inline bool    lineContainsTimeInfo(wstring&);
   inline void    indexWordsInCurrentLine(ContextPtr);

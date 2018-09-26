@@ -63,5 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt" />
+    <Text Include="commonWords.txt" />
   </ItemGroup>
 </Project>
