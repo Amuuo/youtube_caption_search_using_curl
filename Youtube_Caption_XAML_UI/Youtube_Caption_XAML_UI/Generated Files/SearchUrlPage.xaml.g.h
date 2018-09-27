@@ -33,6 +33,42 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
             _titleSearch = value;
         }
 
+        ::winrt::Windows::UI::Xaml::Controls::Image title()
+        {
+            return _title;
+        }
+        void title(::winrt::Windows::UI::Xaml::Controls::Image value)
+        {
+            _title = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::StackPanel searchBar()
+        {
+            return _searchBar;
+        }
+        void searchBar(::winrt::Windows::UI::Xaml::Controls::StackPanel value)
+        {
+            _searchBar = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::Image thumbnail()
+        {
+            return _thumbnail;
+        }
+        void thumbnail(::winrt::Windows::UI::Xaml::Controls::Image value)
+        {
+            _thumbnail = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::StackPanel buttonStack()
+        {
+            return _buttonStack;
+        }
+        void buttonStack(::winrt::Windows::UI::Xaml::Controls::StackPanel value)
+        {
+            _buttonStack = value;
+        }
+
         ::winrt::Windows::UI::Xaml::Controls::TextBlock mostFrequentBox()
         {
             return _mostFrequentBox;
@@ -40,6 +76,15 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
         void mostFrequentBox(::winrt::Windows::UI::Xaml::Controls::TextBlock value)
         {
             _mostFrequentBox = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::TextBlock ResultsBlock()
+        {
+            return _ResultsBlock;
+        }
+        void ResultsBlock(::winrt::Windows::UI::Xaml::Controls::TextBlock value)
+        {
+            _ResultsBlock = value;
         }
 
         ::winrt::Windows::UI::Xaml::Controls::Button searchWordsButton()
@@ -69,24 +114,6 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
             _testButton = value;
         }
 
-        ::winrt::Windows::UI::Xaml::Controls::TextBlock ResultsBlock()
-        {
-            return _ResultsBlock;
-        }
-        void ResultsBlock(::winrt::Windows::UI::Xaml::Controls::TextBlock value)
-        {
-            _ResultsBlock = value;
-        }
-
-        ::winrt::Windows::UI::Xaml::Controls::Image thumbnail()
-        {
-            return _thumbnail;
-        }
-        void thumbnail(::winrt::Windows::UI::Xaml::Controls::Image value)
-        {
-            _thumbnail = value;
-        }
-
         ::winrt::Windows::UI::Xaml::Controls::TextBox UrlBox()
         {
             return _UrlBox;
@@ -109,12 +136,15 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
         bool _contentLoaded{false};
 
         ::winrt::Windows::UI::Xaml::Controls::StackPanel _titleSearch{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::Image _title{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::StackPanel _searchBar{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::Image _thumbnail{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::StackPanel _buttonStack{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::TextBlock _mostFrequentBox{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::TextBlock _ResultsBlock{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::Button _searchWordsButton{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::Button _mostFrequentButton{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::Button _testButton{nullptr};
-        ::winrt::Windows::UI::Xaml::Controls::TextBlock _ResultsBlock{nullptr};
-        ::winrt::Windows::UI::Xaml::Controls::Image _thumbnail{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::TextBox _UrlBox{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::Button _Button{nullptr};
     };

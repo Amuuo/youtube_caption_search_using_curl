@@ -6,6 +6,7 @@
 
 #include "SearchUrlPage.g.h"
 
+
 namespace winrt::Youtube_Caption_XAML_UI::implementation
 {
     struct SearchUrlPage : SearchUrlPageT<SearchUrlPage>

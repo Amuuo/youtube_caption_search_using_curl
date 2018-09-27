@@ -27,6 +27,8 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
     {
       wstring tmpUrl{UrlBox().Text()};
 
+      if(captions) captions.~shared_ptr();
+
       captions = make_shared<VideoCaptions>(tmpUrl);
       captions->captionText.clear();
       for (auto linePtr : captions->captionLines) 

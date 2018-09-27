@@ -501,9 +501,13 @@ createMostFrequentWordsVector()
        captionWordsSortedByFrequency.end(), 
        [](shared_ptr<CaptionWord> p1, shared_ptr<CaptionWord> p2) {
           return p1->captionContextsList.size() > p2->captionContextsList.size();
-       });
+       }); 
+  if (captionWordsSortedByFrequency[0]->word == L"") {
+    captionWordsSortedByFrequency[0].~shared_ptr();
+    captionWordsSortedByFrequency.erase(
+      captionWordsSortedByFrequency.begin());
+  }
 }
-
 
 
 
