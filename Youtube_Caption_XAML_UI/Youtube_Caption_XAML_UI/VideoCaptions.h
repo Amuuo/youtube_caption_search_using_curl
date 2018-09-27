@@ -17,6 +17,7 @@
 #include<functional>
 #include<cstdio>
 #include<future>
+#include<wchar.h>
 
 
 //#include<wwstring>
@@ -143,7 +144,7 @@ public:
   
   //void printCaptionsToFile();
   void searchForWord();
-  //void printMaxMentions();
+  wstring printMaxMentions(int=10);
 
 
 

@@ -659,25 +659,26 @@ selectedCaptionMenuOptions()
 
 /*****************************************/
 /*          PRINT MAX MENTIONS           */
-/*****************************************
-void VideoCaptions::
-printMaxMentions() 
+/*****************************************/
+wstring VideoCaptions::
+printMaxMentions(int range) 
 {
-  int range = getUserInput<int>("Enter range");  
-  const char* wordContextFormat = "\n\t(%d %-8s:  \"%s\"";
-  int choice{displayPrintMenu()};
+  //int range = getUserInput<int>("Enter range");  
+  const wchar_t* wordContextFormat = L"\n(%d %-8ls:  \"%ls\"";
+  //int choice{displayPrintMenu()};
 
+  //if(choice != 4) wprintf("\n");
+  
+  std::wostringstream outStream{};
 
-  if(choice != 4) wprintf("\n");
-      
   for (int i = 0; i < range; ++i) 
   {            
-    wprintf(wordContextFormat, 
-           captionWordsSortedByFrequency[i]->captionContext.size(),           
-           "mentions)",
-           captionWordsSortedByFrequency[i]->word.c_str());                          
+    outStream << captionWordsSortedByFrequency[i]->captionContextsList.size()
+      << L" mentions  \"" << captionWordsSortedByFrequency[i]->word 
+      << L"\"" << std::endl;
   }  
-}*/
+  return outStream.str();
+}
 
 
 

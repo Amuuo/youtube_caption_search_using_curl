@@ -1,0 +1,9 @@
+namespace Youtube_Caption_XAML_UI
+{
+    [default_interface]
+    runtimeclass SearchPage2 : Windows.UI.Xaml.Controls.Page
+    {
+        SearchPage2();
+        Int32 MyProperty;
+    }
+}

@@ -99,6 +99,10 @@
     <ClInclude Include="MainPage.h">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="SearchPage2.h">
+      <DependentUpon>SearchPage2.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
     <ClInclude Include="SearchUrlPage.h">
       <DependentUpon>SearchUrlPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -110,6 +114,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SearchPage2.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SearchUrlPage.xaml">
@@ -144,6 +151,10 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="SearchPage2.cpp">
+      <DependentUpon>SearchPage2.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
     <ClCompile Include="SearchUrlPage.cpp">
       <DependentUpon>SearchUrlPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -156,6 +167,10 @@
     </Midl>
     <Midl Include="MainPage.idl">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Midl>
+    <Midl Include="SearchPage2.idl">
+      <DependentUpon>SearchPage2.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Midl>
     <Midl Include="SearchUrlPage.idl">
       <DependentUpon>SearchUrlPage.xaml</DependentUpon>

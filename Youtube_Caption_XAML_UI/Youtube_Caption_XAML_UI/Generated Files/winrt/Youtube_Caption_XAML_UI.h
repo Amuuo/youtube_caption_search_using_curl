@@ -26,6 +26,18 @@ template <typename D> void consume_Youtube_Caption_XAML_UI_IMainPage<D>::MyPrope
     check_hresult(WINRT_SHIM(Youtube_Caption_XAML_UI::IMainPage)->put_MyProperty(value));
 }
 
+template <typename D> int32_t consume_Youtube_Caption_XAML_UI_ISearchPage2<D>::MyProperty() const
+{
+    int32_t result{};
+    check_hresult(WINRT_SHIM(Youtube_Caption_XAML_UI::ISearchPage2)->get_MyProperty(&result));
+    return result;
+}
+
+template <typename D> void consume_Youtube_Caption_XAML_UI_ISearchPage2<D>::MyProperty(int32_t value) const
+{
+    check_hresult(WINRT_SHIM(Youtube_Caption_XAML_UI::ISearchPage2)->put_MyProperty(value));
+}
+
 template <typename D> int32_t consume_Youtube_Caption_XAML_UI_ISearchUrlPage<D>::MyProperty() const
 {
     int32_t result{};
@@ -40,6 +52,38 @@ template <typename D> void consume_Youtube_Caption_XAML_UI_ISearchUrlPage<D>::My
 
 template <typename D>
 struct produce<D, Youtube_Caption_XAML_UI::IMainPage> : produce_base<D, Youtube_Caption_XAML_UI::IMainPage>
+{
+    HRESULT __stdcall get_MyProperty(int32_t* result) noexcept final
+    {
+        try
+        {
+            typename D::abi_guard guard(this->shim());
+            *result = detach_from<int32_t>(this->shim().MyProperty());
+            return S_OK;
+        }
+        catch (...)
+        {
+            return to_hresult();
+        }
+    }
+
+    HRESULT __stdcall put_MyProperty(int32_t value) noexcept final
+    {
+        try
+        {
+            typename D::abi_guard guard(this->shim());
+            this->shim().MyProperty(value);
+            return S_OK;
+        }
+        catch (...)
+        {
+            return to_hresult();
+        }
+    }
+};
+
+template <typename D>
+struct produce<D, Youtube_Caption_XAML_UI::ISearchPage2> : produce_base<D, Youtube_Caption_XAML_UI::ISearchPage2>
 {
     HRESULT __stdcall get_MyProperty(int32_t* result) noexcept final
     {
@@ -110,6 +154,10 @@ inline MainPage::MainPage() :
     MainPage(get_activation_factory<MainPage>().ActivateInstance<MainPage>())
 {}
 
+inline SearchPage2::SearchPage2() :
+    SearchPage2(get_activation_factory<SearchPage2>().ActivateInstance<SearchPage2>())
+{}
+
 inline SearchUrlPage::SearchUrlPage() :
     SearchUrlPage(get_activation_factory<SearchUrlPage>().ActivateInstance<SearchUrlPage>())
 {}
@@ -119,8 +167,10 @@ inline SearchUrlPage::SearchUrlPage() :
 WINRT_EXPORT namespace std {
 
 template<> struct hash<winrt::Youtube_Caption_XAML_UI::IMainPage> : winrt::impl::hash_base<winrt::Youtube_Caption_XAML_UI::IMainPage> {};
+template<> struct hash<winrt::Youtube_Caption_XAML_UI::ISearchPage2> : winrt::impl::hash_base<winrt::Youtube_Caption_XAML_UI::ISearchPage2> {};
 template<> struct hash<winrt::Youtube_Caption_XAML_UI::ISearchUrlPage> : winrt::impl::hash_base<winrt::Youtube_Caption_XAML_UI::ISearchUrlPage> {};
 template<> struct hash<winrt::Youtube_Caption_XAML_UI::MainPage> : winrt::impl::hash_base<winrt::Youtube_Caption_XAML_UI::MainPage> {};
+template<> struct hash<winrt::Youtube_Caption_XAML_UI::SearchPage2> : winrt::impl::hash_base<winrt::Youtube_Caption_XAML_UI::SearchPage2> {};
 template<> struct hash<winrt::Youtube_Caption_XAML_UI::SearchUrlPage> : winrt::impl::hash_base<winrt::Youtube_Caption_XAML_UI::SearchUrlPage> {};
 
 }

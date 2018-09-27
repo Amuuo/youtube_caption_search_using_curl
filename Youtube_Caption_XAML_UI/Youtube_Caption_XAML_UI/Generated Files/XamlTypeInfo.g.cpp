@@ -13,10 +13,12 @@
 
 #include "App.h"
 #include "MainPage.h"
+#include "SearchPage2.h"
 #include "SearchUrlPage.h"
 #include "XamlBindingInfo.xaml.g.hpp"
 #include "App.xaml.g.hpp"
 #include "MainPage.xaml.g.hpp"
+#include "SearchPage2.xaml.g.hpp"
 #include "SearchUrlPage.xaml.g.hpp"
 
 using IXamlMember = ::winrt::Windows::UI::Xaml::Markup::IXamlMember;
@@ -123,22 +125,28 @@ const TypeInfo TypeInfos[] =
     0, 0, -1, TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   3
+    L"Youtube_Caption_XAML_UI.SearchPage2", L"",
+    &ActivateLocalType<::winrt::Youtube_Caption_XAML_UI::implementation::SearchPage2>, nullptr, nullptr, nullptr,
+    1, // Windows.UI.Xaml.Controls.Page
+    1, 0, -1, TypeKind::Custom,
+    TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
+    //   4
     L"Windows.UI.Xaml.Controls.UserControl", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    1, 0, -1, TypeKind::Metadata,
+    2, 0, -1, TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
-    //   4
+    //   5
     L"Youtube_Caption_XAML_UI.SearchUrlPage", L"",
     &ActivateLocalType<::winrt::Youtube_Caption_XAML_UI::implementation::SearchUrlPage>, nullptr, nullptr, nullptr,
     1, // Windows.UI.Xaml.Controls.Page
-    1, 0, -1, TypeKind::Custom,
+    2, 0, -1, TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //  Last type here is for padding
     L"", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1, 
-    2, 0, -1, TypeKind::Custom,
+    3, 0, -1, TypeKind::Custom,
     TypeInfo_Flags_None,
 };
 
@@ -179,9 +187,9 @@ constexpr UINT TypeInfoLookup[] = {
       3,   //  33
       3,   //  34
       3,   //  35
-      3,   //  36
-      4,   //  37
-      5,   //  38
+      4,   //  36
+      5,   //  37
+      6,   //  38
 };
 
 struct MemberInfo 
@@ -205,7 +213,14 @@ const MemberInfo MemberInfos[] =
     0, // Int32
     -1,
     false, false, false,
-    //   1 - Youtube_Caption_XAML_UI.SearchUrlPage.MyProperty
+    //   1 - Youtube_Caption_XAML_UI.SearchPage2.MyProperty
+    L"MyProperty",
+    &GetValueTypeMember_MyProperty<::winrt::Youtube_Caption_XAML_UI::SearchPage2, int32_t>,
+    &SetValueTypeMember_MyProperty<::winrt::Youtube_Caption_XAML_UI::SearchPage2, int32_t>,
+    0, // Int32
+    -1,
+    false, false, false,
+    //   2 - Youtube_Caption_XAML_UI.SearchUrlPage.MyProperty
     L"MyProperty",
     &GetValueTypeMember_MyProperty<::winrt::Youtube_Caption_XAML_UI::SearchUrlPage, int32_t>,
     &SetValueTypeMember_MyProperty<::winrt::Youtube_Caption_XAML_UI::SearchUrlPage, int32_t>,

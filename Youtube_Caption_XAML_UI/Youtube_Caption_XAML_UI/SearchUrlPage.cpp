@@ -22,17 +22,33 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
         throw hresult_not_implemented();
     }
 
-    void SearchUrlPage::ClickHandler(IInspectable const&, RoutedEventArgs const&)
+    void SearchUrlPage::ClickHandler(IInspectable const&, 
+                                     RoutedEventArgs const&)
     {
-      Button().Content(box_value(L"Clicked"));
       wstring tmpUrl{UrlBox().Text()};
 
-      auto tmpCaptions = make_shared<VideoCaptions>(tmpUrl);
-      tmpCaptions->captionText.clear();
-      for (auto linePtr : tmpCaptions->captionLines) 
+      captions = make_shared<VideoCaptions>(tmpUrl);
+      captions->captionText.clear();
+      for (auto linePtr : captions->captionLines) 
       {
-        tmpCaptions->captionText += linePtr->line + L'\n';          
+        captions->captionText += linePtr->line + L'\n';          
       }
-      ResultsBlock().Text(tmpCaptions->captionText);
+      ResultsBlock().Text(captions->captionText);
+    }
+    
+    void SearchUrlPage::testGridClick(IInspectable const & sender, 
+                                      RoutedEventArgs const & args) {
+      this->Frame().Navigate(xaml_typename<Youtube_Caption_XAML_UI::SearchPage2>(), nullptr);
+    }
+    
+    void SearchUrlPage::mostFrequentClick(IInspectable const & sender, 
+                                    RoutedEventArgs const & args) {
+    
+      mostFrequentBox().Text(captions->printMaxMentions());
+    }
+    
+    void SearchUrlPage::searchWordsClick(IInspectable const & sender,
+                                         RoutedEventArgs const & args) {
+    
     }
 }

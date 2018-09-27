@@ -46,22 +46,49 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
         case 3:
             {
                 auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::TextBlock>();
-                this->ResultsBlock(targetElement);
+                this->mostFrequentBox(targetElement);
             }
             break;
         case 4:
+            {
+                auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::Button>();
+                this->searchWordsButton(targetElement);
+                targetElement.Click({ static_cast<D*>(this), &D::searchWordsClick});
+            }
+            break;
+        case 5:
+            {
+                auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::Button>();
+                this->mostFrequentButton(targetElement);
+                targetElement.Click({ static_cast<D*>(this), &D::mostFrequentClick});
+            }
+            break;
+        case 6:
+            {
+                auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::Button>();
+                this->testButton(targetElement);
+                targetElement.Click({ static_cast<D*>(this), &D::testGridClick});
+            }
+            break;
+        case 7:
+            {
+                auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::TextBlock>();
+                this->ResultsBlock(targetElement);
+            }
+            break;
+        case 8:
             {
                 auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::Image>();
                 this->thumbnail(targetElement);
             }
             break;
-        case 5:
+        case 9:
             {
                 auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::TextBox>();
                 this->UrlBox(targetElement);
             }
             break;
-        case 6:
+        case 10:
             {
                 auto targetElement = target.as<::winrt::Windows::UI::Xaml::Controls::Button>();
                 this->Button(targetElement);

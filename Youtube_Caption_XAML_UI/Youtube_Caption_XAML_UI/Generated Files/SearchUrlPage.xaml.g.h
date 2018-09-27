@@ -33,6 +33,42 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
             _titleSearch = value;
         }
 
+        ::winrt::Windows::UI::Xaml::Controls::TextBlock mostFrequentBox()
+        {
+            return _mostFrequentBox;
+        }
+        void mostFrequentBox(::winrt::Windows::UI::Xaml::Controls::TextBlock value)
+        {
+            _mostFrequentBox = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::Button searchWordsButton()
+        {
+            return _searchWordsButton;
+        }
+        void searchWordsButton(::winrt::Windows::UI::Xaml::Controls::Button value)
+        {
+            _searchWordsButton = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::Button mostFrequentButton()
+        {
+            return _mostFrequentButton;
+        }
+        void mostFrequentButton(::winrt::Windows::UI::Xaml::Controls::Button value)
+        {
+            _mostFrequentButton = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::Button testButton()
+        {
+            return _testButton;
+        }
+        void testButton(::winrt::Windows::UI::Xaml::Controls::Button value)
+        {
+            _testButton = value;
+        }
+
         ::winrt::Windows::UI::Xaml::Controls::TextBlock ResultsBlock()
         {
             return _ResultsBlock;
@@ -73,6 +109,10 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
         bool _contentLoaded{false};
 
         ::winrt::Windows::UI::Xaml::Controls::StackPanel _titleSearch{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::TextBlock _mostFrequentBox{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::Button _searchWordsButton{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::Button _mostFrequentButton{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::Button _testButton{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::TextBlock _ResultsBlock{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::Image _thumbnail{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::TextBox _UrlBox{nullptr};

@@ -5,8 +5,10 @@
 WINRT_EXPORT namespace winrt::Youtube_Caption_XAML_UI {
 
 struct IMainPage;
+struct ISearchPage2;
 struct ISearchUrlPage;
 struct MainPage;
+struct SearchPage2;
 struct SearchUrlPage;
 
 }
@@ -14,16 +16,22 @@ struct SearchUrlPage;
 namespace winrt::impl {
 
 template <> struct category<Youtube_Caption_XAML_UI::IMainPage>{ using type = interface_category; };
+template <> struct category<Youtube_Caption_XAML_UI::ISearchPage2>{ using type = interface_category; };
 template <> struct category<Youtube_Caption_XAML_UI::ISearchUrlPage>{ using type = interface_category; };
 template <> struct category<Youtube_Caption_XAML_UI::MainPage>{ using type = class_category; };
+template <> struct category<Youtube_Caption_XAML_UI::SearchPage2>{ using type = class_category; };
 template <> struct category<Youtube_Caption_XAML_UI::SearchUrlPage>{ using type = class_category; };
 template <> struct name<Youtube_Caption_XAML_UI::IMainPage>{ static constexpr auto & value{ L"Youtube_Caption_XAML_UI.IMainPage" }; };
+template <> struct name<Youtube_Caption_XAML_UI::ISearchPage2>{ static constexpr auto & value{ L"Youtube_Caption_XAML_UI.ISearchPage2" }; };
 template <> struct name<Youtube_Caption_XAML_UI::ISearchUrlPage>{ static constexpr auto & value{ L"Youtube_Caption_XAML_UI.ISearchUrlPage" }; };
 template <> struct name<Youtube_Caption_XAML_UI::MainPage>{ static constexpr auto & value{ L"Youtube_Caption_XAML_UI.MainPage" }; };
+template <> struct name<Youtube_Caption_XAML_UI::SearchPage2>{ static constexpr auto & value{ L"Youtube_Caption_XAML_UI.SearchPage2" }; };
 template <> struct name<Youtube_Caption_XAML_UI::SearchUrlPage>{ static constexpr auto & value{ L"Youtube_Caption_XAML_UI.SearchUrlPage" }; };
 template <> struct guid<Youtube_Caption_XAML_UI::IMainPage>{ static constexpr GUID value{ 0x81533498,0xBB93,0x59C1,{ 0x99,0x00,0xE6,0x00,0xFF,0xFE,0xAF,0x5D } }; };
+template <> struct guid<Youtube_Caption_XAML_UI::ISearchPage2>{ static constexpr GUID value{ 0x28DE1FA1,0xFB5B,0x58E3,{ 0x88,0x7A,0x5E,0x02,0xC6,0xD2,0xAB,0x96 } }; };
 template <> struct guid<Youtube_Caption_XAML_UI::ISearchUrlPage>{ static constexpr GUID value{ 0xEB8FC7D3,0x5D0E,0x5213,{ 0xBC,0xA8,0x78,0x93,0xA8,0xE0,0xED,0x7F } }; };
 template <> struct default_interface<Youtube_Caption_XAML_UI::MainPage>{ using type = Youtube_Caption_XAML_UI::IMainPage; };
+template <> struct default_interface<Youtube_Caption_XAML_UI::SearchPage2>{ using type = Youtube_Caption_XAML_UI::ISearchPage2; };
 template <> struct default_interface<Youtube_Caption_XAML_UI::SearchUrlPage>{ using type = Youtube_Caption_XAML_UI::ISearchUrlPage; };
 
 template <typename D>
@@ -35,6 +43,14 @@ struct consume_Youtube_Caption_XAML_UI_IMainPage
 template <> struct consume<Youtube_Caption_XAML_UI::IMainPage> { template <typename D> using type = consume_Youtube_Caption_XAML_UI_IMainPage<D>; };
 
 template <typename D>
+struct consume_Youtube_Caption_XAML_UI_ISearchPage2
+{
+    int32_t MyProperty() const;
+    void MyProperty(int32_t value) const;
+};
+template <> struct consume<Youtube_Caption_XAML_UI::ISearchPage2> { template <typename D> using type = consume_Youtube_Caption_XAML_UI_ISearchPage2<D>; };
+
+template <typename D>
 struct consume_Youtube_Caption_XAML_UI_ISearchUrlPage
 {
     int32_t MyProperty() const;
@@ -43,6 +59,12 @@ struct consume_Youtube_Caption_XAML_UI_ISearchUrlPage
 template <> struct consume<Youtube_Caption_XAML_UI::ISearchUrlPage> { template <typename D> using type = consume_Youtube_Caption_XAML_UI_ISearchUrlPage<D>; };
 
 template <> struct abi<Youtube_Caption_XAML_UI::IMainPage>{ struct type : IInspectable
+{
+    virtual HRESULT __stdcall get_MyProperty(int32_t* result) noexcept = 0;
+    virtual HRESULT __stdcall put_MyProperty(int32_t value) noexcept = 0;
+};};
+
+template <> struct abi<Youtube_Caption_XAML_UI::ISearchPage2>{ struct type : IInspectable
 {
     virtual HRESULT __stdcall get_MyProperty(int32_t* result) noexcept = 0;
     virtual HRESULT __stdcall put_MyProperty(int32_t value) noexcept = 0;

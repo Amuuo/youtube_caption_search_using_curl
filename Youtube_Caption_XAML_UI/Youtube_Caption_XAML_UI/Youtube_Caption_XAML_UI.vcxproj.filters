@@ -6,6 +6,7 @@
   <ItemGroup>
     <Page Include="MainPage.xaml" />
     <Page Include="SearchUrlPage.xaml" />
+    <Page Include="SearchPage2.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="App.idl" />

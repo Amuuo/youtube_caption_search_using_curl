@@ -5,7 +5,7 @@
     xmlns:local="using:Youtube_Caption_XAML_UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" BorderBrush="White">
+    mc:Ignorable="d" BorderBrush="White" Width="1130">
     <Page.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="#FF649787"/>
@@ -18,11 +18,11 @@
             <Image x:Name="thumbnail" Height="175" MaxWidth="650" Source="/Assets/CapScrubLogo.png" Margin="50,50,50,0"/>
             <StackPanel Orientation="Horizontal" VariableSizedWrapGrid.ColumnSpan="2" HorizontalAlignment="Center" Width="566" VerticalAlignment="Center" Margin="0,0,0,25">
                 <TextBox x:Name="UrlBox" 
-                                HorizontalAlignment="Center" 
-                                Text="https://www.youtube.com/watch?v=f-wWBGo6a2w" 
-                                VerticalAlignment="Center" 
-                                Width="405" 
-                                PlaceholderText="Enter Youtube URL" Margin="0,0,0,0"/>
+                         HorizontalAlignment="Center" 
+                         Text="https://www.youtube.com/watch?v=f-wWBGo6a2w" 
+                         VerticalAlignment="Center" 
+                         Width="405" 
+                         PlaceholderText="Enter Youtube URL" Margin="0,0,0,0"/>
                 <Button x:Name="Button" HorizontalAlignment="Center" 
                                 Click="ClickHandler" Content="Search For Captions" VerticalAlignment="Center" Width="162"/>
             </StackPanel>
@@ -30,16 +30,16 @@
         </StackPanel>
         <ScrollViewer RelativePanel.AlignHorizontalCenterWith="titleSearch" RelativePanel.Below="titleSearch"  VerticalScrollBarVisibility="Auto" RelativePanel.AlignBottomWith="titleSearch" Width="525" Margin="56,35,55,-385" ScrollViewer.IsScrollInertiaEnabled="True" BorderBrush="#FFD6D6D6" FontFamily="Segoe UI" FontSize="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TextBlock x:Name="ResultsBlock"                                                               
-                        ScrollViewer.BringIntoViewOnFocusChange="True"
-                        HorizontalAlignment="Center"
-                        TextWrapping="Wrap" 
-                        Width="475" 
-                        FocusVisualPrimaryBrush="#FFA03333" 
-                        SelectionHighlightColor="#FFB06B4B" 
-                        FocusVisualSecondaryBrush="#FF7C6F6F" 
-                        Foreground="#FFD1D1D1" 
-                        ManipulationMode="All" 
-                        Height="Auto" FontFamily="Segoe UI" Margin="25,10,25,10" FontSize="14">
+                       ScrollViewer.BringIntoViewOnFocusChange="True"
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap" 
+                       Width="475" 
+                       FocusVisualPrimaryBrush="#FFA03333" 
+                       SelectionHighlightColor="#FFB06B4B" 
+                       FocusVisualSecondaryBrush="#FF7C6F6F" 
+                       Foreground="#FFD1D1D1" 
+                       ManipulationMode="All" 
+                       Height="Auto" FontFamily="Segoe UI" Margin="25,10,25,10" FontSize="14">
             </TextBlock>
             <ScrollViewer.Template>
                 <ControlTemplate TargetType="ScrollViewer">
@@ -50,8 +50,8 @@
                                                 Width="Auto" VerticalAlignment="Stretch" FontFamily="Adobe Jenson Pro">
                         <ScrollContentPresenter.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FF406464"/>
-                                <GradientStop Color="#FF395A5D" Offset="1"/>
+                                <GradientStop Color="#FF314F56"/>
+                                <GradientStop Color="#FF446A68" Offset="1"/>
                             </LinearGradientBrush>
                         </ScrollContentPresenter.Background>
                         <ScrollContentPresenter.BorderBrush>
@@ -65,11 +65,12 @@
             </ScrollViewer.Template>
         </ScrollViewer>
         <StackPanel RelativePanel.RightOf="titleSearch" RelativePanel.AlignVerticalCenterWith="titleSearch" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Button Content="Search For Words&#xD;&#xA;" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
-            <Button Content="List Most Frequent Words" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
-            <Button Content="Button 3" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
+            <Button x:Name="searchWordsButton" Click="searchWordsClick" Content="Search For Words&#xD;&#xA;" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
+            <Button x:Name="mostFrequentButton" Click="mostFrequentClick" Content="List Most Frequent Words" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
+            <Button x:Name="testButton" Click="testGridClick" Content="Test Grid Page" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272" ClickMode="Release"/>
             <Button Content="Button 4" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
             <Button Content="Button 5" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
         </StackPanel>
+        <TextBlock x:Name="mostFrequentBox" HorizontalAlignment="Left" Height="429" TextWrapping="Wrap" VerticalAlignment="Top" Width="270" Margin="755,500,0,0" FontFamily="Adobe Gothic Std B" FontSize="14" TextAlignment="Justify"/>
     </RelativePanel>
 </Page>

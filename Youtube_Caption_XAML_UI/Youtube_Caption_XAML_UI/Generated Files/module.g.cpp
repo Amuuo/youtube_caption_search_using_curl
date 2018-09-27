@@ -4,6 +4,7 @@
 #ifndef WINRT_SUPPRESS_MODULE_EXPORTS
 
 #include "MainPage.h"
+#include "SearchPage2.h"
 #include "SearchUrlPage.h"
 
 
@@ -35,6 +36,12 @@ HRESULT __stdcall WINRT_GetActivationFactory(HSTRING classId, void** factory)
         if (0 == wcscmp(name, L"Youtube_Caption_XAML_UI.MainPage"))
         {
             *factory = winrt::detach_abi(winrt::make<winrt::Youtube_Caption_XAML_UI::factory_implementation::MainPage>());
+            return S_OK;
+        }
+
+        if (0 == wcscmp(name, L"Youtube_Caption_XAML_UI.SearchPage2"))
+        {
+            *factory = winrt::detach_abi(winrt::make<winrt::Youtube_Caption_XAML_UI::factory_implementation::SearchPage2>());
             return S_OK;
         }
 

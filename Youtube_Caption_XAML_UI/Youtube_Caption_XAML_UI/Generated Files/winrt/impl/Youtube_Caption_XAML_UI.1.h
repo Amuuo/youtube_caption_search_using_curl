@@ -14,6 +14,13 @@ struct WINRT_EBO IMainPage :
     IMainPage(std::nullptr_t = nullptr) noexcept {}
 };
 
+struct WINRT_EBO ISearchPage2 :
+    Windows::Foundation::IInspectable,
+    impl::consume_t<ISearchPage2>
+{
+    ISearchPage2(std::nullptr_t = nullptr) noexcept {}
+};
+
 struct WINRT_EBO ISearchUrlPage :
     Windows::Foundation::IInspectable,
     impl::consume_t<ISearchUrlPage>
