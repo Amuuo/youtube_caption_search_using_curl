@@ -18,6 +18,7 @@
 #include "winrt/Windows.UI.Xaml.Interop.h"
 #include "winrt/Windows.UI.Xaml.Markup.h"
 #include "winrt/Windows.UI.Xaml.Navigation.h"
+#include "winrt/Windows.Storage.h"
 #include "winrt/Windows.Web.h"
 #include "winrt/Windows.Web.Http.h"
 #include "winrt/Windows.Web.Http.Headers.h"

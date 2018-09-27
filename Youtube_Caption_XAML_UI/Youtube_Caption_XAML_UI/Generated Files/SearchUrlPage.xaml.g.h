@@ -24,6 +24,24 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
         void UnloadObject(::winrt::Windows::UI::Xaml::DependencyObject const& dependencyObject);
         void DisconnectUnloadedObject(int32_t connectionId);
 
+        ::winrt::Windows::UI::Xaml::Controls::StackPanel mainPanel()
+        {
+            return _mainPanel;
+        }
+        void mainPanel(::winrt::Windows::UI::Xaml::Controls::StackPanel value)
+        {
+            _mainPanel = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::StackPanel titleSearch()
+        {
+            return _titleSearch;
+        }
+        void titleSearch(::winrt::Windows::UI::Xaml::Controls::StackPanel value)
+        {
+            _titleSearch = value;
+        }
+
         ::winrt::Windows::UI::Xaml::Controls::TextBlock ResultsBlock()
         {
             return _ResultsBlock;
@@ -31,6 +49,15 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
         void ResultsBlock(::winrt::Windows::UI::Xaml::Controls::TextBlock value)
         {
             _ResultsBlock = value;
+        }
+
+        ::winrt::Windows::UI::Xaml::Controls::Image thumbnail()
+        {
+            return _thumbnail;
+        }
+        void thumbnail(::winrt::Windows::UI::Xaml::Controls::Image value)
+        {
+            _thumbnail = value;
         }
 
         ::winrt::Windows::UI::Xaml::Controls::TextBox UrlBox()
@@ -54,7 +81,10 @@ namespace winrt::Youtube_Caption_XAML_UI::implementation
     private:
         bool _contentLoaded{false};
 
+        ::winrt::Windows::UI::Xaml::Controls::StackPanel _mainPanel{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::StackPanel _titleSearch{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::TextBlock _ResultsBlock{nullptr};
+        ::winrt::Windows::UI::Xaml::Controls::Image _thumbnail{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::TextBox _UrlBox{nullptr};
         ::winrt::Windows::UI::Xaml::Controls::Button _Button{nullptr};
     };

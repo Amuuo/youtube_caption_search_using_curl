@@ -92,8 +92,8 @@ public:
     
     CaptionWord();
     CaptionWord(wstring, ContextPtr);
+    wstring       word;
     ContextPtrSet captionContextsList;
-    wstring        word;
 
     void addContextLine(ContextPtr);
   };

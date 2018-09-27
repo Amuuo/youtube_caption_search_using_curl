@@ -5,7 +5,7 @@
     xmlns:local="using:Youtube_Caption_XAML_UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Width="Auto" Height="Auto" BorderBrush="White" MinHeight="800" MinWidth="500">
+    mc:Ignorable="d" Width="Auto" Height="1136" BorderBrush="White" MinHeight="800" MinWidth="500">
     <Page.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="#FF649787"/>
@@ -13,22 +13,25 @@
         </LinearGradientBrush>
     </Page.Background>
 
-    <Grid MinHeight="800" MinWidth="500" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Height="Auto" Width="636" Margin="0,63,0,0">
-            <Image Height="175" Source="/Assets/CapScrubLogo.png" Margin="56,0,56,0"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="566" VerticalAlignment="Center" Margin="0,0,0,25">
-                <TextBox x:Name="UrlBox" 
-                             HorizontalAlignment="Center" 
-                             Text="https://www.youtube.com/watch?v=f-wWBGo6a2w" 
-                             VerticalAlignment="Center" 
-                             Width="405" 
-                             PlaceholderText="Enter Youtube URL" Margin="0,0,0,0"/>
-                <Button x:Name="Button" HorizontalAlignment="Center" 
-                                Click="ClickHandler" Content="Search For Captions" VerticalAlignment="Center" Width="162"/>
-            </StackPanel>
-            <Image Height="294" Source="/Assets/Respecting Ideas, Even Dangerous Ones (Claire Lehmann Pt. 1).jpg" />
-            <ScrollViewer  VerticalScrollBarVisibility="Auto" Height="350" Width="525" Margin="0,35,0,0" ScrollViewer.IsScrollInertiaEnabled="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="#FFD6D6D6" FontFamily="Adobe Jenson Pro" FontSize="10">
-                <TextBlock x:Name="ResultsBlock"                                                               
+    <RelativePanel Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel x:Name="mainPanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Height="1023" Width="636" Margin="0,63,0,0">
+            <RelativePanel>
+                <StackPanel x:Name="titleSearch" Orientation="Vertical">
+                    <Image x:Name="thumbnail" Height="175" Source="/Assets/CapScrubLogo.png" Margin="56,0,56,0"/>
+                    <StackPanel Orientation="Horizontal" VariableSizedWrapGrid.ColumnSpan="2" HorizontalAlignment="Center" Width="566" VerticalAlignment="Center" Margin="0,0,0,25">
+                        <TextBox x:Name="UrlBox" 
+                                 HorizontalAlignment="Center" 
+                                 Text="https://www.youtube.com/watch?v=f-wWBGo6a2w" 
+                                 VerticalAlignment="Center" 
+                                 Width="405" 
+                                 PlaceholderText="Enter Youtube URL" Margin="0,0,0,0"/>
+                        <Button x:Name="Button" HorizontalAlignment="Center" 
+                                    Click="ClickHandler" Content="Search For Captions" VerticalAlignment="Center" Width="162"/>
+                    </StackPanel>
+                    <Image Height="294" Source="/Assets/Respecting Ideas, Even Dangerous Ones (Claire Lehmann Pt. 1).jpg" />
+                </StackPanel>
+                <ScrollViewer RelativePanel.AlignHorizontalCenterWith="titleSearch" RelativePanel.Below="titleSearch"  VerticalScrollBarVisibility="Auto" Height="462" Width="525" Margin="56,35,55,0" ScrollViewer.IsScrollInertiaEnabled="True" BorderBrush="#FFD6D6D6" FontFamily="Adobe Jenson Pro" FontSize="10">
+                    <TextBlock x:Name="ResultsBlock"                                                               
                                 ScrollViewer.BringIntoViewOnFocusChange="True"
                                 HorizontalAlignment="Center"
                                 TextWrapping="Wrap" 
@@ -38,30 +41,38 @@
                                 FocusVisualSecondaryBrush="#FF7C6F6F" 
                                 Foreground="#FFD1D1D1" 
                                 ManipulationMode="All" 
-                                Height="Auto" FontFamily="Adobe Jenson Pro" Margin="25,0,25,0" FontSize="12"/>
-                <ScrollViewer.Template>
-                    <ControlTemplate TargetType="ScrollViewer">
-                        <ScrollContentPresenter x:Name="ScrollContentPresenter" 
+                                Height="Auto" FontFamily="Adobe Jenson Pro" Margin="25,0,25,0" FontSize="14"/>
+                    <ScrollViewer.Template>
+                        <ControlTemplate TargetType="ScrollViewer">
+                            <ScrollContentPresenter x:Name="ScrollContentPresenter" 
                                                     Content="{TemplateBinding Content}" 
                                                     HorizontalAlignment="Left" 
                                                     Height="Auto" 
                                                     Width="Auto" VerticalAlignment="Stretch">
-                            <ScrollContentPresenter.Background>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF2C4851" Offset="1"/>
-                                    <GradientStop Color="#FF476E6B" Offset="0"/>
-                                </LinearGradientBrush>
-                            </ScrollContentPresenter.Background>
-                            <ScrollContentPresenter.BorderBrush>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#FF595959"/>
-                                    <GradientStop Color="#FFACACAC" Offset="1"/>
-                                </LinearGradientBrush>
-                            </ScrollContentPresenter.BorderBrush>
-                        </ScrollContentPresenter>
-                    </ControlTemplate>
-                </ScrollViewer.Template>
-            </ScrollViewer>
+                                <ScrollContentPresenter.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FF2C4851" Offset="1"/>
+                                        <GradientStop Color="#FF476E6B" Offset="0"/>
+                                    </LinearGradientBrush>
+                                </ScrollContentPresenter.Background>
+                                <ScrollContentPresenter.BorderBrush>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FF595959"/>
+                                        <GradientStop Color="#FFACACAC" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </ScrollContentPresenter.BorderBrush>
+                            </ScrollContentPresenter>
+                        </ControlTemplate>
+                    </ScrollViewer.Template>
+                </ScrollViewer>
+            </RelativePanel>
         </StackPanel>
-    </Grid>
+        <StackPanel RelativePanel.RightOf="mainPanel" RelativePanel.AlignVerticalCenterWithPanel="titleSearch" Orientation="Vertical">
+            <Button Content="Button 1" RelativePanel.RightOf="mainPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
+            <Button Content="Button 2" RelativePanel.RightOf="mainPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
+            <Button Content="Button 3" RelativePanel.RightOf="mainPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
+            <Button Content="Button 4" RelativePanel.RightOf="mainPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
+            <Button Content="Button 5" RelativePanel.RightOf="mainPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1"  Height="58" Width="272"/>
+        </StackPanel>
+    </RelativePanel>
 </Page>
